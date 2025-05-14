@@ -1,0 +1,22 @@
+name: Build and deploy on GH Releases 
+on: 
+  push:
+    tags: '*'
+    branches-ignore:
+      - 'autodelivery**'
+      - 'bump-**'
+      - 'renovate-**'
+    paths-ignore:
+      - 'README.md'
+      - 'LICENSE'
+      - 'renovate.json'
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  Setup-Compile-Deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: DanySK/compile-and-publish-all-latex@2.0.2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}

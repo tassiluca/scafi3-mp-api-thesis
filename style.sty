@@ -1,0 +1,150 @@
+% !TeX root = ./main.tex
+%
+% LaTeX Style document: contains definitions and descriptions of the specific styling attriutes used 
+% to format the document.
+%
+% More details about formatting and using the following packages can be found in ./notes/notes.md 
+% where some notes in random order have been collected.
+%
+% -------------------------------------------------------------------------------------------------------
+% PACKAGES
+% -------------------------------------------------------------------------------------------------------
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{newlfont}
+\usepackage{geometry}   			% to customize page layout
+\usepackage{amsmath}    			% math equations: use `begin{equation[*]}`
+\usepackage[hidelinks]{hyperref}  	% hidelinks = hide a box around active links
+% to reference in latex @see https://texblog.org/2013/05/06/cleveref-a-clever-way-to-reference-in-latex/
+\usepackage[italian]{cleveref}    	
+% \usepackage[disable]{todonotes} 	% to uncomment before final version
+\usepackage{todonotes}            	% to comment before final version
+% bibliography: @see https://it.overleaf.com/learn/latex/Biblatex_citation_styles
+\usepackage[                    
+    backend=biber,
+    % for more on styles: @see https://it.overleaf.com/learn/latex/Biblatex_bibliography_styles
+    style=alphabetic,
+]{biblatex}
+\usepackage{csquotes}				% to inline and display quotations
+\usepackage{enumitem}           	% to manage items spacing in `itemize`
+\setlist{noitemsep}             	% leave space around whole list but no between items
+\usepackage{listings}           	% for code listings - see the listing configs section below
+\usepackage{multicol}				% for multicolumns
+\usepackage{multirow}				% for tables with rows spanning in more lines
+\usepackage{diagbox}				% for tables diagonal box
+\usepackage{rotating}				% for images in landscape
+% TeX break lines at spaces (and a few other positions in a word, called "discretionary break"). 
+% Discretionary break is not allowed in typewriter typesetting. 
+% If there is no space in \texttt{}, it cannot break.
+% To avoid this problem is necessary to enable hythenation of TT text:
+\usepackage[htt]{hyphenat}		
+\usepackage{pgfplots}				% for graphs 
+\pgfplotsset{compat = newest}
+% Using the openright option it is possible to have a blank page at the ﬁnish of the chapter; 
+% to avoid having headers or footers, it is suﬃcient to add the following commands in the preamble.
+\makeatletter
+\def\cleardoublepage{
+	\clearpage
+	\if @twoside
+		\if odd \c@page
+		\else 
+			\hbox{}
+			\thispagestyle{empty}
+			\newpage
+		\fi
+	\fi
+	\if @twocolumn 
+		\hbox{} \newpage
+	\fi
+}
+\makeatother
+
+% -------------------------------------------------------------------------------------------------------
+% ENVIRONMENTS
+% -------------------------------------------------------------------------------------------------------
+% Right after the \newenvironment, in between braces, you must write the name of the environment.
+% Below that are two pairs of braces. Inside the first pair of braces is set what your new environment 
+% will do before the text within, then inside the second pair of braces declare what your new environment 
+% will do after the text.
+\newenvironment{abstract}{
+    \chapter*{\centering\abstractname}
+    \addcontentsline{toc}{chapter}{\abstractname}
+}{} 
+
+\newenvironment{dedication}{
+    \chapter*{}
+    \begin{flushright}
+        \null\vspace{\stretch{1}}
+        \itshape
+}{
+        \normalfont
+        \vspace{\stretch{2}}\null
+    \end{flushright}
+}
+
+% -------------------------------------------------------------------------------------------------------
+% LISTING CONFIGURATIONS
+% See https://en.wikibooks.org/wiki/LaTeX/Source_Code_Listings
+% -------------------------------------------------------------------------------------------------------
+\renewcommand{\lstlistingname}{Listato}
+\renewcommand{\lstlistlistingname}{Elenco dei listati}
+\crefname{lstlisting}{\lstlistingname}{listato}
+\Crefname{lstlisting}{\lstlistingname}{Listato}
+
+\lstset{
+	showstringspaces=false,
+	basicstyle=\footnotesize\ttfamily,
+	commentstyle={\color{olive}},
+	identifierstyle=\color{black},
+	ndkeywordstyle={\color{blue}},
+	stringstyle={\color{magenta}},
+	emphstyle={},
+	keywordstyle={\color{blue}},
+	breaklines=true,
+	numbers=left,
+	numberstyle=\tiny\color{gray},
+	numbersep=10pt,
+	tabsize=2,
+	extendedchars=true,
+	frame=trBL,
+	frameround=fttt,
+}
+
+% defining style for not yet supported languages:
+\lstdefinelanguage{Kotlin} {
+	comment=[l]{//},
+	emph={delegate, filter, first, firstOrNull, forEach, lazy, map, mapNotNull, println, return@},
+	keywords={abstract, actual, as, as?, break, by, class, companion, continue, data, do, dynamic, else, enum, expect, false, final, for, fun, get, if, import, in, interface, internal, is, null, object, override, package, private, public, return, set, super, suspend, this, throw, true, try, typealias, val, var, vararg, when, where, while},
+	morecomment=[s]{/*}{*/},
+	morestring=[b]",
+	morestring=[s]{"""*}{*"""},
+	ndkeywords={@Deprecated, @JvmField, @JvmName, @JvmOverloads, @JvmStatic, @JvmSynthetic, Array, Byte, Double, Float, Int, Integer, Iterable, Long, Runnable, Short, String, Unit, it},
+	sensitive=true
+}
+
+\lstdefinelanguage{pseudocode} {
+	sensitive=false,
+	keywords={while, do, endwhile, if, then, else, endif, repeat, until, for, endfor, from, to, each, step, function, procedure, begin, end, return, input, output, data, result, type, object, class, array, integer, boolean, true, false, real, string}, 
+	comment=[l]{//},
+	morecomment=[s]{/*}{*/},
+	string=[b]{"},
+	mathescape=true,
+	literate={:=}{{$\gets$ }}1 {<-}{{$\gets$ }}1 {<=}{{$\leq$ }}1 {>=}{{$\geq$ }}1 {<>}{{$\neq$ }}1 {!=}{{$\neq$ }}1
+}
+
+\lstdefinelanguage{yaml} {
+	keywords={true,false,null,y,n},
+	sensitive=false,
+	comment=[l]{\#},
+	morecomment=[s]{/*}{*/},
+	stringstyle=\color{blue}\mdseries\ttfamily,
+	moredelim=[l][\color{orange}]{\&},
+	moredelim=[l][\color{magenta}]{*},
+	morestring=[b]',
+	morestring=[b]",
+	moredelim=**[il][\color{magenta}\mdseries{:}\color{blue}\mdseries]{:},
+	literate={>}{{\textcolor{magenta}\textgreater}}1
+			 {|}{{\textcolor{magenta}\textbar}}1
+			 {\ -\ }{{\mdseries\ -\ }}3,
+}

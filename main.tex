@@ -1,0 +1,45 @@
+\documentclass[
+    a4paper,        % A4 page format
+    12pt,           % font size
+    onecolumn,      % (onecolumn|twocolumn) the content of the page is displayed in a single column
+    twoside,        % (oneside|twoside) the document will be printed on just one side or on both sides
+    openright,      % (openany|openright) chapters begin only on odd-numbered pages (i.e. right pages)
+]{book}             % see https://tex.stackexchange.com/questions/36988/regarding-the-book-report-and-article-document-classes-what-are-the-mai
+%
+\usepackage{style}  % see style.sty file
+%
+\addbibresource{bibliography.bib}	% see bibliography.bib file for bibliography declarations
+%
+\begin{document}
+    % ---------------------------------------------------------------------
+    % Frontmatter makes the pages numbered in lowercase roman and make 
+    % chapters not numbered, although each chapter's title appears in the
+    % table of contents.
+    % ---------------------------------------------------------------------
+    \frontmatter
+    % add chapters simply in this way: \input{<path-to-chapter>}
+    \input{./chapters/frontmatter/frontispiece.tex}
+    \input{./chapters/frontmatter/abstract.tex}
+    \input{./chapters/frontmatter/dedication.tex}
+    \tableofcontents
+    \listoffigures
+    \lstlistoflistings
+    \listoftables
+    % ---------------------------------------------------------------------
+    % Mainmatter command changes the behavior back to the expected version, 
+    % and resets the page number.
+    % ---------------------------------------------------------------------
+    \mainmatter
+    % ---------------------------------------------------------------------
+    % Backmatter command leaves the page numbering alone but switches the 
+    % chapters back to being not numbered.
+    % ---------------------------------------------------------------------
+    \nocite{*}{
+        \backmatter
+        \printbibliography
+    }
+    % ---------------------------------------------------------------------
+    % Appendix
+    % ---------------------------------------------------------------------
+    \appendix
+\end{document}
