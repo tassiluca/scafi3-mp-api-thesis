@@ -1,22 +1,37 @@
-name: Build and deploy on GH Releases 
-on: 
+name: Build and deploy on GH Releases
+on:
   push:
-    tags: '*'
+    tags:
+      - "*"
     branches-ignore:
-      - 'autodelivery**'
-      - 'bump-**'
-      - 'renovate-**'
+      - "autodelivery**"
+      - "bump-**"
+      - "renovate-**"
     paths-ignore:
-      - 'README.md'
-      - 'LICENSE'
-      - 'renovate.json'
+      - "README.md"
+      - "LICENSE"
+      - "renovate.json"
   pull_request:
   workflow_dispatch:
 
 jobs:
-  Setup-Compile-Deploy:
+  Compile-Deploy-PDF:
+    if: github.event_name == 'push' && !contains(github.actor, 'renovate')
     runs-on: ubuntu-latest
     steps:
       - uses: DanySK/compile-and-publish-all-latex@2.0.2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+
+  Success:
+    needs: Compile-Deploy-PDF
+    if: >-
+      always() && (
+        contains(join(needs.*.result, ','), 'failure')
+        || !contains(join(needs.*.result, ','), 'cancelled')
+      )
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify no failures occurred in needed jobs
+        # if there are failures, false is executed and the job fails.
+        run: ${{ !contains(join(needs.*.result, ','), 'failure') }}
