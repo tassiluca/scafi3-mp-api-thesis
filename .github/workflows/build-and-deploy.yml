@@ -19,7 +19,7 @@ jobs:
     if: github.event_name == 'push' && !contains(github.actor, 'renovate')
     runs-on: ubuntu-latest
     steps:
-      - uses: DanySK/compile-and-publish-all-latex@2.0.2
+      - uses: DanySK/compile-and-publish-all-latex@2.0.69
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
