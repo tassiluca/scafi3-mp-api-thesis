@@ -1,0 +1,40 @@
+% !TeX root = ../../main.tex
+\chapter{Background and Related Work}
+
+This chapter aims to provide to the reader the necessary theoretical background behind the concepts of software portability, multi-platforms software development and interoperability between programming languages, unfolding how 
+these concepts play a crucial role in the comprehensive software lifecycle, why they are relevant in modern software engineering and, nonetheless, why they should be cared about.
+
+\section{The role of portability in Software Engineering}
+
+Software portability is, according to the ISO/IEC standard, the quality attribute that measures the "degree of effectiveness and efficiency with which a system, product or component can be transferred from one hardware, software or other operational or usage environment to another" \cite{iso-25010}.
+%
+Put differently, a software artifact is said to be portable, i.e. it exhibits portability, when the cost required to design and implement it for porting and cross-compiling for multiple platforms does not exceed the cost of re-development for each of them.
+%
+Portability is, therefore, a matter of engineering a software product to maximize the reusability of their components, guaranteeing the same behaviour and functionalities across the different targeted platforms, where the concept of platform is wide and embraces hardware architecture, operating system, runtime upon which the software is executed, middlewares and other subsystems providing the services and, more generally, public interfaces on which application software depends \cite{Sommerville2020}.
+%
+Portability is not a binary attribute, but rather a quantifiable degree that can be measured and evaluated with respect to a specific set of platforms and span over multiple levels \cite{10.1007/1-4020-8159-6_3}:
+
+\begin{itemize}
+    \item \textbf{source portability} occurs when the software is adapted to the underlying platform by changing the source code, which is then recompiled for the target platform. This is the most common form of portability;
+    \item \textbf{binary portability} involves porting software in its compiled binary format. This is the most advantageous form of portability, though it is also the most difficult to achieve and is limited to specific cases, for very similar environments;
+    \item \textbf{intermediate-level portability} is a middle-ground between source and binary portability and entails porting an intermediate representation of the software sitting between the source and binary code. This is the case of modern languages with multi-target compilation \todo{cite next section where this is explained}.
+\end{itemize}
+
+Portability has always been a relevant concern in software engineering since the early days of computing when the landscape of hardware architectures and operating systems was extremely fragmented and heterogneous and software was completely tied to the underlying platform, requiring full rewrites when moving to a different platform.
+%
+Over time the situation has improved a lot thanks two major paradigms shifts: the C language's compilation-based portability model and the subsequent virtual machine archictectures, such as the Java Virtual Machine (JVM) and the Common Language Runtime (CLR) for .NET.
+%
+Despite being very different in nature, both these paradigms shifts lays their foundations in another cornestone of software enginnering: abstraction.
+
+
+%    1. The centrality role of portability: os -> C compiled code -> java byte code to be "run everywhere"
+%    2. Why caring other platforms and the role of modern programming languages targeting different platforms
+%       1. The impact in terms of programming: addressing the abstraction gap — https://unibo-spe.github.io/12-multiplatform/#/16
+%    3. Why caring about making the API of a software product interoperate with other languages?
+%       1. Different languages, different runtimes and different **ecosystems** — https://unibo-spe.github.io/12-multiplatform/#/11 — https://unibo-spe.github.io/12-multiplatform/#/6
+%       2. The opposite approach: calling from the "super" language libraries from other languages (e.g. Scala <- Python libraries)
+%       3. Why choosing a language as a reference? The role of abstraction in software engineering
+
+% How kotlin and scala deal with portability and abstraction gap
+%   2. The approach of Cazzola et. al (not consider multi-target language like kotlin and scala)
+%   3. Spark architecture?

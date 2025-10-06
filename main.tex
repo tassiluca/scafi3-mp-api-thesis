@@ -10,6 +10,8 @@
 %
 \addbibresource{bibliography.bib}	% see bibliography.bib file for bibliography declarations
 %
+\mainlinespacing{1.1} % line spacing in mainmatter, comment to default (1)
+%
 \begin{document}
     % ---------------------------------------------------------------------
     % Frontmatter makes the pages numbered in lowercase roman and make 
@@ -30,6 +32,8 @@
     % and resets the page number.
     % ---------------------------------------------------------------------
     \mainmatter
+    \input{./chapters/mainmatter/introduction.tex}
+    \input{./chapters/mainmatter/background.tex}
     \input{./chapters/mainmatter/context-and-motivations.tex}
     % ---------------------------------------------------------------------
     % Backmatter command leaves the page numbering alone but switches the 

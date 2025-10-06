@@ -6,22 +6,22 @@
 % More details about formatting and using the following packages can be found in ./notes/notes.md 
 % where some notes in random order have been collected.
 %
-% -------------------------------------------------------------------------------------------------------
+% ---------------------------------------------------------------------------------------------------
 % PACKAGES
-% -------------------------------------------------------------------------------------------------------
+% ---------------------------------------------------------------------------------------------------
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage[italian]{babel}
 \usepackage{newlfont}
 \usepackage{geometry}   			% to customize page layout
 \usepackage{amsmath}    			% math equations: use `begin{equation[*]}`
-\usepackage[hidelinks]{hyperref}  	% hidelinks = hide a box around active links
+\usepackage{hyperref}  				% [hidelinks] = hide a box around active links
 % to reference in latex @see https://texblog.org/2013/05/06/cleveref-a-clever-way-to-reference-in-latex/
-\usepackage[italian]{cleveref}    	
+\usepackage[italian]{cleveref}
 % \usepackage[disable]{todonotes} 	% to uncomment before final version
 \usepackage{todonotes}            	% to comment before final version
 % bibliography: @see https://it.overleaf.com/learn/latex/Biblatex_citation_styles
-\usepackage[                    
+\usepackage[
     backend=biber,
     % for more on styles: @see https://it.overleaf.com/learn/latex/Biblatex_bibliography_styles
     style=alphabetic,
@@ -59,10 +59,20 @@
 	\fi
 }
 \makeatother
+% spacing between lines
+\usepackage{setspace}
+\def\themainlinespacing{1}
+\newcommand{\mainlinespacing}[1]{\def\themainlinespacing{#1}}
+\let\oldmainmatter\mainmatter
+\renewcommand{\mainmatter}{
+    \oldmainmatter
+    % \onehalfspacing % https://tex.stackexchange.com/questions/30073/why-is-the-linespread-factor-as-it-is
+    \setstretch{\themainlinespacing}
+}
 
-% -------------------------------------------------------------------------------------------------------
+% ---------------------------------------------------------------------------------------------------
 % ENVIRONMENTS
-% -------------------------------------------------------------------------------------------------------
+% ---------------------------------------------------------------------------------------------------
 % Right after the \newenvironment, in between braces, you must write the name of the environment.
 % Below that are two pairs of braces. Inside the first pair of braces is set what your new environment 
 % will do before the text within, then inside the second pair of braces declare what your new environment 
@@ -83,14 +93,15 @@
     \end{flushright}
 }
 
-% -------------------------------------------------------------------------------------------------------
+% ---------------------------------------------------------------------------------------------------
 % LISTING CONFIGURATIONS
 % See https://en.wikibooks.org/wiki/LaTeX/Source_Code_Listings
-% -------------------------------------------------------------------------------------------------------
-\renewcommand{\lstlistingname}{Listato}
-\renewcommand{\lstlistlistingname}{Elenco dei listati}
-\crefname{lstlisting}{\lstlistingname}{listato}
-\Crefname{lstlisting}{\lstlistingname}{Listato}
+% ---------------------------------------------------------------------------------------------------
+% Only if interested in italian...
+%\renewcommand{\lstlistingname}{Listato}
+%\renewcommand{\lstlistlistingname}{Elenco dei listati}
+%\crefname{lstlisting}{\lstlistingname}{listato}
+%\Crefname{lstlisting}{\lstlistingname}{Listato}
 
 \lstset{
 	showstringspaces=false,
@@ -147,4 +158,89 @@
 	literate={>}{{\textcolor{magenta}\textgreater}}1
 			 {|}{{\textcolor{magenta}\textbar}}1
 			 {\ -\ }{{\mdseries\ -\ }}3,
+}
+
+% ---------------------------------------------------------------------------------------------------
+% CHAPTER STYLE
+% ---------------------------------------------------------------------------------------------------
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{simplechapstyle}[2025/09/03 Minimal elegant chapter style]
+
+\RequirePackage{titlesec}
+\RequirePackage{xcolor}
+
+\definecolor{chaptergray}{RGB}{120,120,120}   % Gray color
+\newlength{\chapnumwidth}                     % Width reserved for chapter number
+\setlength{\chapnumwidth}{3em}
+
+% Chapter number font (scaled Palatino oldstyle figures)
+\newfont{\chapterNumber}{pplr9d scaled 7000}
+
+% Define a small vertical rule element
+\newcommand{\chapdivider}{%
+  \color{chaptergray}%
+  \rule[-0.4ex]{0.4pt}{1.5em} % thin, slightly taller than number baseline
+}
+
+% Chapter formatting: number, divider, then title
+\titleformat{\chapter}[hang]
+  {\normalfont\Huge\bfseries}
+  {\makebox[\chapnumwidth][r]{\chapterNumber\thechapter}\hspace{0.75em}\chapdivider}
+  {0.5em} % space between divider and title
+  {} 
+
+% Vertical spacing: before chapter, after title
+\titlespacing*{\chapter}{0pt}{50pt}{30pt}
+
+% Optional: section spacing inside chapters
+\titlespacing*{\section}{0pt}{24pt}{12pt}
+
+% ---------------------------------------------------------------------------------------------------
+% BOX STYLES
+% ---------------------------------------------------------------------------------------------------
+\usepackage[
+	framemethod=tikz
+]{mdframed}
+
+\mdfdefinestyle{warning}{
+	topline=false, bottomline=false,
+	leftline=false, rightline=false,
+	nobreak,
+	singleextra={%
+		\draw(P-|O)++(-0.5em,0)node(tmp1){};
+		\draw(P-|O)++(0.5em,0)node(tmp2){};
+		\fill[black,rotate around={45:(P-|O)}](tmp1)rectangle(tmp2);
+		\node at(P-|O){\color{white}\scriptsize\bfseries !};
+		\draw[very thick](P-|O)++(0,-1em)--(O);%--(O-|P);
+	}
+}
+
+% Define a custom environment for warning text
+\newenvironment{warn}[1][Warning:]{ % Set the default warning to "Warning:"
+	\medskip
+	\begin{mdframed}[style=warning]
+		\noindent{\textbf{#1}}
+	}{
+	\end{mdframed}
+}
+
+\mdfdefinestyle{info}{%
+	topline=false, bottomline=false,
+	leftline=false, rightline=false,
+	nobreak,
+	singleextra={%
+		\fill[black](P-|O)circle[radius=0.4em];
+		\node at(P-|O){\color{white}\scriptsize\bfseries i};
+		\draw[very thick](P-|O)++(0,-0.8em)--(O);%--(O-|P);
+	}
+}
+
+% Define a custom environment for information
+\newenvironment{info}[1][Info:]{ % Set the default title to "Info:"
+	\medskip
+	\begin{mdframed}[style=info]
+		\noindent{\textbf{#1}}
+	}{
+	\end{mdframed}
 }
