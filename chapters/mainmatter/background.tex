@@ -1,18 +1,17 @@
 % !TeX root = ../../main.tex
 \chapter{Background and Related Work}
 
-This chapter aims to provide to the reader the necessary theoretical background behind the concepts of software portability, multi-platforms software development and interoperability between programming languages, unfolding how 
-these concepts play a crucial role in the comprehensive software lifecycle, why they are relevant in modern software engineering and, nonetheless, why they should be cared about.
+This chapter aims to provide to the reader the necessary theoretical background behind the concepts of software portability, multi-platforms software development and interoperability between programming languages, unfolding how these concepts play a crucial role in the comprehensive software lifecycle and why they are relevant in modern software engineering.
 
 \section{The role of portability in Software Engineering}
 
-Software portability is, according to the ISO/IEC standard, the quality attribute that measures the "degree of effectiveness and efficiency with which a system, product or component can be transferred from one hardware, software or other operational or usage environment to another" \cite{iso-25010}.
+Software \textbf{portability} is, according to the ISO/IEC standard, the quality attribute that measures the \enquote{degree of effectiveness and efficiency with which a system, product or component can be transferred from one hardware, software or other operational or usage environment to another} \cite{iso-25010}.
 %
 Put differently, a software artifact is said to be portable, i.e. it exhibits portability, when the cost required to design and implement it for porting and cross-compiling for multiple platforms does not exceed the cost of re-development for each of them.
 %
 Portability is, therefore, a matter of engineering a software product to maximize the reusability of their components, guaranteeing the same behaviour and functionalities across the different targeted platforms, where the concept of platform is wide and embraces hardware architecture, operating system, runtime upon which the software is executed, middlewares and other subsystems providing the services and, more generally, public interfaces on which application software depends \cite{Sommerville2020}.
 %
-Portability is not a binary attribute, but rather a quantifiable degree that can be measured and evaluated with respect to a specific set of platforms and span over multiple levels \cite{10.1007/1-4020-8159-6_3}:
+Portability is not a binary attribute, but rather a quantifiable degree that can be measured and evaluated with respect to a specific set of platforms and span over multiple levels \cite{10.1007/1-4020-8159-6_3} \todo{quantifiable? how?}:
 
 \begin{itemize}
     \item \textbf{source portability} occurs when the software is adapted to the underlying platform by changing the source code, which is then recompiled for the target platform. This is the most common form of portability;
@@ -20,14 +19,45 @@ Portability is not a binary attribute, but rather a quantifiable degree that can
     \item \textbf{intermediate-level portability} is a middle-ground between source and binary portability and entails porting an intermediate representation of the software sitting between the source and binary code. This is the case of modern languages with multi-target compilation \todo{cite next section where this is explained}.
 \end{itemize}
 
-Portability has always been a relevant concern in software engineering since the early days of computing when the landscape of hardware architectures and operating systems was extremely fragmented and heterogneous and software was completely tied to the underlying platform, requiring full rewrites when moving to a different platform.
+Portability has always been a relevant concern in software engineering since the early days of computing when the landscape of hardware architectures and operating systems was extremely fragmented and heterogneous and software was completely tied to the underlying platform, requiring full rewrites when moving to a different one \todo{cite}.
 %
-Over time the situation has improved a lot thanks two major paradigms shifts: the C language's compilation-based portability model and the subsequent virtual machine archictectures, such as the Java Virtual Machine (JVM) and the Common Language Runtime (CLR) for .NET.
+Over time the situation has profoundly changed thanks to a series of innovations and standardization efforts: from the standardization of operating systems interfaces, such as POSIX, to the widespread introduction of increasingly higher-level programming languages and the diffusion of modern paradigms, like the World Wide Web, that inherently foster portability \todo{cite}.
 %
-Despite being very different in nature, both these paradigms shifts lays their foundations in another cornestone of software enginnering: abstraction.
+Undoubtedly, two of the most influential shifts in this context are represented by the C language's compilation-based portability model and the subsequent virtual machine architectures, such as the Java Virtual Machine (JVM) and the Common Language Runtime (CLR) for .NET.
+%
+Despite being very different in nature, both these paradigms shifts lays their foundations in another cornerstone of software engineering: \textbf{abstraction}.
+%
+C addressed portability by abstracting hardware details through its type system, standard library and abstract machine semantics while preserving a direct mapping to machine operations and low-level control.
+%
+Despite it's early success, compilation-based portability faced inherint limitations: developers needs to create and mantain separate binaries for each target platform, which is a costly and painful process.
+%
+Virtual machine approaches emerged then addressing these challenges by introducing an additional abstraction layer between the software and the underlying platform: rather than compiling to platform-specific machine code, software is compiled to an intermediate bytecode that can be interpreted or dynamically compiled by a platform-specific runtime.
+%
+This approach has found widespread adoption, with the JVM and CLR becoming the backbone of entire ecosystems of modern languages and frameworks and enabling the famous \enquote{write once, run anywhere} paradigm $-$ the promise that applications would be portable across any platform supporting the respective runtime.
+%
+However, the technical reality proved to be more nuanced: different virtual machine implementations can exhibit subtle differences in behaviour and also graphical user interfaces and system libraries can vary significantly across platforms, requiring additional adaptation efforts.
+%
+Contemporary portability solutions continue this abstraction progression, with modern languages like Kotlin and Scala, but also Gleam, Rust and others, supporting multi-target compilation to various platforms, including JVM, JavaScript, WebAssembly and native binaries using intermediate representations.
+%
+However, despite the advancements in portability techniques and tools, achieving true portability remains a complex challenge, requiring careful design considerations, thorough testing and ongoing maintenance to ensure consistent behaviour across diverse environments.
+%
+Moreover, the embedded systems and IoT domains demonstrate that abstraction has practical limits in contexts where resource-constrained devices with minimal RAM and flash memory cannot support virtual machine overhead or large bundles, necessitating low-level compilation-based approaches.
+
+Despite the challenges, portability remains a crucial aspect of modern software engineering, driven by the need to reach heterogeneous infrastructures and adapt to the rapidly evolving technological landscape, reducing for the developers the burden of maintaining or re-implementing software for different platforms, which often leads to fragmentation, inconsistencies between the different versions and increased maintenance costs.
+
+\section{The impact of portability in the software lifecycle}
+
+As already mentioned, portability impact tremendously the whole software lifecycle, from design to release and maintenance.
+
+\vspace{0.5em}
+
+\noindent
+\textbf{Design phase.}
+
+\section{Not only portability: interoperability as the key for multi-language software development}
 
 
-%    1. The centrality role of portability: os -> C compiled code -> java byte code to be "run everywhere"
+
 %    2. Why caring other platforms and the role of modern programming languages targeting different platforms
 %       1. The impact in terms of programming: addressing the abstraction gap — https://unibo-spe.github.io/12-multiplatform/#/16
 %    3. Why caring about making the API of a software product interoperate with other languages?

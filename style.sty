@@ -41,8 +41,8 @@
 \usepackage[htt]{hyphenat}		
 \usepackage{pgfplots}				% for graphs 
 \pgfplotsset{compat = newest}
-% Using the openright option it is possible to have a blank page at the ﬁnish of the chapter; 
-% to avoid having headers or footers, it is suﬃcient to add the following commands in the preamble.
+% Using the openright option it is possible to have a blank page at the finish of the chapter; 
+% to avoid having headers or footers, it is sufficient to add the following commands in the preamble.
 \makeatletter
 \def\cleardoublepage{
 	\clearpage
@@ -195,6 +195,44 @@
 
 % Optional: section spacing inside chapters
 \titlespacing*{\section}{0pt}{24pt}{12pt}
+
+% --- Chapter and Section headers in the header/footer ---
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+
+% Normal pages (not chapter starts)
+\fancypagestyle{fancy}{
+    \fancyhf{}
+    % Header: section name
+    \fancyhead[CE,CO]{\rightmark}
+    % Footer: chapter name and page number
+    \fancyfoot[RE,LO]{\leftmark}
+    \fancyfoot[LE,RO]{\thepage}
+    % Horizontal rules
+    \renewcommand{\headrulewidth}{0pt}   % remove top line
+    \renewcommand{\footrulewidth}{0.1pt} % thin bottom line
+}
+
+% Chapter-opening pages
+\fancypagestyle{plain}{
+    \fancyhf{}
+    % Header: section name still present
+    \fancyhead[CE,CO]{\rightmark}
+    % Footer: chapter name and page number, thin line
+    \fancyfoot[RE,LO]{\leftmark}
+    \fancyfoot[LE,RO]{\thepage}
+    \renewcommand{\headrulewidth}{0pt}   % no top line
+    \renewcommand{\footrulewidth}{0.1pt} % thin bottom line
+}
+
+\pagestyle{fancy}
+
+% Ensure enough head height for header content
+\setlength{\headheight}{14.5pt}
+
+% Proper marks for chapter/section titles
+\renewcommand{\chaptermark}[1]{\markboth{Chapter \thechapter.\ #1}{}} 
+\renewcommand{\sectionmark}[1]{\markright{\thesection.\ #1}}
 
 % ---------------------------------------------------------------------------------------------------
 % BOX STYLES
