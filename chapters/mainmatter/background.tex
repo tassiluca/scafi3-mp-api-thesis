@@ -13,7 +13,7 @@ Put differently, a software artifact is said to be portable, i.e. it exhibits po
 %
 Portability is, therefore, a matter of engineering a software product to maximize the reusability of their components, guaranteeing the same behaviour and functionalities across the different targeted platforms, where the concept of platform is wide and embraces hardware architecture, operating system, runtime upon which the software is executed, middlewares and other subsystems providing the services and, more generally, public interfaces on which application software depends \cite{Sommerville2020}.
 %
-Portability is not a binary attribute, but rather a quantifiable degree that can be measured and evaluated with respect to a specific set of platforms and span over multiple levels \cite{10.1007/1-4020-8159-6_3} \todo{quantifiable? how?}:
+Portability is not a binary attribute, but rather a quantifiable degree that can be measured and evaluated with respect to a specific set of platforms and span over multiple levels \cite{mooney-2004} \todo{quantifiable? how?}:
 
 \begin{itemize}
     \item \textbf{source portability} occurs when the software is adapted to the underlying platform by changing the source code, which is then recompiled for the target platform. This is the most common form of portability;
@@ -81,6 +81,8 @@ This has a great impact also during the implementation, as the availability of m
 
 For example, if a software product requires advanced data analysis and machine learning capabilities, targeting a platform with a rich ecosystem of libraries and frameworks in this domain, such as Python, would be a wise choice.
 
+(from \cite{doeraene-2018} "In practice, even if the language itself is portable, unless the ecosystem follows suit and publishes portable libraries, it remains difficult to do any meaningful job spanning several runtimes.")
+
 \vspace{0.5em}
 \noindent
 \textbf{Testing.}
@@ -98,9 +100,31 @@ For example, JVM-based artifacts are distributed as JAR via Maven central or oth
 %
 Each of these release platforms have different policies and requirements in terms of publishing and versioning that need to be properly addressed.
 
-\section{Language interoperability as the key for multi-language software development}
+\section{Language interoperability}
 
+Portability is only one side of the coin.
+%
+Orthogonally to the platform dimension, language interoperability is equally important as it refers to the ability to communicate with other languages on each targeted platform, guaranteeing uniformity in semantics across them \cite{doeraene-2018}.
+%
+Having portability without interoperability is of limited practical use: while portability make it possible to cross-compile the artifacts for different platforms, the lack of interoperability with the host platform APIs and ecosystem's existing libraries would make the software product isolated and unable to interact with the surrounding ecosystem.
+%
+For example, developing an application targeting the JavaScript platform without being able to access JavaScript platform-specific functionalities, such as manipulating the DOM, handling user events or performing filesystem operations leveraging Node.js API would make portability largely theoretical rather than practical.
 
+Interoperability, however, is not only the requirement of being able to access platform-specific APIs, but, rather, as library developers, the commitment to expose the library APIs to the platform native language of reference.
+%
+This enables the widest possible audience of developers to use the library and, most importantly, to let them integrate it with the full power of the underlying platform ecosystem.
+%
+This is particularly relevant because the various platforms ecosystems have been evolved in siloes over the years, they often lack interoperability with each other, and each of them is focused and optimized for specific domains and use cases.
+%
+Language interoperability therefore allows, together with portability, developers to choose the best platform and, consequently, the best library API for their specific needs, minimizing the risk of incurring in incompatibility issues.
+
+Crafting a "good" interoperable layer is a complex task whose main difficulty lays in the mismatch between the run-time semantics and abstractions of the languages involved and that includes, among others, dealing with different memory management strategies (e.g., garbage collection vs manual memory management), type systems (e.g., static vs dynamic typing, strong vs weak typing), error handling mechanisms (e.g., exceptions vs error codes). 
+%
+Sometimes, these differences cannot be fully bridged and some features can be dropped or limited if they cannot be mapped to the target language and are not essential for the library's core functionalities, but this mut be carefully evaluated on a case-by-case basis.
+%
+However, the key point about interoperability is that the features must be complete with the respect to the semantics of the host language \cite{doeraene-2018}.
+%
+This ensure to be able to fully leverage the host language ecosystem and, therefore, to integrate seamlessly with other libraries and frameworks.
 
 %    2. Why caring other platforms and the role of modern programming languages targeting different platforms
 %       1. The impact in terms of programming: addressing the abstraction gap — https://unibo-spe.github.io/12-multiplatform/#/16
