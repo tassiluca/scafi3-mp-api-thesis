@@ -175,6 +175,8 @@ Despite other languages, Scala cross-platform capabilities are not tied to the l
 \subsubsection{Scala Native}
 
 Following the success of Scala.js, the Scala Native project moved their first steps in 2014 as a research project at EPFL with the goal of compiling Scala code directly to bare-metal machine code without the need for the JVM, making it suitable for resource-constrained environments where the overhead imposed by the JVM in terms of memory footprint and startup time cannot be tolerated.
+%
+Since it's 0.5 release published in 2024 with the introduction of native concurrency primitives, the project have reached a decent level of maturity and stability, that allows to consider it for production use.
 
 Scala Native is both an \textit{ahead of time} (AOT) compiler and standalone runtime.
 
@@ -188,10 +190,28 @@ Compilation proceeds through a pipeline of stages, shown in \todo{ref figure}, p
     \item finally, the optimized NIR is translated to low-level LLVM instructions that are then compiled by the LLVM backend to platform-specific machine code.
 \end{itemize}
 
-
+Other than the compiler itself, Scala Native includes a lightweight runtime layer that supplies essential services for the program execution.
 %
+Most notable features provided by the runtime are:
 
+\begin{itemize}
+    \item a configurable garbage collectore for automatic memory management of heap-allocated Scala objects;
+    \item a threading model based on native OS threads that maps Scala's concurrency abstractions to the underlying platform capabilities trying to reach maximum compatibility in semantics with the JVM;
+    \item foreign function and a subset of C interoperability primitives to interface with C or C++ existing libraries and native code, allowing to expose Scala Native libraries to native interoperable languages;
+    \item a subset of the Scala and Java standard libraries re-implemented to work natively. In this way the developer can leverage familiar APIs and use existing Scala and Java standard libraries like it was running on the JVM with the same semantics (Scala Native consider, indeed, every difference in semantics between the two platforms as a bug).
+\end{itemize}
 
+Concerning the supported architectures and operating systems, Scala Native can target AMD64 (x86-64) and ARM64 (aarch64) architectures on Linux, macOS and Windows operating systems, also thanks to cross-compilation support \todo{what is it?}.
+%
+This covers the vast majority of modern desktop and server environments, including some System-on-Chip (SoC) architectures, like Raspberry Pi devices.
+%
+Experimental or partial support exists for FreeBSD, OpenBSD, and NetBSD, though sometimes limited to particular architectures (e.g. only AMD64 on OpenBSD). 
+%
+Moreover, with the 0.5 release, Scala Native introduced experimental support for 32-bit architectures, like ARMv7.
+%
+Mobile platforms (such as Apple devices) and microcontroller architectures (like ESP32 architecture) are not supported: the first due to the lack of support for Objective-C or Swift interoperability, which are essential for iOS and macOS development, and the latter because of the limited resources of these devices.
+%
+While the first limitation could be overcome in the future, the second will be hardly addressed because of the usage of limited or not fully mature LLVM support and the fact that compiled executable include a runtime layer that, alone, requires a few megabytes of memory that typically microcontrollers cannot accomodate.
 
 
 
