@@ -163,14 +163,38 @@ Differently from the cross-compilation approach, in the absence of automated too
 
 \subsection{The case of Scala}
 
+Scala is a modern multi-paradigm programming language seamlessly integrating both object-oriented and functional programming, whose powerful static type system and advanced language abstraction features make it suitable for crafting complex and maintainable software systems in a concise, elegant and expressive way.
+%
+Originally designed to run on the Java Virtual Machine (JVM), Scala has evolved to support also native and JavaScript platforms making it a cross-platform language.
+%
+Despite other languages, Scala cross-platform capabilities are not tied to the language itself, but rather are demanded by dedicated projects, each with its own compiler plugins and toolchains that extends the Scala compiler and ecosystem.
 
-%    2. Why caring other platforms and the role of modern programming languages targeting different platforms
-%       1. The impact in terms of programming: addressing the abstraction gap — https://unibo-spe.github.io/12-multiplatform/#/16
-%    3. Why caring about making the API of a software product interoperate with other languages?
-%       1. Different languages, different runtimes and different **ecosystems** — https://unibo-spe.github.io/12-multiplatform/#/11 — https://unibo-spe.github.io/12-multiplatform/#/6
-%       2. The opposite approach: calling from the "super" language libraries from other languages (e.g. Scala <- Python libraries)
-%       3. Why choosing a language as a reference? The role of abstraction in software engineering
+\subsubsection{Scala.js}
 
-% How kotlin and scala deal with portability and abstraction gap
-%   2. The approach of Cazzola et. al (not consider multi-target language like kotlin and scala)
-%   3. Spark architecture?
+
+\subsubsection{Scala Native}
+
+Following the success of Scala.js, the Scala Native project moved their first steps in 2014 as a research project at EPFL with the goal of compiling Scala code directly to bare-metal machine code without the need for the JVM, making it suitable for resource-constrained environments where the overhead imposed by the JVM in terms of memory footprint and startup time cannot be tolerated.
+
+Scala Native is both an \textit{ahead of time} (AOT) compiler and standalone runtime.
+
+The AOT compiler translates Scala code into native machine code leveraging the LLVM toolchain \todo{cite LLVM}, a widely adopted modular compiler infrastructure for producing optimized machine code for multiple architectures. 
+%
+Compilation proceeds through a pipeline of stages, shown in \todo{ref figure}, performed after the Scala frontend compiler (responsible for parsing and type-checking it):
+
+\begin{itemize}
+    \item the first stage of the pipeline is performed by the \texttt{nscplugin} that, inspecting the abstract syntax tree, translates the Scala code into a strongly typed Native Intermediate Representation (NIR) consisting of a subset of LLVM IR instructions enriched with additional information to support Scala high level abstractions;
+    \item NIR files are then linked together with those generated from external libraries and optimized;
+    \item finally, the optimized NIR is translated to low-level LLVM instructions that are then compiled by the LLVM backend to platform-specific machine code.
+\end{itemize}
+
+
+%
+
+
+
+
+
+
+
+% Why choosing Scala as a language as a reference? The role of abstraction in software engineering
