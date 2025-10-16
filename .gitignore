@@ -278,5 +278,8 @@ TSWLatexianTemp*
 # Makeindex log files
 *.lpz
 
+# Draw.io diagrams schemas' backup files
+*.bkp
+
 # MacOS
 .DS_Store
