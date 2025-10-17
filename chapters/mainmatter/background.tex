@@ -173,19 +173,44 @@ Despite other languages, Scala cross-platform capabilities are not tied to the l
 
 Scala.js is the project, introduced in 2013 at EPFL, meant to compile Scala code to JavaScript with the goal of enabling developers to write rich web applications entirely in Scala and having them compiled to ready to run JavaScript code \cite{Doeraene-2025}.
 %
-Over the years Scala.js has matured into a stable project allowing to target both web browsers and backends JavaScript environment, like Node.js, making it suitable for developing full-stack applications entirely in Scala.
+Over the years Scala.js has matured into a stable project allowing to target both web browsers and backends JavaScript environment, like Node.js, making it suitable for developing full-stack applications entirely in Scala, and, more recently, an experimental support for WebAssembly has been introduced \todo{cite}.
 
-Compilation to JavaScript is achieved via a pipeline of stages, here summarized, performed after the Scala frontend compiler have parsed and type-checked the Scala source code:
+Compilation to JavaScript is achieved via a pipeline of stages, shown in \Cref{fig:scala-js-compiler-pipeline}, performed after the Scala frontend compiler have parsed and type-checked the Scala source code:
 
 \begin{itemize}
     \item in the first stage the Scala.js compiler turns scala AST into an Intermediate Representation (IR) specifically designed to provide both portability and interoperability;
     \item then, IR files are linked together, type-checked and optimized;
-    \item finally, the optimized IR is compiled into a single \texttt{.[m]js} file containing the JavaScript code ready to be executed in any JavaScript environment, such as web browsers or Node.js.
+    \item finally, the optimized IR is compiled into a single \texttt{.[m]js} file containing the JavaScript code ready to be executed in any JavaScript environment.
 \end{itemize}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{resources/img/scala-js-pipeline.pdf}
+    \caption{Scala.js simplified compiler pipeline.}
+    \label{fig:scala-js-compiler-pipeline}
+\end{figure}
+
+The fact this compilation pipeline is attached to the standard Scala compiler allows to support whole Scala language, including all advanced features and abstractions.
 
 As for interoperability, Scala.js seamlessly integrates with existing JavaScript libraries and frameworks thanks to a dedicated interoperability layer that allows to both consume JavaScript APIs and expose Scala.js libraries to JavaScript code.
 %
-Thanks to that, Scala.js specific code can invoke JavaScript functions, manipulate DOM elements and interact with any library available in the JavaScript ecosystem through typed facades mapping JavaScript APIs to Scala.js types and abstractions.
+Scala.js specific code can, therefore, invoke JavaScript functions, manipulate DOM elements and interact with any library available in the JavaScript ecosystem, including Node.js standard library, through typed facades mapping JavaScript APIs to Scala.js types and abstractions.
+%
+Conversely, software products APIs can be exposed to JavaScript code by annotating Scala.js classes and methods instructing the compiler to generate the necessary bindings.
+%
+Unfortunately, the project doesn't support (and it is not intended to be supported in the future \todo{piè di pagina}) automatic generation of TypeScript type definitions from Scala.js APIs, which would greatly ease the consumption of Scala.js libraries from TypeScript code.
+%
+Moreover, to allow to reuse as much code as possible across the JVM and JavaScript platforms, both a subset of the Scala and Java standard libraries have been re-implemented to work natively in the JavaScript environment, providing (almost) equivalent semantics of their JVM counterparts: some difference in semantics are mostly due to the inherent difference between the two platforms (e.g., the fact only \texttt{Double}s are supported as numeric types in JavaScript) \cite{Doeraene-2025}.
+%
+A notable example of reusable standard library API is the Future-based concurrency model which, under the hood, impacts the JavaScript event-loop model, while exposing the same API available on the JVM platform.
+%
+Nevertheless, not all the JVM standard library can be ported, like all blocking I/O operations, which are not compatible with the asynchronous, non-blocking I/O model of JavaScript.
+%
+When designing shared-cross platform library, therefore, it is essential to carefully evaluate which parts of the code can be shared and which need to be platform-specific and guarantee that shared code relies only on cross-platform abstractions; for example, no blocking calls can be performed.
+
+Lastly, concerning performances, Scala.js is, currently, from 2.5 to 10 times slower than equivalent hand-written JavaScript version \cite{Doeraene-2025}.
+%
+However, there is considerable room for optimizations, as current results lack optimizations such as method inlining, which could significantly improve performance and bring it closer to native JavaScript speeds.
 
 \subsubsection{Scala Native}
 
@@ -207,7 +232,7 @@ Compilation proceeds, similarly to Scala.js, through a pipeline of stages, shown
 
 \begin{figure}
     \centering
-    \includegraphics[width=\textwidth]{resources/img/native-pipeline.pdf}
+    \includegraphics[width=\textwidth]{resources/img/scala-native-pipeline.pdf}
     \caption{Scala Native simplified compiler pipeline.}
     \label{fig:scala-native-compiler-pipeline}
 \end{figure}
