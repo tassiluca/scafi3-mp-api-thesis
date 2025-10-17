@@ -153,11 +153,11 @@ In this respect, striving to maximize code sharing, though it may require more e
 
 The other approach is the wrapper-based one and consist in writing the software product in a main platform and related language and the exposing its functionalities to other platforms and languages via a dedicated interoperability layer, typically implemented as a wrapper library, through \textit{Foreign Function Interfaces} (FFI).
 %
-These interfaces requires dedicated runtime support: for example, many interpreted languages, such as Python, include mechanisms for executing extensions modules written in lower-level languages like C or C++ that are dynamically loaded into the high-level languages's virtual machine during execution \cite{Grimmer_2018}.
+These interfaces requires dedicated runtime support: for example, many interpreted languages, such as Python, include mechanisms for executing extensions modules written in lower-level languages like C or C++ that are dynamically loaded into the high-level languages's virtual machine during execution \cite{Grimmer-2018}.
 %
 During the years, automated binding generation tools have been developed to ease the creation of the interoperability layers.
 %
-One very famous example is the Simplified Wrapper and Interaface Generator (SWIG) \todo{cite}, which can generate language bindings from C and C++ libraries' headers files to a variety of high-level languages, including Python, Java, JavaScript, Ruby and others.
+One very famous example is the Simplified Wrapper and Interface Generator (SWIG) \todo{cite}, which can generate language bindings from C and C++ libraries' headers files to a variety of high-level languages, including Python, Java, JavaScript, Ruby and others.
 %
 Differently from the cross-compilation approach, in the absence of automated tools, the wrapper libraries need to be manually implemented, which can be a complex and error-prone task.
 
@@ -171,6 +171,21 @@ Despite other languages, Scala cross-platform capabilities are not tied to the l
 
 \subsubsection{Scala.js}
 
+Scala.js is the project, introduced in 2013 at EPFL, meant to compile Scala code to JavaScript with the goal of enabling developers to write rich web applications entirely in Scala and having them compiled to ready to run JavaScript code \cite{Doeraene-2025}.
+%
+Over the years Scala.js has matured into a stable project allowing to target both web browsers and backends JavaScript environment, like Node.js, making it suitable for developing full-stack applications entirely in Scala.
+
+Compilation to JavaScript is achieved via a pipeline of stages, here summarized, performed after the Scala frontend compiler have parsed and type-checked the Scala source code:
+
+\begin{itemize}
+    \item in the first stage the Scala.js compiler turns scala AST into an Intermediate Representation (IR) specifically designed to provide both portability and interoperability;
+    \item then, IR files are linked together, type-checked and optimized;
+    \item finally, the optimized IR is compiled into a single \texttt{.[m]js} file containing the JavaScript code ready to be executed in any JavaScript environment, such as web browsers or Node.js.
+\end{itemize}
+
+As for interoperability, Scala.js seamlessly integrates with existing JavaScript libraries and frameworks thanks to a dedicated interoperability layer that allows to both consume JavaScript APIs and expose Scala.js libraries to JavaScript code.
+%
+Thanks to that, Scala.js specific code can invoke JavaScript functions, manipulate DOM elements and interact with any library available in the JavaScript ecosystem through typed facades mapping JavaScript APIs to Scala.js types and abstractions.
 
 \subsubsection{Scala Native}
 
@@ -182,7 +197,7 @@ Scala Native is both an \textit{ahead of time} (AOT) compiler and standalone run
 
 The AOT compiler translates Scala code into native machine code leveraging the LLVM toolchain \todo{cite LLVM}, a widely adopted modular compiler infrastructure for producing optimized machine code for multiple architectures. 
 %
-Compilation proceeds through a pipeline of stages, shown in \Cref{fig:scala-native-compiler-pipeline}, performed after the Scala frontend compiler (responsible for parsing and type-checking it) \todo{cite here or in image}:
+Compilation proceeds, similarly to Scala.js, through a pipeline of stages, shown in \Cref{fig:scala-native-compiler-pipeline}, performed after the Scala frontend compiler producing IR from which the final machine code is generated \todo{cite here or in image}:
 
 \begin{itemize}
     \item the first stage of the pipeline is performed by the \texttt{nscplugin} that, inspecting the abstract syntax tree, translates the Scala code into a strongly typed Native Intermediate Representation (NIR) consisting of a subset of LLVM IR instructions enriched with additional information to support Scala high level abstractions;
@@ -204,8 +219,8 @@ Most notable features provided by the runtime are:
 \begin{itemize}
     \item a configurable garbage collectore for automatic memory management of heap-allocated Scala objects;
     \item a threading model based on native OS threads that maps Scala's concurrency abstractions to the underlying platform capabilities trying to reach maximum compatibility in semantics with the JVM;
-    \item foreign function and a subset of C interoperability primitives to interface with C or C++ existing libraries and native code, allowing to expose Scala Native libraries to native interoperable languages;
-    \item a subset of the Scala and Java standard libraries re-implemented to work natively. In this way the developer can leverage familiar APIs and use existing Scala and Java standard libraries like it was running on the JVM with the same semantics (Scala Native consider, indeed, every difference in semantics between the two platforms as a bug).
+    \item foreign function and a subset of C interoperability primitives to interface with C or C++ existing libraries and native code and allowing to expose Scala Native libraries to native interoperable languages;
+    \item majority of the Scala and Java standard libraries re-implemented to work natively. In this way the developer can leverage familiar APIs and use existing Scala and Java standard libraries like it was running on the JVM with the same semantics (Scala Native consider, indeed, every difference in semantics between the two platforms as a bug).
 \end{itemize}
 
 Concerning the supported architectures and operating systems, Scala Native can target AMD64 (x86-64) and ARM64 (aarch64) architectures on Linux, macOS and Windows operating systems, also thanks to cross-compilation support \todo{what is it?}.
