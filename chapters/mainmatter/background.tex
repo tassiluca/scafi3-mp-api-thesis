@@ -5,11 +5,9 @@ This chapter aims to provide the reader the theoretical background behind the co
 
 \section{The role of portability in Software Engineering}
 
-\todo{Environment and platform treated as synonyms?}
-
 Software \textbf{portability} is, according to the ISO/IEC standard, the quality attribute that measures the \enquote{degree of effectiveness and efficiency with which a system, product or component can be transferred from one hardware, software or other operational or usage environment to another} \cite{iso-25010}.
 %
-Put differently, a software artifact is portable, i.e. it exhibits portability, when the cost required to design and implement it for porting to multiple platforms does not exceed the cost of re-development for each of them.
+Put differently, a software artifact is portable, i.e. \ it exhibits portability, when the cost required to design and implement it for porting to multiple platforms does not exceed the cost of re-development for each of them.
 %
 Portability is, therefore, a matter of engineering a software product to maximize the reusability of their components, guaranteeing the same behavior and functionalities across the different targeted platforms, where the concept of platform is wide and embraces hardware architecture, operating system, runtime upon which the software is executed and, more generally, public interfaces on which application software depends \cite{Sommerville2020}.
 %
@@ -22,88 +20,78 @@ span over multiple levels \cite{mooney-2004} \todo{quantifiable? how?}:
 
 \begin{itemize}
     \item \textbf{source portability} occurs when the software is adapted to the underlying platform by changing the source code, which is then recompiled for the target platform. This is the most common form of portability;
-    \item \textbf{binary portability} involves porting software in its compiled binary format. This is the most advantageous form of portability, though it is also the most difficult to achieve and is limited to specific cases, for very similar environments;
-    \item \textbf{intermediate-level portability} is a middle-ground between source and binary portability and entails porting an intermediate representation of the software sitting between the source and binary code. This is the case of modern languages with multi-target compilation \todo{cite next section where this is explained}.
+    \item \textbf{binary portability} involves porting software in its compiled binary format. This is the most advantageous form of portability, though it is also the most difficult to achieve and is limited to specific cases;
+    \item \textbf{intermediate-level portability} is a middle-ground between source and binary portability and entails porting an intermediate representation of the software, sitting between the source and binary code. This is the case of modern languages with multi-target compilation, as discussed in \Cref{sec:approaches-to-multi-platform-and-polyglotism}.
 \end{itemize}
 
-Portability has always been a relevant concern in software engineering since the early days of computing when the landscape of hardware architectures and operating systems was extremely fragmented and heterogneous and software was completely tied to the underlying platform, requiring full rewrites when moving to a different one \todo{cite}.
+Portability has always been a relevant concern in software engineering since the early days of computing when the landscape of hardware architectures and operating systems was extremely fragmented and heterogeneous and software was tightly coupled to the underlying platform, requiring full rewrites when moving to a different one \todo{cite?}.
 %
-Over time the situation has profoundly changed thanks to a series of innovations and efforts: from the standardization of operating systems interfaces, such as POSIX, to the widespread introduction of increasingly higher-level programming languages and the diffusion of modern paradigms, like the World Wide Web, that inherently fostered portability \todo{cite}.
+Over time, the situation has profoundly changed thanks to a series of innovations and efforts: from the standardization of operating systems interfaces, such as POSIX, to the widespread introduction of increasingly higher-level programming languages and the diffusion of modern paradigms, like the World Wide Web, that inherently fostered portability.
 %
-Undoubtedly, two of the most influential shifts in this context are represented by the C language's compilation-based portability model and the subsequent virtual machine architectures, such as the Java Virtual Machine (JVM) and the Common Language Runtime (CLR) for .NET.
+From a programming language perspective, one influential shift addressing portability has been the move from compilation-based approaches to virtual machine-based ones, such as the Java Virtual Machine (JVM) and the Common Language Runtime (CLR) for .NET \todo{cite}.
 %
-Despite being very different in nature, both these paradigms shifts lays their foundations in another cornerstone of software engineering: \textbf{abstraction}.
+These emerged to overcome the limitations of traditional compilation-based approaches, like C and C++, that require developers to create and maintain separate binaries, and sometimes even separate source code versions, for each target platform $-$ a costly and time-consuming process.
 %
-C addressed portability by abstracting hardware details through its type system, standard library and abstract machine semantics while preserving a direct mapping to machine operations and low-level control.
-%
-Despite it's early success, compilation-based portability faced inherint limitations: developers needs to create and mantain separate binaries for each target platform, which is a costly and painful process.
-%
-Virtual machine approaches emerged then addressing these challenges by introducing an additional abstraction layer between the software and the underlying platform: rather than compiling to platform-specific machine code, software is compiled to an intermediate bytecode that can be interpreted or dynamically compiled by a platform-specific runtime.
+Virtual machine approaches addressed these challenges through an additional abstraction layer, decoupling the software from the underlying platform by compiling programs into an intermediate representation, like the Java bytecode, that is then executed by a platform-specific runtime.
 %
 This approach has found widespread adoption, with the JVM and CLR becoming the backbone of entire ecosystems of modern languages and frameworks and enabling the famous \enquote{write once, run anywhere} paradigm $-$ the promise that applications would be portable across any platform supporting the respective runtime.
 %
-However, the technical reality proved to be more nuanced: different virtual machine implementations can exhibit subtle differences in behaviour and also system libraries can vary significantly across platforms, requiring additional adaptation efforts.
+However, the technical reality proved to be more nuanced: different virtual machine implementations can exhibit subtle differences in behavior and also system libraries can vary significantly across platforms, requiring additional adaptation efforts \todo{cite}.
 %
-Contemporary portability solutions continue this abstraction progression, with modern languages like Kotlin and Scala, but also Gleam, Rust and others, supporting multi-target compilation to various platforms, including JVM, JavaScript, WebAssembly and native binaries using intermediate representations. \todo{Rust?? Gleam?? specify better relation with JVM}
-
-However, despite the advancements in portability techniques and tools, achieving true portability remains a complex challenge as it requires ensuring consistent behavior across diverse platforms and environments that often differ greatly in their capabilities and constraints.
+Moreover, the embedded systems and IoT domains demonstrate that virtual machines have practical limits in contexts where resource-constrained devices cannot support their overhead or large bundles, necessitating low-level compilation-based approaches.
 %
-To illustrate, consider the differences between most common platforms in terms of threading models.
+Contemporary portability solutions continue this abstraction progression, with modern languages supporting multi-target compilation to various platforms, including JVM, JavaScript, WebAssembly and native binaries using intermediate representations.
+
+However, despite the advancements in portability techniques and tools, achieving true portability remains a complex challenge as it requires ensuring consistent behavior across diverse platforms and environments that often differ in their capabilities and constraints.
 %
-Nowadays, most applications are designed to take advantage of multi-core architectures and, therefore, heavily rely on concurrency to speed up computations or to handle multiple tasks simultaneously.
+To illustrate, consider the differences between platforms in terms of concurrency models.
 %
-Nevertheless, not all platforms support these features equally.
+Nowadays, most applications are designed to take advantage of multicore architectures and, therefore, heavily rely on concurrency to speed up computations or to handle multiple tasks simultaneously.
 %
-For instance, the Node JS platform, widely used for server-side and web applications, is based on a single-threaded event loop model that makes of asynchronous, non-blocking I/O operations its core feature.
+Nevertheless, not all platforms support this feature equally.
 %
-While this model is highly efficient for I/O-bound tasks, it can pose significant challenges for CPU-bound operations that require parallel processing.
-%
-Also the Python platform, despite having multi-threading support, in CPU-bound tasks is limited by the Global Interpreter Lock (GIL), which allows only one thread to execute Python bytecode at a time, effectively serializing multi-threaded CPU-bound operations.
+For instance, the Node JS platform, widely used for server-side and web applications, is based on a single-threaded event loop model where blocking operations cannot be performed, requiring a completely different paradigm style based on Continuation-Passing Style (CPS) and asynchronous programming.
 
-\todo{does it affect portability? or just performance?}
-
-Moreover, the embedded systems and IoT domains demonstrate that abstraction has practical limits in contexts where resource-constrained devices with minimal RAM and flash memory cannot support virtual machine overhead or large bundles, necessitating low-level compilation-based approaches.
-
-\todo{Move above?}
-
-Despite the challenges, portability remains a crucial aspect of modern software engineering, driven by the need to reach heterogeneous infrastructures and adapt to the rapidly evolving technological landscape, reducing for the developers the burden of maintaining or re-implementing software for different platforms, which often leads to fragmentation, inconsistencies between the different versions and increased maintenance costs.
-
-All of this at what cost?
-
-Portability tremendously impacts the whole software lifecycle, from design to release and maintenance.
+Such fundamental differences in platform capabilities are concern permeating all stages of the software lifecycle, from design to release, requiring careful consideration.
 
 \vspace{0.5em}
 \noindent
 \textbf{Design and implementation.}
 %
-When designing a new software product the information about the targeted platforms is an essential input for the architect and the designer as they need to take into account the constraints and capabilities of the different environments in which the software will integrate with the primary goal of reducing the \textbf{abstraction gap}, i.e., the space among the domain problem to be faced and the abstractions and capabilities offered by a platform \todo{cite}.
+When designing a new software product the information about the targeted platforms is an essential input for the architect and the designer as they need to consider the constraints and capabilities of the different environments in which the software will integrate with the primary goal of reducing the \textbf{abstraction gap}, i.e., the space among the domain problem and the abstractions and capabilities offered by a platform \todo{cite}.
 %
-The greater the abstraction gap is, the more challenging it becomes to implement the required functionalities in a clean, well structured and maintainable way.
+The greater the abstraction gap is, the more challenging it becomes to implement the required functionalities in a clean, well-structured and maintainable way.
 %
-In this context, the maturity of the ecosystem of the targeted platform and the availability of libraries and frameworks may reduce significantly the abstraction gap and, therefore, undoubtedly influence the platform choice.
+In this context, the maturity of a platform's ecosystem in terms of libraries and frameworks availability significantly reduce the abstraction gap developers must bridge, influencing the platform choice.
 %
-This has a great impact also during the implementation, as the availability of maintained, well-tested and performing libraries and frameworks allows developers to focus on the core functionalities of the application and reuse existing components rather than re-implementing them from scratch, with all the drawbacks in terms of development time, costs and potential bugs that this entails.
+During implementation, mature ecosystems allow developers to leverage well-tested components enabling them to focus on the core business logic rather than re-implementing them from scratch, with all the drawbacks in terms of development time, costs and potential bugs that this entails.
 
 For example, if a software product requires advanced data analysis and machine learning capabilities, targeting a platform with a rich ecosystem of libraries and frameworks in this domain, such as Python, would be a wise choice.
 
-(from \cite{doeraene-2018} "In practice, even if the language itself is portable, unless the ecosystem follows suit and publishes portable libraries, it remains difficult to do any meaningful job spanning several runtimes.")
+This is particularly relevant when targeting multiple platforms, as the abstraction gap may be significantly higher with respect to a single platform scenario.
+%
+As Doeraene notes \cite{doeraene-2018}, portability is not enough: even if a language is portable, unless the ecosystem publishes portable libraries, it remains difficult to develop applications spanning multiple runtimes for their high costs.
 
 \vspace{0.5em}
 \noindent
 \textbf{Testing.}
 %
-Having a multi-platform stack significantly impacts the testing strategy since the artifacts need to be tested on each of the targeted platforms to ensure that they behave correctly and consistently across them.
+Having a multi-platform stack significantly impacts the testing strategy, as artifacts need to be tested on each of the targeted platforms to ensure they behave correctly and consistently across them.
+%
+Furthermore, different architectures may behave differently under the same platform (e.g. ARM vs. x86 in native execution), requiring additional testing efforts to cover all the supported architectures.
 
 \vspace{0.5em}
 
 \noindent
 \textbf{Release.}
 %
-Releasing a multi-platform software product is much more complex due to the fact every platform has its own conventions and requirements for packaging, distributing and deploying software.
+Releasing a multi-platform software product introduces significant complexity, as each platform has its own conventions and requirements for packaging, distributing, versioning and deployment.
 %
-For example, JVM-based artifacts are distributed as JAR via Maven central or other Maven repositories, JavaScript applications are often bundled using tools like Webpack and distributed via npm, while Python packages are typically distributed as wheels via PyPI.
-%
-Each of these release platforms have different policies and requirements in terms of publishing and versioning that need to be properly addressed.
+For example, JVM-based artifacts are distributed as JAR via Maven central or similar repositories, JavaScript applications are often bundled using tools like Webpack and distributed via npm, while Python packages are typically distributed as wheels via PyPI \todo{links?}.
+
+\vspace{0.5em}
+
+Despite the challenges, portability remains a crucial aspect of modern software engineering, driven by the need to reach heterogeneous infrastructures and adapt to the rapidly evolving technological landscape, reducing for the developers the burden of maintaining or re-implementing software for different platforms, which often leads to fragmentation, inconsistencies between the different versions and increased maintenance costs.
 
 \section{Language interoperability}
 
@@ -132,6 +120,7 @@ However, the key point about interoperability is that the features must be compl
 This ensures to be able to fully leverage the host language ecosystem and, therefore, to integrate seamlessly with other libraries and frameworks.
 
 \section{Approaches to multi-platform and polyglotism}
+\label{sec:approaches-to-multi-platform-and-polyglotism}
 
 Industrial frameworks that have achieved maturity and widespread adoption in addressing multi-platform development and polyglotism can be classified in \textit{cross-compilation} and \textit{wrapper-based} approaches.
 
