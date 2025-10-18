@@ -99,21 +99,21 @@ Portability is only one side of the coin.
 %
 Orthogonally to the platform dimension, language interoperability is equally important as it refers to the ability to communicate with other languages on each targeted platform, guaranteeing uniformity in semantics across them \cite{doeraene-2018}.
 %
-Having portability without interoperability is of limited practical use: while portability make it possible to cross-compile the artifacts for different platforms, the lack of interoperability with the host platform APIs and ecosystem's libraries would make the software product isolated and unable to interact with the surrounding ecosystem.
+Having portability without interoperability is of limited practical use: while portability make it possible to use software artifacts in different platforms, the lack of interoperability with the host platform APIs and ecosystem's libraries would make the software product isolated and unable to interact with the surrounding ecosystem.
 %
-For example, developing an application targeting the JavaScript platform without being able to access JavaScript platform-specific functionalities, such as manipulating the DOM, handling user events or performing filesystem operations leveraging Node.js API would make portability largely theoretical rather than practical.
+For example, developing an application targeting the JavaScript platform without being able to access JavaScript platform-specific functionalities, such as manipulating the DOM, handling user events or performing file system operations leveraging Node.js API would make portability largely theoretical rather than practical.
 
-Interoperability, however, is not only the requirement of being able to access platform-specific APIs, but, rather, as library developers, the commitment to expose the library APIs to the platform native language of reference.
+Interoperability, however, extends beyond accessing platform-specific APIs: it entails the responsibility for library developers to expose the library APIs to the platform native language.
 %
-This enables the widest possible audience of developers to use the library and, most importantly, to let them integrate it with the full power of the underlying platform ecosystem.
+This enables the widest possible developers' audience to use the library and, most importantly, to let them integrate it with the full power of the underlying platform ecosystem.
 %
 This is particularly relevant because the various platforms ecosystems have been evolved in silos over the years, they often lack interoperability with each other, and each of them is focused and optimized for specific domains and use cases.
 %
 Language interoperability therefore allows, together with portability, developers to choose the best platform and, consequently, the best library API for their specific needs, minimizing the risk of incurring in incompatibility issues.
 
-Crafting a "good" interoperable layer is a complex task whose main difficulty lays in the mismatch between the run-time semantics and abstractions of the languages involved and that includes, among others, dealing with different memory management strategies (e.g., garbage collection vs manual memory management), type systems (e.g., static vs dynamic typing, strong vs weak typing), error handling mechanisms (e.g., exceptions vs error codes). 
+Crafting a ``good'' language-interoperable layer is a complex task whose main difficulty lays in the mismatch between the run-time semantics and abstractions of the languages involved and that includes, among others, dealing with different memory management strategies (e.g., garbage collection vs manual memory management), type systems (e.g., static vs dynamic typing, strong vs weak typing) and error handling mechanisms (e.g., exceptions vs error codes). 
 %
-Sometimes, these differences cannot be fully bridged and some features can be dropped or limited if they cannot be mapped to the target language and are not essential for the library's core functionalities, but this must be carefully evaluated on a case-by-case basis.
+Sometimes, these differences cannot be fully bridged: some features can be dropped or limited if they cannot be mapped to the target language and are not essential for the library's core functionalities, but this must be carefully evaluated on a case-by-case basis.
 %
 However, the key point about interoperability is that the features must be complete with the respect to the semantics of the host language \cite{doeraene-2018}.
 %
@@ -130,7 +130,7 @@ In this approach the source language itself is designed to provide both portabil
 %
 Despite having a single super language that can be cross-compiled to different targets, that doesn't mean that all the code can be shared across all the platforms.
 %
-Thus, when embracing this approach the main goal is to design the software product to maximize the reusability of its components across the different targeted platforms and fill the abstraction gap with the underlying platforms via  minimal platform-specific code leveraging, whenever possible, cross-platform libraries.
+Thus, when embracing this approach the main goal is to design the software product to maximize the reusability of its components across the different targeted platforms and fill the abstraction gap with the underlying platforms via minimal platform-specific code leveraging, whenever possible, cross-platform libraries.
 %
 Examples of cross-platform languages include, among others, Kotlin, Scala and Flutter/Dart \todo{cite}.
 %
@@ -140,7 +140,7 @@ Indeed, typically, most of the core business logic $-$ the part of the software 
 %
 In this respect, striving to maximize code sharing, though it may require more effort initially, pays off in the long run as it is synonymous of better design, with all the benefits that this entails in terms of software engineering.
 
-The other approach is the wrapper-based one and consist in writing the software product in a main platform and related language and the exposing its functionalities to other platforms and languages via a dedicated interoperability layer, typically implemented as a wrapper library, through \textit{Foreign Function Interfaces} (FFI).
+The other approach is the wrapper-based one and consist in writing the software product in a main platform and related language and then exposing its functionalities to other platforms and languages via a dedicated interoperability layer, typically implemented as a wrapper library, through \textit{Foreign Function Interfaces} (FFI).
 %
 These interfaces requires dedicated runtime support: for example, many interpreted languages, such as Python, include mechanisms for executing extensions modules written in lower-level languages like C or C++ that are dynamically loaded into the high-level languages's virtual machine during execution \cite{Grimmer-2018}.
 %
@@ -156,7 +156,7 @@ Scala is a modern multi-paradigm programming language seamlessly integrating bot
 %
 Originally designed to run on the Java Virtual Machine (JVM), Scala has evolved to support also native and JavaScript platforms making it a cross-platform language.
 %
-Despite other languages, Scala cross-platform capabilities are not tied to the language itself, but rather are demanded by dedicated projects, each with its own compiler plugins and toolchains that extends the Scala compiler and ecosystem.
+Despite other languages, Scala cross-platform capabilities are not tied to the language itself, but rather are demanded by dedicated projects, each with its own compiler plugins and toolchains that extend the Scala compiler and ecosystem.
 
 \subsubsection{Scala.js}
 
@@ -167,7 +167,7 @@ Over the years Scala.js has matured into a stable project allowing to target bot
 Compilation to JavaScript is achieved via a pipeline of stages, shown in \Cref{fig:scala-js-compiler-pipeline}, performed after the Scala frontend compiler have parsed and type-checked the Scala source code:
 
 \begin{itemize}
-    \item in the first stage the Scala.js compiler turns scala AST into an Intermediate Representation (IR) specifically designed to provide both portability and interoperability;
+    \item The first stage the Scala.js compiler turns Scala AST into an Intermediate Representation (IR) specifically designed to provide both portability and interoperability;
     \item then, IR files are linked together, type-checked and optimized;
     \item finally, the optimized IR is compiled into a single \texttt{.[m]js} file containing the JavaScript code ready to be executed in any JavaScript environment.
 \end{itemize}
@@ -179,23 +179,23 @@ Compilation to JavaScript is achieved via a pipeline of stages, shown in \Cref{f
     \label{fig:scala-js-compiler-pipeline}
 \end{figure}
 
-The fact this compilation pipeline is attached to the standard Scala compiler allows to support whole Scala language, including all advanced features and abstractions.
+The fact this compilation pipeline is attached to the standard Scala compiler allows supporting whole Scala language, including all advanced features and abstractions.
 
-As for interoperability, Scala.js seamlessly integrates with existing JavaScript libraries and frameworks thanks to a dedicated interoperability layer that allows to both consume JavaScript APIs and expose Scala.js libraries to JavaScript code.
+As for interoperability, Scala.js seamlessly integrates with existing JavaScript libraries and frameworks, thanks to a dedicated interoperability layer that allows to both consume JavaScript APIs and expose Scala.js libraries to JavaScript code.
 %
 Scala.js specific code can, therefore, invoke JavaScript functions, manipulate DOM elements and interact with any library available in the JavaScript ecosystem, including Node.js standard library, through typed facades mapping JavaScript APIs to Scala.js types and abstractions.
 %
 Conversely, software products APIs can be exposed to JavaScript code by annotating Scala.js classes and methods instructing the compiler to generate the necessary bindings.
 %
-Unfortunately, the project doesn't support (and it is not intended to be supported in the future \todo{piè di pagina}) automatic generation of TypeScript type definitions from Scala.js APIs, which would greatly ease the consumption of Scala.js libraries from TypeScript code.
+Unfortunately, the project doesn't support automatic generation of TypeScript type definitions from Scala.js APIs (and it is not intended to be supported in the future \todo{piè di pagina}), which would greatly ease the consumption of Scala.js libraries from TypeScript code.
 %
-Moreover, to allow to reuse as much code as possible across the JVM and JavaScript platforms, both a subset of the Scala and Java standard libraries have been re-implemented to work natively in the JavaScript environment, providing (almost) equivalent semantics of their JVM counterparts: some difference in semantics are mostly due to the inherent difference between the two platforms (e.g., the fact only \texttt{Double}s are supported as numeric types in JavaScript) \cite{Doeraene-2025}.
+Moreover, to allow reusing as much code as possible across the JVM and JavaScript platforms, both a subset of the Scala and Java standard libraries have been re-implemented to work natively in the JavaScript environment, providing (almost) equivalent semantics of their JVM counterparts: some difference in semantics are mostly due to the inherent difference between the two platforms (e.g., the fact only \texttt{Double}s are supported as numeric types in JavaScript) \cite{Doeraene-2025}.
 %
 A notable example of reusable standard library API is the Future-based concurrency model which, under the hood, impacts the JavaScript event-loop model, while exposing the same API available on the JVM platform.
 %
 Nevertheless, not all the JVM standard library can be ported, like all blocking I/O operations, which are not compatible with the asynchronous, non-blocking I/O model of JavaScript.
 %
-When designing shared-cross platform library, therefore, it is essential to carefully evaluate which parts of the code can be shared and which need to be platform-specific and guarantee that shared code relies only on cross-platform abstractions; for example, no blocking calls can be performed.
+When designing shared-cross platform library, therefore, it is essential to carefully evaluate which parts of the code can be shared and which need to be platform-specific and guarantee that shared code relies only on cross-platform abstractions; for example, no blocking calls can be performed. \todo{move after?}
 
 Lastly, concerning performances, Scala.js is, currently, from 2.5 to 10 times slower than equivalent hand-written JavaScript version \cite{Doeraene-2025}.
 %
@@ -214,7 +214,7 @@ The AOT compiler translates Scala code into native machine code leveraging the L
 Compilation proceeds, similarly to Scala.js, through a pipeline of stages, shown in \Cref{fig:scala-native-compiler-pipeline}, performed after the Scala frontend compiler producing IR from which the final machine code is generated \todo{cite here or in image}:
 
 \begin{itemize}
-    \item the first stage of the pipeline is performed by the \texttt{nscplugin} that, inspecting the abstract syntax tree, translates the Scala code into a strongly typed Native Intermediate Representation (NIR) consisting of a subset of LLVM IR instructions enriched with additional information to support Scala high level abstractions;
+    \item The first stage of the pipeline is performed by the \texttt{nscplugin} that, inspecting the abstract syntax tree, translates the Scala code into a strongly typed Native Intermediate Representation (NIR) consisting of a subset of LLVM IR instructions enriched with additional information to support Scala high level abstractions;
     \item NIR files are then linked together with those generated from external libraries and optimized;
     \item finally, the optimized NIR is translated to low-level LLVM instructions that are then compiled by the LLVM backend to platform-specific machine code.
 \end{itemize}
@@ -231,13 +231,13 @@ Other than the compiler itself, Scala Native includes a lightweight runtime laye
 Most notable features provided by the runtime are:
 
 \begin{itemize}
-    \item a configurable garbage collectore for automatic memory management of heap-allocated Scala objects;
-    \item a threading model based on native OS threads that maps Scala's concurrency abstractions to the underlying platform capabilities trying to reach maximum compatibility in semantics with the JVM;
+    \item a configurable garbage collector for automatic memory management of heap-allocated Scala objects;
+    \item a threading model, based on native OS threads, that maps Scala's concurrency abstractions to the underlying platform capabilities trying to reach maximum compatibility in semantics with the JVM;
     \item foreign function and a subset of C interoperability primitives to interface with C or C++ existing libraries and native code and allowing to expose Scala Native libraries to native interoperable languages;
-    \item majority of the Scala and Java standard libraries re-implemented to work natively. In this way the developer can leverage familiar APIs and use existing Scala and Java standard libraries like it was running on the JVM with the same semantics (Scala Native consider, indeed, every difference in semantics between the two platforms as a bug).
+    \item most of the Scala and Java standard libraries re-implemented to work natively. In this way the developer can leverage familiar APIs and use existing Scala and Java standard libraries like it was running on the JVM with the same semantics (Scala Native consider, indeed, every difference in semantics between the two platforms as a bug).
 \end{itemize}
 
-Concerning the supported architectures and operating systems, Scala Native can target AMD64 (x86-64) and ARM64 (aarch64) architectures on Linux, macOS and Windows operating systems, also thanks to cross-compilation support \todo{what is it?}.
+Concerning the supported architectures and operating systems, Scala Native can target AMD64 (\texttt{x86-64}) and ARM64 (\texttt{aarch64}) architectures on Linux, macOS and Windows operating systems, also thanks to cross-compilation support \todo{what is it?}.
 %
 This covers the vast majority of modern desktop and server environments, including some System-on-Chip (SoC) architectures, like Raspberry Pi devices.
 %
@@ -247,14 +247,10 @@ Moreover, with the 0.5 release, Scala Native introduced experimental support for
 %
 Mobile platforms (such as Apple devices) and microcontroller architectures (like ESP32 architecture) are not supported: the first due to the lack of support for Objective-C or Swift interoperability, which are essential for iOS and macOS development, and the latter because of the limited resources of these devices.
 %
-While the first limitation could be overcome in the future, the second will be hardly addressed because of the usage of limited or not fully mature LLVM support and the fact that compiled executable include a runtime layer that, alone, requires a few megabytes of memory that typically microcontrollers cannot accomodate.
+While the first limitation could be overcome in the future, the second will hardly be addressed because of the usage of limited or not fully mature LLVM support and the fact that compiled executable include a runtime layer that, alone, requires a few megabytes of memory that typically microcontrollers cannot accommodate.
 
 \vspace{1em}
 
 \todo{In the end remember to discuss adoption of cross-platform libraries in the Scala ecosystem.}
 
 \todo{The role of C as an interoperability lingua franca.}
-
-
-
-% Why choosing Scala as a language as a reference? The role of abstraction in software engineering
