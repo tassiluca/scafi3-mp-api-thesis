@@ -184,15 +184,13 @@ Scala.js-specific code can, therefore, invoke JavaScript functions, manipulate D
 %
 Conversely, software products APIs can be exposed to JavaScript code by annotating Scala.js classes and methods, instructing the compiler to generate the necessary bindings.
 %
-Unfortunately, the project does not support automatic generation of TypeScript type definitions from Scala.js APIs, which would greatly facilitate the consumption of Scala.js libraries from TypeScript code (and there are no plans to support this in the future \footnote{\url{https://github.com/scala-js/scala-js/issues/3836\#issuecomment-551273036}}).
-%
 Moreover, to maximize code reuse across the JVM and JavaScript platforms, subsets of the Scala and Java standard libraries have been re-implemented to work natively in the JavaScript environment, providing (almost) equivalent semantics of their JVM counterparts: some differences in semantics are mainly due to the inherent distinctions between the two platforms (e.g., the fact only \texttt{Double}s are supported as numeric types in JavaScript) \cite{Doeraene-2025}.
 %
 A notable example of reusable standard library API is the Future-based concurrency model which, under the hood, impacts the JavaScript event-loop model while exposing the same API available on the JVM platform.
 %
 Nevertheless, not all the JVM standard library can be ported; for instance, blocking I/O operations are incompatible with the JavaScript's asynchronous, non-blocking I/O model.
 %
-When designing a cross-platform library, it is therefore essential to carefully evaluate which parts of the code can be shared and which need to be platform-specific, ensuring shared code relies only on cross-platform abstractions; for example, no blocking calls can be performed.
+When designing a cross-platform library, it is therefore essential to carefully evaluate which parts of the code can be shared and which need to be platform-specific, ensuring shared code relies only on cross-platform abstractions; for example, no blocking calls are performed.
 
 Lastly, concerning performances, Scala.js is currently from 2.5 to 10 times slower than equivalent handwritten JavaScript version \cite{Doeraene-2025}.
 %
@@ -204,7 +202,7 @@ Following the success of Scala.js, the Scala Native project moved their first st
 %
 Its goal is to compile Scala code directly to bare-metal machine code without the need for the JVM, making it suitable for resource-constrained environments where the overhead imposed by the JVM in terms of memory footprint and startup time cannot be tolerated.
 %
-Since it's 0.5 release published in 2024 with the introduction of native concurrency primitives, the project has reached a decent level of maturity and stability, making it viable for production use.
+Since its 0.5 release, published in 2024 with the introduction of native concurrency primitives, the project has reached a decent level of maturity and stability, making it viable for production use.
 
 Scala Native is both an \textit{ahead of time} (AOT) compiler and standalone runtime.
 
@@ -213,7 +211,7 @@ The AOT compiler translates Scala code into native machine code leveraging the L
 Compilation proceeds, similarly to Scala.js, through a pipeline of stages, shown in \Cref{fig:scala-native-compiler-pipeline}, performed after the Scala frontend compiler producing IR from which the final machine code is generated:
 
 \begin{itemize}
-    \item The first stage of the pipeline is performed by the \texttt{nscplugin} that, inspecting the abstract syntax tree, translates the Scala code into a strongly typed Native Intermediate Representation (NIR) consisting of a subset of LLVM IR instructions enriched with additional information to support Scala high level abstractions;
+    \item the first stage of the pipeline is performed by the \texttt{nscplugin} that, inspecting the abstract syntax tree, translates the Scala code into a strongly typed Native Intermediate Representation (NIR) consisting of a subset of LLVM IR instructions enriched with additional information to support Scala high level abstractions;
     \item NIR files are then linked together with those generated from external libraries and optimized;
     \item finally, the optimized NIR is translated to low-level LLVM instructions that are then compiled by the LLVM backend to platform-specific machine code.
 \end{itemize}
@@ -232,11 +230,11 @@ Most notable features provided by the runtime are:
 \begin{itemize}
     \item a configurable garbage collector for automatic memory management of heap-allocated Scala objects;
     \item a threading model, based on native OS threads, which maps Scala's concurrency abstractions to the underlying platform while striving to maintain maximum semantic compatibility with the JVM;
-    \item foreign function and a subset of C interoperability primitives to interface with existing C or C++ libraries and native code, as well as to expose Scala Native libraries to C code via annotations;
+    \item foreign function and a subset of C interoperability primitives to interface with existing C or C++ libraries and native code. Scala Native can also expose its libraries to C code via annotations, though currently only static object methods and properties (via accessor methods) can be exported.
     \item most of the Scala and Java standard libraries re-implemented to work natively with the same semantics (Scala Native treats any differences in semantics between the two platforms as a bug).
 \end{itemize}
 
-Concerning the supported architectures and operating systems, Scala Native can target AMD64 (\texttt{x86-64}) and ARM64 (\texttt{aarch64}) architectures on Linux, macOS and Windows operating systems, also thanks to cross-compilation support \todo{what is it?}.
+Concerning the supported architectures and operating systems, Scala Native can target AMD64 (\texttt{x86-64}) and ARM64 (\texttt{aarch64}) architectures on Linux, macOS and Windows operating systems, also thanks to cross-compilation support $-$ the ability to compile code for a different target architecture and/or OS than the one of the host machine where the compilation is performed.
 %
 This covers the vast majority of modern desktop and server environments, including some System-on-Chip (SoC) architectures, like Raspberry Pi devices.
 %
@@ -244,7 +242,7 @@ Experimental or partial support exists for FreeBSD, OpenBSD, and NetBSD, though 
 %
 Moreover, with the 0.5 release, Scala Native introduced experimental support for 32-bit architectures, like ARMv7.
 %
-Mobile platforms (such as Apple devices) and microcontroller architectures (like ESP32 architecture) are not supported: the first due to the lack of support for Objective-C or Swift interoperability, which are essential for iOS and macOS development, and the latter because of the limited resources of these devices.
+Mobile platforms (such as Apple devices) and microcontroller architectures (like ESP32 architecture) are not supported: the first due to the lack of support for Objective-C or Swift interoperability, required for accessing Apple's frameworks, and the latter because of the limited resources offered by these devices.
 %
 While the first limitation could be overcome in the future, the second will hardly be addressed because of the usage of limited or not fully mature LLVM support and the fact that compiled executable include a runtime layer that, alone, requires a few megabytes of memory that typically microcontrollers cannot accommodate.
 
