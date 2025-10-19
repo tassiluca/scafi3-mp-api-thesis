@@ -5,7 +5,7 @@ This chapter aims to provide the reader the theoretical background behind the co
 
 \section{The role of portability in Software Engineering}
 
-Software \textbf{portability} is, according to the ISO/IEC standard, the quality attribute that measures the \enquote{degree of effectiveness and efficiency with which a system, product or component can be transferred from one hardware, software or other operational or usage environment to another} \cite{iso-25010}.
+Software \textit{portability} is, according to the ISO/IEC standard, the quality attribute that measures the \enquote{degree of effectiveness and efficiency with which a system, product or component can be transferred from one hardware, software or other operational or usage environment to another} \cite{iso-25010}.
 %
 Put differently, a software artifact is portable, i.e. \ it exhibits portability, when the cost required to design and implement it for porting to multiple platforms does not exceed the cost of re-development for each of them.
 %
@@ -19,9 +19,9 @@ Portability
 span over multiple levels \cite{mooney-2004} \todo{quantifiable? how?}:
 
 \begin{itemize}
-    \item \textbf{source portability} occurs when the software is adapted to the underlying platform by changing the source code, which is then recompiled for the target platform. This is the most common form of portability;
-    \item \textbf{binary portability} involves porting software in its compiled binary format. This is the most advantageous form of portability, though it is also the most difficult to achieve and is limited to specific cases;
-    \item \textbf{intermediate-level portability} is a middle-ground between source and binary portability and entails porting an intermediate representation of the software, sitting between the source and binary code. This is the case of modern languages with multi-target compilation, as discussed in \Cref{sec:approaches-to-multi-platform-and-polyglotism}.
+    \item \textit{source portability} occurs when the software is adapted to the underlying platform by changing the source code, which is then recompiled for the target platform. This is the most common form of portability;
+    \item \textit{binary portability} involves porting software in its compiled binary format. This is the most advantageous form of portability, though it is also the most difficult to achieve and is limited to specific cases;
+    \item \textit{intermediate-level portability} is a middle-ground between source and binary portability and entails porting an intermediate representation of the software, sitting between the source and binary code. This is the case of modern languages with multi-target compilation, as discussed in \Cref{sec:approaches-to-multi-platform-and-polyglotism}.
 \end{itemize}
 
 Portability has always been a relevant concern in software engineering since the early days of computing when the landscape of hardware architectures and operating systems was extremely fragmented and heterogeneous and software was tightly coupled to the underlying platform, requiring full rewrites when moving to a different one \todo{cite?}.
@@ -58,7 +58,7 @@ Such fundamental differences in platform capabilities are concern permeating all
 \noindent
 \textbf{Design and implementation.}
 %
-When designing a new software product the information about the targeted platforms is an essential input for the architect and the designer as they need to consider the constraints and capabilities of the different environments in which the software will integrate with the primary goal of reducing the \textbf{abstraction gap}, i.e., the space among the domain problem and the abstractions and capabilities offered by a platform \todo{cite}.
+When designing a new software product the information about the targeted platforms is an essential input for the architect and the designer as they need to consider the constraints and capabilities of the different environments in which the software will integrate with the primary goal of reducing the \textit{abstraction gap}, i.e., the space among the domain problem and the abstractions and capabilities offered by a platform \todo{cite}.
 %
 The greater the abstraction gap is, the more challenging it becomes to implement the required functionalities in a clean, well-structured and maintainable way.
 %
@@ -97,27 +97,27 @@ Despite the challenges, portability remains a crucial aspect of modern software 
 
 Portability is only one side of the coin.
 %
-Orthogonally to the platform dimension, language interoperability is equally important as it refers to the ability to communicate with other languages on each targeted platform, guaranteeing uniformity in semantics across them \cite{doeraene-2018}.
+Orthogonally to the platform dimension, \textit{language interoperability} is equally important, as it refers to the ability to communicate with other languages on each targeted platform, guaranteeing uniformity in semantics across them \cite{doeraene-2018}.
 %
 Having portability without interoperability is of limited practical use: while portability make it possible to use software artifacts in different platforms, the lack of interoperability with the host platform APIs and ecosystem's libraries would make the software product isolated and unable to interact with the surrounding ecosystem.
 %
 For example, developing an application targeting the JavaScript platform without being able to access JavaScript platform-specific functionalities, such as manipulating the DOM, handling user events or performing file system operations leveraging Node.js API would make portability largely theoretical rather than practical.
 
-Interoperability, however, extends beyond accessing platform-specific APIs: it entails the responsibility for library developers to expose the library APIs to the platform native language.
+Interoperability, however, extends beyond accessing platform-specific APIs: it entails the responsibility for library developers to expose the library APIs to the platform's native language.
 %
 This enables the widest possible developers' audience to use the library and, most importantly, to let them integrate it with the full power of the underlying platform ecosystem.
 %
-This is particularly relevant because the various platforms ecosystems have been evolved in silos over the years, they often lack interoperability with each other, and each of them is focused and optimized for specific domains and use cases.
+This is particularly relevant because platform ecosystems have been evolved in silos over the years; they often lack interoperability with each other, and each of them is focused and optimized for specific domains and use cases.
 %
 Language interoperability therefore allows, together with portability, developers to choose the best platform and, consequently, the best library API for their specific needs, minimizing the risk of incurring in incompatibility issues.
 
-Crafting a ``good'' language-interoperable layer is a complex task whose main difficulty lays in the mismatch between the run-time semantics and abstractions of the languages involved and that includes, among others, dealing with different memory management strategies (e.g., garbage collection vs manual memory management), type systems (e.g., static vs dynamic typing, strong vs weak typing) and error handling mechanisms (e.g., exceptions vs error codes). 
+Crafting a ``good'' language-interoperable layer is a complex task whose main difficulty lies in the mismatch between the run-time semantics and abstractions of the involved languages; that includes, among others, dealing with different memory management strategies (e.g., garbage collection vs manual memory management), type systems (e.g., static vs dynamic typing, strong vs weak typing), and error handling mechanisms (e.g., exceptions vs error codes). 
 %
-Sometimes, these differences cannot be fully bridged: some features can be dropped or limited if they cannot be mapped to the target language and are not essential for the library's core functionalities, but this must be carefully evaluated on a case-by-case basis.
+Sometimes, these differences cannot be fully bridged: some features of the source language can be dropped or limited if they cannot be mapped to the target language and are not essential for the language ecosystem on that platform, but this must be carefully evaluated on a case-by-case basis.
 %
-However, the key point about interoperability is that the features must be complete with the respect to the semantics of the host language \cite{doeraene-2018}.
+For example, most of the runtime reflection capabilities available in JVM-based languages may not be fully supported when interoperating with other languages.
 %
-This ensures to be able to fully leverage the host language ecosystem and, therefore, to integrate seamlessly with other libraries and frameworks.
+However, the key point about interoperability is that the implemented features must be complete with respect to the semantics of the host language, ensuring compatibility with any library in its ecosystem \cite{doeraene-2018}.
 
 \section{Approaches to multi-platform and polyglotism}
 \label{sec:approaches-to-multi-platform-and-polyglotism}
@@ -126,29 +126,33 @@ Industrial frameworks that have achieved maturity and widespread adoption in add
 
 In the cross-compilation approach, the source code is written in a sort of \enquote{superset} language that is automatically compiled and/or transpiled to different platform-specific targets thanks to a dedicated toolchain, generating platform-specific artifacts.
 %
-In this approach the source language itself is designed to provide both portability and interoperability with each target platform and is referred as \textit{cross-platform language} \cite{doeraene-2018}.
+In this approach the source language itself is designed to provide both portability and interoperability with each target platform and is referred to as \textit{cross-platform language} \cite{doeraene-2018}.
 %
 Despite having a single super language that can be cross-compiled to different targets, that doesn't mean that all the code can be shared across all the platforms.
 %
-Thus, when embracing this approach the main goal is to design the software product to maximize the reusability of its components across the different targeted platforms and fill the abstraction gap with the underlying platforms via minimal platform-specific code leveraging, whenever possible, cross-platform libraries.
+Thus, when embracing this approach, the main goal is to design the software product to maximize the reusability of its components across the different targeted platforms and fill the abstraction gap with the underlying platforms via minimal platform-specific code leveraging, whenever possible, cross-platform libraries.
 %
 Examples of cross-platform languages include, among others, Kotlin, Scala and Flutter/Dart \todo{cite}.
 %
 The primary advantage of this approach is that it enables sharing a substantial portion of the codebase across different platforms.
 %
-Indeed, typically, most of the core business logic $-$ the part of the software that delivers the actual value $-$ since it is designed to be technologically agnostic can be for the most part, if not completely, shared across all the platforms.
+Indeed, when core business logic is designed to be technologically agnostic $-$ as best practices prescribe $-$ it can typically be, for the most part, if not completely, shared across all the platforms.
 %
-In this respect, striving to maximize code sharing, though it may require more effort initially, pays off in the long run as it is synonymous of better design, with all the benefits that this entails in terms of software engineering.
+In this respect, striving to maximize code sharing, though it may require more effort initially, pays off in the long run as it is synonymous with better design.
 
-The other approach is the wrapper-based one and consist in writing the software product in a main platform and related language and then exposing its functionalities to other platforms and languages via a dedicated interoperability layer, typically implemented as a wrapper library, through \textit{Foreign Function Interfaces} (FFI).
+The other approach is the wrapper-based one, which consists in developing the software product on a main platform and language, and exposing its functionalities to others via a dedicated interoperability layer, typically implemented as a wrapper library through \textit{Foreign Function Interfaces} (FFI).
 %
-These interfaces requires dedicated runtime support: for example, many interpreted languages, such as Python, include mechanisms for executing extensions modules written in lower-level languages like C or C++ that are dynamically loaded into the high-level languages's virtual machine during execution \cite{Grimmer-2018}.
+These interfaces require dedicated runtime support and often rely on C as a common interoperability \textit{lingua franca}.
 %
-During the years, automated binding generation tools have been developed to ease the creation of the interoperability layers.
+Due to its widespread use in interfacing with low-level operating system APIs and system libraries, C has become the protocol for cross-language interoperability.
 %
-One very famous example is the Simplified Wrapper and Interface Generator (SWIG) \todo{cite}, which can generate language bindings from C and C++ libraries' headers files to a variety of high-level languages, including Python, Java, JavaScript, Ruby and others.
+For example, many interpreted languages, such as Python, include mechanisms for executing extensions modules written in lower-level languages like C or C++, which are dynamically loaded into the high-level languages's virtual machine at runtime \cite{Grimmer-2018}.
 %
-Differently from the cross-compilation approach, in the absence of automated tools, the wrapper libraries need to be manually implemented, which can be a complex and error-prone task.
+Over the years, automated binding generation tools have been developed to simplify the creation of interoperability layers.
+%
+A well known example is the Simplified Wrapper and Interface Generator (SWIG) \cite{beazley-2003-swig}, which can generate language bindings from C and C++ header files to a variety of high-level languages, including Python, Java, JavaScript, Ruby and others.
+%
+Unlike the cross-compilation approach, in the absence of automated tools, wrapper modules must be implemented manually $-$ a process that can be complex and error-prone.
 
 \subsection{The case of Scala}
 
