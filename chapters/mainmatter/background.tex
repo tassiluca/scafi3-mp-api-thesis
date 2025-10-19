@@ -128,7 +128,7 @@ In the cross-compilation approach, the source code is written in a sort of \enqu
 %
 In this approach the source language itself is designed to provide both portability and interoperability with each target platform and is referred to as \textit{cross-platform language} \cite{doeraene-2018}.
 %
-Despite having a single super language that can be cross-compiled to different targets, that doesn't mean that all the code can be shared across all the platforms.
+Despite having a single super language that can be cross-compiled to different targets, that does not mean that all the code can be shared across all the platforms.
 %
 Thus, when embracing this approach, the main goal is to design the software product to maximize the reusability of its components across the different targeted platforms and fill the abstraction gap with the underlying platforms via minimal platform-specific code leveraging, whenever possible, cross-platform libraries.
 %
@@ -144,15 +144,15 @@ The other approach is the wrapper-based one, which consists in developing the so
 %
 These interfaces require dedicated runtime support and often rely on C as a common interoperability \textit{lingua franca}.
 %
-Due to its widespread use in interfacing with low-level operating system APIs and system libraries, C has become the protocol for cross-language interoperability.
+Due to its widespread use in interfacing with low-level operating system APIs and system libraries, C has become a very used protocol for cross-language interoperability.
 %
-For example, many interpreted languages, such as Python, include mechanisms for executing extensions modules written in lower-level languages like C or C++, which are dynamically loaded into the high-level languages's virtual machine at runtime \cite{Grimmer-2018}.
+For example, many interpreted languages, such as Python, include mechanisms for executing extensions modules written in lower-level languages like C or C++, which are dynamically loaded into the high-level language's virtual machine at runtime \cite{Grimmer-2018}.
 %
 Over the years, automated binding generation tools have been developed to simplify the creation of interoperability layers.
 %
 A well known example is the Simplified Wrapper and Interface Generator (SWIG) \cite{beazley-2003-swig}, which can generate language bindings from C and C++ header files to a variety of high-level languages, including Python, Java, JavaScript, Ruby and others.
 %
-Unlike the cross-compilation approach, in the absence of automated tools, wrapper modules must be implemented manually $-$ a process that can be complex and error-prone.
+Unlike the cross-compilation approach, in the absence of automated tools, wrapper modules must be implemented manually $-$ a process that can be complex, error-prone and that does not scale well if the number of target languages increases.
 
 \subsection{The case of Scala}
 
@@ -160,20 +160,22 @@ Scala is a modern multi-paradigm programming language seamlessly integrating bot
 %
 Originally designed to run on the Java Virtual Machine (JVM), Scala has evolved to support also native and JavaScript platforms making it a cross-platform language.
 %
-Despite other languages, Scala cross-platform capabilities are not tied to the language itself, but rather are demanded by dedicated projects, each with its own compiler plugins and toolchains that extend the Scala compiler and ecosystem.
+Despite other languages, Scala's cross-platform capabilities are not tied to the language itself but, rather, demanded by dedicated projects, each with its own compiler plugins and toolchains that extend the Scala compiler and ecosystem.
 
 \subsubsection{Scala.js}
 
 Scala.js is the project, introduced in 2013 at EPFL, meant to compile Scala code to JavaScript with the goal of enabling developers to write rich web applications entirely in Scala and having them compiled to ready to run JavaScript code \cite{Doeraene-2025}.
 %
-Over the years Scala.js has matured into a stable project allowing to target both web browsers and backends JavaScript environment, like Node.js, making it suitable for developing full-stack applications entirely in Scala, and, more recently, an experimental support for WebAssembly has been introduced \todo{cite}.
+Over the years Scala.js has matured into a stable project that allows to target both web browsers and the Node.js backend environment, making it suitable for developing full-stack applications entirely in Scala.
+%
+More recently, an experimental support for WebAssembly has also been introduced.
 
-Compilation to JavaScript is achieved via a pipeline of stages, shown in \Cref{fig:scala-js-compiler-pipeline}, performed after the Scala frontend compiler have parsed and type-checked the Scala source code:
+Compilation to JavaScript is achieved via a pipeline of stages, shown in \Cref{fig:scala-js-compiler-pipeline}, performed after the Scala frontend compiler have parsed and type-checked the source code:
 
 \begin{itemize}
-    \item The first stage the Scala.js compiler turns Scala AST into an Intermediate Representation (IR) specifically designed to provide both portability and interoperability;
-    \item then, IR files are linked together, type-checked and optimized;
-    \item finally, the optimized IR is compiled into a single \texttt{.[m]js} file containing the JavaScript code ready to be executed in any JavaScript environment.
+    \item In the first stage the Scala.js compiler turns Scala AST into an Intermediate Representation (\texttt{.sjsir}) specifically designed to provide both portability and interoperability;
+    \item then, \texttt{.sjsir} files are linked together, type-checked and optimized;
+    \item finally, the optimized IR is compiled into a single \texttt{.[m]js} file containing the JavaScript code ready to be executed in the JavaScript environment.
 \end{itemize}
 
 \begin{figure}
@@ -185,37 +187,39 @@ Compilation to JavaScript is achieved via a pipeline of stages, shown in \Cref{f
 
 The fact this compilation pipeline is attached to the standard Scala compiler allows supporting whole Scala language, including all advanced features and abstractions.
 
-As for interoperability, Scala.js seamlessly integrates with existing JavaScript libraries and frameworks, thanks to a dedicated interoperability layer that allows to both consume JavaScript APIs and expose Scala.js libraries to JavaScript code.
+As for interoperability, Scala.js seamlessly integrates with existing JavaScript libraries and frameworks, thanks to a dedicated interoperability layer enabling both the consumption of JavaScript APIs and the exposure of Scala.js libraries to JavaScript code.
 %
-Scala.js specific code can, therefore, invoke JavaScript functions, manipulate DOM elements and interact with any library available in the JavaScript ecosystem, including Node.js standard library, through typed facades mapping JavaScript APIs to Scala.js types and abstractions.
+Scala.js-specific code can, therefore, invoke JavaScript functions, manipulate DOM elements and interact with any library available in the JavaScript ecosystem, including the Node.js standard library, through typed facades mapping JavaScript APIs to Scala.js types and abstractions.
 %
-Conversely, software products APIs can be exposed to JavaScript code by annotating Scala.js classes and methods instructing the compiler to generate the necessary bindings.
+Conversely, software products APIs can be exposed to JavaScript code by annotating Scala.js classes and methods, instructing the compiler to generate the necessary bindings.
 %
-Unfortunately, the project doesn't support automatic generation of TypeScript type definitions from Scala.js APIs (and it is not intended to be supported in the future \todo{piè di pagina}), which would greatly ease the consumption of Scala.js libraries from TypeScript code.
+Unfortunately, the project does not support automatic generation of TypeScript type definitions from Scala.js APIs, which would greatly facilitate the consumption of Scala.js libraries from TypeScript code (and there are no plans to support this in the future \footnote{\url{https://github.com/scala-js/scala-js/issues/3836\#issuecomment-551273036}}).
 %
-Moreover, to allow reusing as much code as possible across the JVM and JavaScript platforms, both a subset of the Scala and Java standard libraries have been re-implemented to work natively in the JavaScript environment, providing (almost) equivalent semantics of their JVM counterparts: some difference in semantics are mostly due to the inherent difference between the two platforms (e.g., the fact only \texttt{Double}s are supported as numeric types in JavaScript) \cite{Doeraene-2025}.
+Moreover, to maximize code reuse across the JVM and JavaScript platforms, subsets of the Scala and Java standard libraries have been re-implemented to work natively in the JavaScript environment, providing (almost) equivalent semantics of their JVM counterparts: some differences in semantics are mainly due to the inherent districtions between the two platforms (e.g., the fact only \texttt{Double}s are supported as numeric types in JavaScript) \cite{Doeraene-2025}.
 %
-A notable example of reusable standard library API is the Future-based concurrency model which, under the hood, impacts the JavaScript event-loop model, while exposing the same API available on the JVM platform.
+A notable example of reusable standard library API is the Future-based concurrency model which, under the hood, impacts the JavaScript event-loop model while exposing the same API available on the JVM platform.
 %
-Nevertheless, not all the JVM standard library can be ported, like all blocking I/O operations, which are not compatible with the asynchronous, non-blocking I/O model of JavaScript.
+Nevertheless, not all the JVM standard library can be ported; for instance, blocking I/O operations are incompatible with the JavaScript's asynchronous, non-blocking I/O model.
 %
-When designing shared-cross platform library, therefore, it is essential to carefully evaluate which parts of the code can be shared and which need to be platform-specific and guarantee that shared code relies only on cross-platform abstractions; for example, no blocking calls can be performed. \todo{move after?}
+When designing a cross-platform library, it is therefore essential to carefully evaluate which parts of the code can be shared and which need to be platform-specific, ensuring shared code relies only on cross-platform abstractions; for example, no blocking calls can be performed.
 
-Lastly, concerning performances, Scala.js is, currently, from 2.5 to 10 times slower than equivalent hand-written JavaScript version \cite{Doeraene-2025}.
+Lastly, concerning performances, Scala.js is currently from 2.5 to 10 times slower than equivalent handwritten JavaScript version \cite{Doeraene-2025}.
 %
 However, there is considerable room for optimizations, as current results lack optimizations such as method inlining, which could significantly improve performance and bring it closer to native JavaScript speeds.
 
 \subsubsection{Scala Native}
 
-Following the success of Scala.js, the Scala Native project moved their first steps in 2014 as a research project at EPFL with the goal of compiling Scala code directly to bare-metal machine code without the need for the JVM, making it suitable for resource-constrained environments where the overhead imposed by the JVM in terms of memory footprint and startup time cannot be tolerated.
+Following the success of Scala.js, the Scala Native project moved their first steps in 2017 as a research project at EPFL.
 %
-Since it's 0.5 release published in 2024 with the introduction of native concurrency primitives, the project have reached a decent level of maturity and stability, that allows to consider it for production use.
+Its goal is to compile Scala code directly to bare-metal machine code without the need for the JVM, making it suitable for resource-constrained environments where the overhead imposed by the JVM in terms of memory footprint and startup time cannot be tolerated.
+%
+Since it's 0.5 release published in 2024 with the introduction of native concurrency primitives, the project has reached a decent level of maturity and stability, making it viable for production use.
 
 Scala Native is both an \textit{ahead of time} (AOT) compiler and standalone runtime.
 
-The AOT compiler translates Scala code into native machine code leveraging the LLVM toolchain \todo{cite LLVM}, a widely adopted modular compiler infrastructure for producing optimized machine code for multiple architectures. 
+The AOT compiler translates Scala code into native machine code leveraging the LLVM toolchain \cite{beazley-2003-swig}, a widely adopted modular compiler infrastructure for producing optimized machine code for multiple architectures. 
 %
-Compilation proceeds, similarly to Scala.js, through a pipeline of stages, shown in \Cref{fig:scala-native-compiler-pipeline}, performed after the Scala frontend compiler producing IR from which the final machine code is generated \todo{cite here or in image}:
+Compilation proceeds, similarly to Scala.js, through a pipeline of stages, shown in \Cref{fig:scala-native-compiler-pipeline}, performed after the Scala frontend compiler producing IR from which the final machine code is generated:
 
 \begin{itemize}
     \item The first stage of the pipeline is performed by the \texttt{nscplugin} that, inspecting the abstract syntax tree, translates the Scala code into a strongly typed Native Intermediate Representation (NIR) consisting of a subset of LLVM IR instructions enriched with additional information to support Scala high level abstractions;
@@ -226,7 +230,7 @@ Compilation proceeds, similarly to Scala.js, through a pipeline of stages, shown
 \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{resources/img/scala-native-pipeline.pdf}
-    \caption{Scala Native simplified compiler pipeline.}
+    \caption{Scala Native simplified compiler pipeline. Adapted from \cite{Wojciech-2022-sn-internals}.}
     \label{fig:scala-native-compiler-pipeline}
 \end{figure}
 
@@ -236,9 +240,9 @@ Most notable features provided by the runtime are:
 
 \begin{itemize}
     \item a configurable garbage collector for automatic memory management of heap-allocated Scala objects;
-    \item a threading model, based on native OS threads, that maps Scala's concurrency abstractions to the underlying platform capabilities trying to reach maximum compatibility in semantics with the JVM;
-    \item foreign function and a subset of C interoperability primitives to interface with C or C++ existing libraries and native code and allowing to expose Scala Native libraries to native interoperable languages;
-    \item most of the Scala and Java standard libraries re-implemented to work natively. In this way the developer can leverage familiar APIs and use existing Scala and Java standard libraries like it was running on the JVM with the same semantics (Scala Native consider, indeed, every difference in semantics between the two platforms as a bug).
+    \item a threading model, based on native OS threads, which maps Scala's concurrency abstractions to the underlying platform while striving to maintain maximum semantic compatibility with the JVM;
+    \item foreign function and a subset of C interoperability primitives to interface with existing C or C++ libraries and native code, as well as to expose Scala Native libraries to C code via annotations;
+    \item most of the Scala and Java standard libraries re-implemented to work natively with the same semantics (Scala Native treats any differences in semantics between the two platforms as a bug).
 \end{itemize}
 
 Concerning the supported architectures and operating systems, Scala Native can target AMD64 (\texttt{x86-64}) and ARM64 (\texttt{aarch64}) architectures on Linux, macOS and Windows operating systems, also thanks to cross-compilation support \todo{what is it?}.
@@ -255,6 +259,5 @@ While the first limitation could be overcome in the future, the second will hard
 
 \vspace{1em}
 
-\todo{In the end remember to discuss adoption of cross-platform libraries in the Scala ecosystem.}
+\subsubsection{Libraries ecosystem}
 
-\todo{The role of C as an interoperability lingua franca.}
