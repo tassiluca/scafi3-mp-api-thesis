@@ -25,9 +25,9 @@ Over time, the situation has profoundly changed thanks to a series of innovation
 
 From a programming language perspective, one influential shift addressing portability has been the move from compilation-based to virtual machine-based approaches, such as the Java Virtual Machine (JVM) and the Common Language Runtime (CLR) for .NET.
 %
-These emerged to overcome the limitations of traditional compilation-based approaches, like C and C++, that require developers to create and maintain separate binaries, and sometimes even separate source code versions, for each target platform $-$ a costly and time-consuming process.
+These emerged to overcome the limitations of traditional compilation-based approaches, like C and C++, that require developers to create and maintain separate binaries for each target platform, often with platform-specific code and complex build configurations $-$ a costly and time-consuming process.
 %
-Virtual machine approaches addressed these challenges through an additional abstraction layer, decoupling the software from the underlying platform by compiling programs into an intermediate representation, like the Java bytecode, that is then executed by a platform-specific runtime.
+Virtual machine approaches addressed these challenges through an additional abstraction layer, decoupling the software from the underlying platform by compiling programs into an intermediate representation, like the Java bytecode, that is then interpreted or just-in-time compiled by a platform-specific runtime.
 %
 This approach has found widespread adoption, with the JVM and CLR becoming the backbone of entire ecosystems of modern languages and frameworks and enabling the famous \enquote{write once, run anywhere} paradigm $-$ the promise that applications would be portable across any platform supporting the respective runtime.
 
@@ -45,7 +45,7 @@ Nowadays, most applications are designed to take advantage of multicore architec
 %
 Nevertheless, not all platforms support this feature equally.
 %
-For instance, the Node JS platform, widely used for server-side and web applications, is based on a single-threaded event loop model where blocking operations cannot be performed, requiring a completely different paradigm based on Continuation-Passing Style (CPS) and asynchronous programming.
+For instance, the Node JS platform, widely used for server-side and web applications, is based on a single-threaded event loop model where blocking operations cannot be performed, requiring a completely different paradigm based on Continuation-Passing Style and asynchronous programming.
 
 Such fundamental differences in platform capabilities are concern permeating all stages of the software lifecycle, from design to release, requiring careful consideration.
 
@@ -149,7 +149,7 @@ Unlike the cross-compilation approach, in the absence of automated tools, wrappe
 
 Scala is a modern multi-paradigm programming language seamlessly integrating both object-oriented and functional programming, whose powerful static type system and advanced language abstraction features make it suitable for crafting complex and maintainable software systems in a concise, elegant and expressive way.
 
-Originally designed to run on the Java Virtual Machine (JVM), Scala has evolved to support also native and JavaScript platforms making it a cross-platform language.
+Originally designed to run on the JVM, Scala has evolved to support also native and JavaScript platforms making it a cross-platform language.
 %
 Despite other languages, Scala's cross-platform capabilities are not tied to the language itself but, rather, demanded by dedicated projects, each with its own compiler plugins and toolchains that extend the Scala compiler and ecosystem.
 
@@ -184,7 +184,7 @@ Scala.js-specific code can, therefore, invoke JavaScript functions, manipulate D
 %
 Conversely, software products APIs can be exposed to JavaScript code by annotating Scala.js classes and methods, instructing the compiler to generate the necessary bindings.
 %
-Moreover, to maximize code reuse across the JVM and JavaScript platforms, subsets of the Scala and Java standard libraries have been re-implemented to work natively in the JavaScript environment, providing (almost) equivalent semantics of their JVM counterparts: some differences in semantics are mainly due to the inherent distinctions between the two platforms (e.g., the fact only \texttt{Double}s are supported as numeric types in JavaScript) \cite{Doeraene-2025}.
+Moreover, to maximize code reuse across the JVM and JavaScript platforms, subsets of the Scala and Java standard libraries have been re-implemented to work natively in the JavaScript environment, providing almost equivalent semantics of their JVM counterparts: some differences in semantics are mainly due to the inherent distinctions between the two platforms (e.g., the fact only \texttt{Double}s are supported as numeric types in JavaScript) \cite{Doeraene-2025}.
 %
 A notable example of reusable standard library API is the Future-based concurrency model which, under the hood, impacts the JavaScript event-loop model while exposing the same API available on the JVM platform.
 %
@@ -261,3 +261,7 @@ Nevertheless, native platform has made significant progress in recent years, and
 Of course, porting libraries across all platforms requires time and effort, especially when done retrospectively.
 %
 Therefore, it is expected that in the coming years, the landscape of cross-platform Scala libraries will continue to improve and the number of libraries supporting both Scala.js and Scala Native will increase, driven by the growing adoption and success of both platforms.
+
+Concerning language interoperability, the Scala ecosystem currently lacks production ready libraries exposing a unified and coherent cross-platform, polyglot API.
+%
+However, despite the challenges and limitations introduced above that will be discussed in the next chapters, both Scala.js and Scala Native provide layers of interoperability that, if properly leveraged, provide a foundation for such solutions, on which this thesis aims to contribute.
