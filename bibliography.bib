@@ -6,6 +6,27 @@
 % *******************************************************************************
 %
 % definition of portability
+@article{beazley-2003-swig,
+  title     = {Automated scientific software scripting with SWIG},
+  author    = {Beazley, David M},
+  journal   = {Future Generation Computer Systems},
+  volume    = {19},
+  number    = {5},
+  pages     = {599--609},
+  year      = {2003},
+  publisher = {Elsevier},
+}
+% platform definition
+@article{blanco2021holistic,
+  title     = {A holistic approach for cross-platform software development},
+  author    = {Blanco, Juliano Zanuzzio and Lucr{\'e}dio, Daniel},
+  journal   = {Journal of Systems and Software},
+  volume    = {179},
+  pages     = {110985},
+  year      = {2021},
+  publisher = {Elsevier},
+}
+% other info on portability
 @phdthesis{doeraene-2018,
   author = {Sébastien Doeraene},
   school = {École Polytechnique Fédérale de Lausanne},
@@ -13,7 +34,7 @@
   url    = {https://lampwww.epfl.ch/~doeraene/thesis/doeraene-thesis-2018-cross-platform-language-design.pdf},
   year   = {2018},
 }
-% platform definition
+% scala.js dissertation
 @book{Doeraene-2025,
   author  = {Doeraene, Sébastien},
   journal = {Scala.js: Type-Directed Interoperability with Dynamically Typed Languages},
@@ -21,7 +42,7 @@
   url     = {https://core.ac.uk/outputs/147999748/},
   year    = {2025},
 }
-% other info on portability
+% on wrapper-based multi-platform and polyglottism approach
 @article{Grimmer-2018,
   author  = {Grimmer, Matthias and Schatz, Roland and Seaton, Chris and Würthinger, Thomas and Luján, Mikel and Mössenböck, Hanspeter},
   doi     = {10.1145/3201898},
@@ -32,8 +53,8 @@
   title   = {Cross-language interoperability in a multi-language runtime},
   volume  = {40},
   year    = {2018},
-}
-% scala.js dissertation
+} 
+% scalajs
 @standard{iso-25010,
   date        = {2011},
   institution = {ISO},
@@ -41,8 +62,17 @@
   number      = {ISO/IEC 25010:2011},
   title       = {Systems and software engineering\,---\,Systems and software Quality Requirements and Evaluation (SQuaRE)\,---\,System and software quality models},
   url         = {https://www.iso.org/standard/35733.html},
+} 
+% swig
+@inproceedings{lattner2004llvm,
+  title        = {LLVM: A compilation framework for lifelong program analysis \& transformation},
+  author       = {Lattner, Chris and Adve, Vikram},
+  booktitle    = {International symposium on code generation and optimization, 2004. CGO 2004.},
+  pages        = {75--86},
+  year         = {2004},
+  organization = {IEEE},
 }
-% on wrapper-based multi-platform and polyglottism approach
+% llvm
 @inproceedings{mooney-2004,
   abstract  = {Software portability is often cited as desirable, but rarely receives systematic attention in the software development process. With the growing diversity of computing platforms, it is increasingly likely that software of all types may need to migrate to a variety of environments and platforms over its lifetime. This tutorial is intended to show the reader how to design portability into software projects, and how to port software when required.},
   address   = {Boston, MA},
@@ -54,48 +84,8 @@
   publisher = {Springer US},
   title     = {Developing Portable Software},
   year      = {2004},
-} 
-% scalajs
-@book{Sommerville2020,
-  author    = {Ian Sommerville},
-  edition   = {10},
-  note      = {PDF version available at Archive.org},
-  publisher = {Pearson},
-  title     = {Software Engineering},
-  url       = {https://dn790001.ca.archive.org/0/items/bme-vik-konyvek/Software%20Engineering%20-%20Ian%20Sommerville.pdf},
-  urldate   = {2025-10-06},
-  year      = {2020},
-} 
-% swig
-@article{beazley-2003-swig,
-  title     = {Automated scientific software scripting with SWIG},
-  author    = {Beazley, David M},
-  journal   = {Future Generation Computer Systems},
-  volume    = {19},
-  number    = {5},
-  pages     = {599--609},
-  year      = {2003},
-  publisher = {Elsevier},
-}
-% llvm
-@inproceedings{lattner2004llvm,
-  title        = {LLVM: A compilation framework for lifelong program analysis \& transformation},
-  author       = {Lattner, Chris and Adve, Vikram},
-  booktitle    = {International symposium on code generation and optimization, 2004. CGO 2004.},
-  pages        = {75--86},
-  year         = {2004},
-  organization = {IEEE},
 }
 % scala native compilation pipeline
-@online{Wojciech-2022-sn-internals,
-  author  = {Scala 3 Compiler Academy by Wojciech Mazur},
-  title   = {Scala Native Internals Overview},
-  year    = {2022},
-  note    = {YouTube video},
-  url     = {https://www.youtube.com/watch?v=U2GUUjxn5xQ},
-  urldate = {2025-10-19},
-}
-% on portability history vm
 @article{randal2020ideal,
   title     = {The ideal versus the real: Revisiting the history of virtual machines and containers},
   author    = {Randal, Allison},
@@ -106,13 +96,23 @@
   year      = {2020},
   publisher = {ACM New York, NY, USA},
 }
+% on portability history vm
+@book{Sommerville2020,
+  author    = {Ian Sommerville},
+  edition   = {10},
+  note      = {PDF version available at Archive.org},
+  publisher = {Pearson},
+  title     = {Software Engineering},
+  url       = {https://dn790001.ca.archive.org/0/items/bme-vik-konyvek/Software%20Engineering%20-%20Ian%20Sommerville.pdf},
+  urldate   = {2025-10-06},
+  year      = {2020},
+}
 % holistic approach for cross-platform software development
-@article{blanco2021holistic,
-  title     = {A holistic approach for cross-platform software development},
-  author    = {Blanco, Juliano Zanuzzio and Lucr{\'e}dio, Daniel},
-  journal   = {Journal of Systems and Software},
-  volume    = {179},
-  pages     = {110985},
-  year      = {2021},
-  publisher = {Elsevier},
+@online{Wojciech-2022-sn-internals,
+  author  = {Scala 3 Compiler Academy by Wojciech Mazur},
+  title   = {Scala Native Internals Overview},
+  year    = {2022},
+  note    = {YouTube video},
+  url     = {https://www.youtube.com/watch?v=U2GUUjxn5xQ},
+  urldate = {2025-10-19},
 }

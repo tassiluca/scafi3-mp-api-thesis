@@ -1,9 +1,21 @@
 % !TeX root = ../../main.tex
 \chapter{Context and Motivations}
 
+The goal of this chapter is to provide the context and motivations behind the efforts of this thesis.
+%
+First, Aggregate Computing is introduced, highlighting the importance of portability and language interoperability in this research area.
+%
+Then, a brief overview of Scafi3, the Scala 3 library for aggregate programming, is provided...
+
 \section{Aggregate computing: a bird's eye view}
 
-\subsection{Why portability and language interoperability matter in Aggregate Computing?}
+In the realm of distributed complex adaptive systems (CAS) Aggregate Computing \todo{cite} is a research paradigm aiming at program such systems through the lens of \textit{macro-programming}, focusing on the collective behavior of the system as a whole rather than on the individual behavior of its components.
+%
+This paradigm embraces functional programming principles to ensure composability and modularity of programs, allowing developers to build complex systems in a succinct and declarative manner, abstracting away low-level details about communication and coordination among devices and focusing on the desired collective behavior.
+
+The main abstraction, formalized through the \textit{Field Calculus} \todo{cite}, is that of a \textit{computational field}, a distributed data structure mapping each neighbor device to a value.
+
+\subsection{Portability and interoperability in Aggregate Computing}
 
 \section{Scafi3 overview: a Scala 3 library for aggregate programming}
 
