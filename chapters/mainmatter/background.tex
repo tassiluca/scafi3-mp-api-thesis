@@ -265,3 +265,30 @@ Therefore, it is expected that in the coming years, the landscape of cross-platf
 Concerning language interoperability, the Scala ecosystem currently lacks production ready libraries exposing a unified and coherent cross-platform, polyglot API.
 %
 However, despite the challenges and limitations introduced above that will be discussed in the next chapters, both Scala.js and Scala Native provide layers of interoperability that, if properly leveraged, provide a foundation for such solutions, on which this thesis aims to contribute.
+
+\subsection{Related works}
+
+Besides Scala, other cross-platform languages and frameworks exist.
+%
+Among these the most notable examples are Kotlin Multiplatform, Gleam, Haxe and Flutter/Dart.
+
+\subsubsection{Kotlin Multiplatform}
+
+The direct competitor of Scala in both the JVM and cross-platform landscape is Kotlin Multiplatform, due to its embrace of object-oriented and functional paradigms and its similarities in supported platforms.
+
+In addition to JVM, it supports JavaScript, native platforms via LLVM, and, experimentally, WebAssembly.
+%
+Officially supported by JetBrains, Kotlin Multiplatform has gained significant traction in recent years, especially in mobile development after Google adopted it as the official language for Android development.
+%
+Its widespread use in the mobile development community, where cross-platform development is crucial, together with JetBrains' unified management, has fostered the growth of a robust, rich and continuously improving ecosystem.
+%
+Furthermore, thanks to its mobile development focus, Kotlin Multiplatform supports native Apple devices (iOS), currently missing in Scala Native.
+%
+Similarly to Scala, however, it cannot target microcontroller architectures due to large runtime requirements and limited LLVM support.
+
+Regarding language interoperability, Kotlin Multiplatform provides robust interoperability layers with JavaScript, C, and Swift/Objective-C for Apple platforms.
+%
+API exposure is achieved, like in Scala, via annotations, instructing the compiler to generate the necessary bindings.
+%
+Notable toolchain features in this context include the automatic generation of C header files and TypeScript declaration files, reducing to the bare minimum the manual effort required to create interoperability layers.
+
