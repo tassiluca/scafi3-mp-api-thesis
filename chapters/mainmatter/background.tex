@@ -290,5 +290,67 @@ Regarding language interoperability, Kotlin Multiplatform provides robust intero
 %
 API exposure is achieved, like in Scala, via annotations, instructing the compiler to generate the necessary bindings.
 %
-Notable toolchain features in this context include the automatic generation of C header files and TypeScript declaration files, reducing to the bare minimum the manual effort required to create interoperability layers.
+Notable toolchain features in this context include the automatic generation of C headers and,  experimentally, TypeScript declaration files, reducing manual effort to a minimum.
+
+\subsubsection{Comparison}
+
+\begin{table}[htbp]
+    \centering
+    \scriptsize % Smaller font for dense tables
+    \setlength{\tabcolsep}{4pt} % Reduce horizontal padding
+    \renewcommand{\arraystretch}{1.15} % Slightly tighter vertical spacing
+
+    \caption{Comprehensive Cross-Platform Language Comparison}
+    \label{tab:comprehensive-comparison}
+    \vspace{0.4em}
+
+    \makebox[\textwidth][c]{%
+        \begin{tabularx}{1.1\textwidth}{
+            @{}
+            >{\raggedright\arraybackslash}p{1.8cm}  % Language
+            >{\raggedright\arraybackslash}p{1.5cm}  % Primary Target
+            >{\raggedright\arraybackslash}p{2.0cm}  % Other Supported Platforms
+            >{\raggedright\arraybackslash}p{2.5cm}  % Language Interoperability
+            >{\raggedright\arraybackslash}p{2.2cm}  % Maturity
+            >{\raggedright\arraybackslash}X         % Supported Architectures
+            >{\raggedright\arraybackslash}X         % Toolchain
+            @{}
+        }
+            \toprule
+            \textbf{Language} &
+            \textbf{Primary Target} &
+            \textbf{Other Supported Platforms} &
+            \textbf{Language Interoperability} &
+            \textbf{Maturity} &
+            \textbf{Supported Architectures} &
+            \textbf{Toolchain} \\
+            \midrule
+
+            Scala &
+                JVM &
+                JS, Native, WASM$^{\dagger}$ &
+                C, \newline JS and TS &
+                Scala.js: mature, Scala Native: discrete & 
+                Win, \newline Unix, \newline arm64, \newline aarch64 &
+                Low \\
+
+            \addlinespace[3pt]
+
+            Kotlin MP &
+                JVM &
+                JS, Native, WASM$^{\dagger}$ &
+                C, \newline Obj-C/Swift, \newline JS and TS$^{\dagger}$ &
+                Production-ready &
+                AppleOS, \newline Win, \newline Unix, \newline arm64, \newline aarch64 &
+                High \\
+
+            \bottomrule
+        \end{tabularx}%
+    }
+
+    \vspace{0.4em}
+    \raggedright
+    \footnotesize
+    $^{\dagger}$ Experimental feature
+\end{table}
 
