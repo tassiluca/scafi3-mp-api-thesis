@@ -268,31 +268,60 @@ However, despite the challenges and limitations introduced above that will be di
 
 \subsection{Related works}
 
-Besides Scala, other cross-platform languages and frameworks exist.
+Besides Scala, other languages and frameworks exist targeting multiple platforms and providing language interoperability features.
 %
 Among these the most notable examples are Kotlin Multiplatform, Gleam, Haxe and Flutter/Dart.
 
 \subsubsection{Kotlin Multiplatform}
 
-The direct competitor of Scala in both the JVM and cross-platform landscape is Kotlin Multiplatform, due to its embrace of object-oriented and functional paradigms and its similarities in supported platforms.
+Kotlin Multiplatform is Scala's primary competitor in both the JVM and cross-platform ecosystems, as it supports object-oriented and functional paradigms---albeit with less advanced abstractions than Scala---and targets comparable architectures: rooted in the JVM, it supports JavaScript, native platforms via LLVM, and, experimentally, WebAssembly.
 
-In addition to JVM, it supports JavaScript, native platforms via LLVM, and, experimentally, WebAssembly.
-%
-Officially supported by JetBrains, Kotlin Multiplatform has gained significant traction in recent years, especially in mobile development after Google adopted it as the official language for Android development.
+Officially supported by JetBrains, Kotlin Multiplatform has gained significant traction in recent years, particularly in mobile development, after Google adopted it as the official language for Android.
 %
 Its widespread use in the mobile development community, where cross-platform development is crucial, together with JetBrains' unified management, has fostered the growth of a robust, rich and continuously improving ecosystem.
 %
-Furthermore, thanks to its mobile development focus, Kotlin Multiplatform supports native Apple devices (iOS), currently missing in Scala Native.
+Thanks to this mobile-oriented focus, Kotlin Multiplatform also supports native Apple devices, currently missing in Scala Native.
 %
-Similarly to Scala, however, it cannot target microcontroller architectures due to large runtime requirements and limited LLVM support.
+However, similarly to Scala, it cannot target microcontroller architectures because its large runtime requirements and limited LLVM support.
 
-Regarding language interoperability, Kotlin Multiplatform provides robust interoperability layers with JavaScript, C, and Swift/Objective-C for Apple platforms.
+% ... Concerning cross-platform code sharing, Kotlin MP follows a similar philosophy to Scala, providing a hierarchical modules structure, rooted in a common module containing platform-agnostic code, extended by platform-specific modules.
+
+In terms of language interoperability, Kotlin Multiplatform offers strong integration with JavaScript, C, and Swift/Objective-C, other than Java.
 %
-API exposure is achieved, like in Scala, via annotations, instructing the compiler to generate the necessary bindings.
+As in Scala, API exposure is achieved via annotations, instructing the compiler to generate the necessary bindings.
 %
-Notable toolchain features in this context include the automatic generation of C headers and,  experimentally, TypeScript declaration files, reducing manual effort to a minimum.
+Notable toolchain features in this context include the automatic generation of C headers and, experimentally, TypeScript declaration files, thereby minimizing manual integration effort.
+
+\subsubsection{Gleam}
+
+Gleam is an emergent general-purpose, statically-typed functional programming language.
+%
+Guided by a minimalistic design philosophy, it emphasizes simplicity and ease of use, forgoing object-oriented constructs and advanced functional abstractions such as type classes in favor of first-class functions, algebraic data types and pattern matching.
+
+The language provides two distinct compilation targets: the BEAM virtual machine and JavaScript.
+%
+Targeting the BEAM VM allows Gleam to leverage server-side battle-tested Erlang ecosystem, renowned for its fault-tolerance, massive actor-based concurrency capabilities and distributed computing features.
+%
+On the other hand, the JavaScript target enables Gleam to be used in web development, both on the client-side and server-side via Node.js.
+
+Differently from Scala and Kotlin, Gleam targets these platforms employing a source-to-source transpilation approach, whereby it transpiles its source code into human-readable and pretty-printed Erlang or JavaScript code with TypeScript declaration files.
+%
+This allows full interoperability with the BEAM and JavaScript ecosystems through annotations and type facades, and allows developers to inspect and debug the generated code directly.
+%
+However, since the lack of hierarchical modules structure like Scala's or Kotlin's, this architectural choice introduces significant limitations when dealing with platform-specific incompatible abstractions, like I/O and concurrency.
+%
+Whereas when targeting Erlang concurrency is managed transparently by the runtime, with JavaScript Gleam requires explicit handling via promises or callbacks to deal with the event-loop model.
+%
+Consequently, when adopting Erlang style it is not possible to target JavaScript, and vice versa.
+%
+Therefore, libraries that make use of concurrent I/O need to decide whether to target one platform or the other, limiting code sharing.
+
+This positions Gleam as a language suitable for full-stack development, allowing to write both backend and frontend code in the same language, rather than as a language offering complete cross-platform capabilities.
 
 \subsubsection{Comparison}
+
+\todo{Architectures are complete?}
+\todo{Add column for approach?}
 
 \begin{table}[htbp]
     \centering
@@ -307,42 +336,52 @@ Notable toolchain features in this context include the automatic generation of C
     \makebox[\textwidth][c]{%
         \begin{tabularx}{1.1\textwidth}{
             @{}
-            >{\raggedright\arraybackslash}p{1.8cm}  % Language
-            >{\raggedright\arraybackslash}p{1.5cm}  % Primary Target
+            >{\raggedright\arraybackslash}p{1.6cm}  % Language
+            >{\raggedright\arraybackslash}p{2.0cm}  % Primary Target
             >{\raggedright\arraybackslash}p{2.0cm}  % Other Supported Platforms
             >{\raggedright\arraybackslash}p{2.5cm}  % Language Interoperability
-            >{\raggedright\arraybackslash}p{2.2cm}  % Maturity
-            >{\raggedright\arraybackslash}X         % Supported Architectures
+            >{\raggedright\arraybackslash}p{2.2cm}  % Supported Architectures
+            >{\raggedright\arraybackslash}X         % Maturity
             >{\raggedright\arraybackslash}X         % Toolchain
             @{}
         }
             \toprule
             \textbf{Language} &
-            \textbf{Primary Target} &
-            \textbf{Other Supported Platforms} &
-            \textbf{Language Interoperability} &
-            \textbf{Maturity} &
+            \textbf{Paradigm(s)} &
+            \textbf{Supported Platforms} &
+            \textbf{Language interoperability} &
             \textbf{Supported Architectures} &
-            \textbf{Toolchain} \\
+            \textbf{Ecosystem maturity} &
+            \textbf{Toolchain maturity} \\
             \midrule
 
             Scala &
-                JVM &
-                JS, Native, WASM$^{\dagger}$ &
-                C, \newline JS and TS &
-                Scala.js: mature, Scala Native: discrete & 
+                OOP + FP &
+                JVM$^{\circ}$, \newline JS, WASM$^{\dagger}$, \newline Native &
+                Java, \newline C, \newline JS and TS &
                 Win, \newline Unix, \newline arm64, \newline aarch64 &
+                Scala.js: mature, Scala Native: discrete & 
                 Low \\
 
             \addlinespace[3pt]
 
             Kotlin MP &
-                JVM &
-                JS, Native, WASM$^{\dagger}$ &
-                C, \newline Obj-C/Swift, \newline JS and TS$^{\dagger}$ &
-                Production-ready &
+                OOP+FP &
+                JVM$^{\circ}$, \newline JS, WASM$^{\dagger}$, \newline Native &
+                Java, \newline C, \newline Obj-C/Swift, \newline JS and TS &
                 AppleOS, \newline Win, \newline Unix, \newline arm64, \newline aarch64 &
+                Production-ready &
                 High \\
+
+            \addlinespace[3pt]
+
+            Gleam &
+                FP &
+                BEAM$^{\circ}$, \newline JS &
+                Erlang, \newline JS and TS &
+                Win, \newline Unix, \newline arm64, \newline aarch64 &
+                Emerging &
+                Low \\
 
             \bottomrule
         \end{tabularx}%
@@ -351,6 +390,7 @@ Notable toolchain features in this context include the automatic generation of C
     \vspace{0.4em}
     \raggedright
     \footnotesize
-    $^{\dagger}$ Experimental feature
+    $^{\circ}$ Primary target platform \\
+    $^{\dagger}$ Experimental feature \\
 \end{table}
 
