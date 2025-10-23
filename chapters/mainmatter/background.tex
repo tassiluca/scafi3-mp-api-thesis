@@ -350,12 +350,25 @@ Instead, each target platform needs to rely on its own build tool to link with e
 
 Although not as popular as other languages, Haxe has found a niche in video game development and, thanks to its broad platform coverage, is a viable option for projects that require maximum platform coverage without advanced language abstractions or dependencies on specific ecosystems.
 
+\subsubsection{Flutter/Dart}
 
+The last analyzed cross-platform language is Dart.
+%
+Built by Google, Dart is a statically-typed, object-oriented language, best known for powering the Flutter framework, used to develop cross-platform applications for both mobile, native and web platforms from a single codebase.
+%
+It targets native platforms via Ahead-of-Time (AOT) compilation and web platforms through transpilation to JavaScript and WebAssembly.
 
+Interoperability in Dart is achieved through different mechanisms depending on the target platform.
+%
+On native, Dart both provides an asynchronous message-passing mechanism for communication with platform-specific code, and a Foreign Function Interface (FFI) enabling more direct and efficient invocation of native code from Dart.
+%
+On web platforms, interoperability is provided through JavaScript interoperability mechanisms allowing Dart code to call JavaScript functions and vice versa.
 
-\subsubsection{Comparison}
+These characteristics make Flutter and Dart primarily well-suited for UI-centric and client-side applications, especially in mobile applications, where the framework has reached significant maturity and adoption.
 
-\todo{Architectures are complete?}
+\vspace{1.5em}
+
+\Cref{tab:comprehensive-comparison} presents a comparison of the analyzed cross-platform languages and their main characteristics.
 
 \begin{table}[htbp]
     \centering
@@ -363,7 +376,7 @@ Although not as popular as other languages, Haxe has found a niche in video game
     \setlength{\tabcolsep}{4pt} % Reduce horizontal padding
     \renewcommand{\arraystretch}{1.15} % Slightly tighter vertical spacing
 
-    \caption{Comprehensive Cross-Platform Language Comparison}
+    \caption{Cross-Platform Language Comparison}
     \label{tab:comprehensive-comparison}
     \vspace{0.4em}
 
@@ -383,7 +396,7 @@ Although not as popular as other languages, Haxe has found a niche in video game
             \toprule
             \textbf{Language} &
             \textbf{Paradigm(s)} &
-            \textbf{Supported Platforms} &
+            \textbf{Supported Environments} &
             \textbf{Approach} &
             \textbf{Language interoperability} &
             \textbf{Supported Architectures} &
@@ -420,15 +433,24 @@ Although not as popular as other languages, Haxe has found a niche in video game
                 Erlang, \newline JS and TS &
                 Win, \newline Unix, \newline arm64, \newline aarch64 &
                 Emerging &
-                Low \\
+                High \\
             
             Haxe &
                 OOP &
-                JS, \newline C++, \newline C\#, \newline Java, \newline PHP, \newline Python, \newline Lua &
+                JS, \newline Native, \newline .NET, \newline JVM, \newline PHP, \newline Python, \newline Lua &
                 Hybrid &
                 C++, \newline C\#, \newline Java, \newline PHP, \newline Python, \newline Lua, \newline JS and TS &
                 Win, \newline Unix, \newline arm64, \newline aarch64 &
                 Mature &
+                High \\
+
+            Flutter/Dart &
+                OOP &
+                Native$^{\circ}$, \newline JS, \newline WASM &
+                Cross-compilation &
+                C, \newline Obj-C/Swift, \newline JS and TS &
+                AppleOS, \newline Win, \newline Unix, \newline arm64, \newline aarch64 &
+                Production-ready &
                 High \\
 
             \bottomrule
