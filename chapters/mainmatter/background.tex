@@ -1,7 +1,9 @@
 % !TeX root = ../../main.tex
 \chapter{Background and Related Work}
 
-This chapter provides the reader the theoretical background behind the concepts of software portability, multi-platform software development and interoperability between programming languages, unfolding how these concepts play a crucial role in the comprehensive software lifecycle and why they are relevant in modern software engineering.
+This chapter provides the reader the background behind the concepts of software portability, multi-platform software development and interoperability between programming languages, unfolding how these concepts play a crucial role in the comprehensive software lifecycle and why they are relevant in modern software engineering.
+%
+Finally, the main cross-platform polyglot languages are reviewed, with a particular focus on Scala.
 
 \section{The role of portability in Software Engineering}
 
@@ -21,21 +23,19 @@ Portability spans over multiple levels \cite{Mooney}:
     \item \textit{intermediate-level portability} is a middle-ground between source and binary portability and entails porting an intermediate representation of the software, sitting between the source and binary code.
 \end{itemize}
 
-Portability has always been a relevant concern in software engineering since the early days of computing when the landscape of hardware architectures and operating systems was extremely fragmented and heterogeneous and software was tightly coupled to the underlying platform, requiring full rewrites when moving to a different one \cite{Randal2020}.
+Portability has always been a relevant concern in software engineering since the early days of computing, when the landscape of hardware architectures and operating systems was extremely fragmented and heterogeneous, and software was tightly coupled to the underlying platform, requiring full rewrites when moving to a different one \cite{Randal2020}.
 %
 Over time, the situation has profoundly changed thanks to a series of innovations and efforts: from the standardization of operating systems interfaces, such as POSIX, to the widespread introduction of increasingly higher-level programming languages and the diffusion of modern paradigms, like the World Wide Web, that inherently fostered portability.
 
 From a programming language perspective, one influential shift addressing portability has been the move from compilation-based to virtual machine-based approaches, such as the Java Virtual Machine (JVM) and the Common Language Runtime (CLR) for .NET.
 %
-These emerged to overcome the limitations of traditional compilation-based approaches, like C and C++, that require developers to create and maintain separate binaries for each target platform, often with platform-specific code and complex build configurations $-$ a costly and time-consuming process.
+These emerged to overcome the limitations of traditional compilation-based approaches, like C and C++, that require developers to create and maintain separate binaries for each target platform, often with platform-specific code and complex build configurations---a costly and time-consuming process.
 %
 Virtual machine approaches addressed these challenges through an additional abstraction layer, decoupling the software from the underlying platform by compiling programs into an intermediate representation, like the Java bytecode, that is then interpreted or just-in-time compiled by a platform-specific runtime.
 %
-This approach has found widespread adoption, with the JVM and CLR becoming the backbone of entire ecosystems of modern languages and frameworks and enabling the famous \enquote{write once, run anywhere} paradigm $-$ the promise that applications would be portable across any platform supporting the respective runtime.
+This approach has found widespread adoption, with the JVM and CLR becoming the backbone of entire ecosystems of modern languages and frameworks and enabling the famous \enquote{write once, run anywhere} paradigm---the promise that applications would be portable across any platform supporting the respective runtime.
 
-However, the technical reality proved to be more nuanced: different virtual machine implementations can exhibit subtle differences in behavior and also system libraries can vary across platforms, requiring additional adaptation efforts \cite{Blanco2021}.
-%
-Moreover, the embedded systems and IoT domains demonstrate that virtual machines have practical limits in contexts where resource-constrained devices cannot support their overhead or large bundles, necessitating low-level compilation-based approaches.
+However, the technical reality proved to be more nuanced: different virtual machine implementations can exhibit subtle differences in behavior, and in resource-constrained environments, the overhead imposed by the virtual machine may be prohibitive.
 
 Contemporary portability solutions continue this abstraction progression, with modern languages supporting multi-target compilation to various platforms, including JVM, JavaScript, WebAssembly and native binaries using intermediate representations.
 
@@ -43,7 +43,7 @@ However, despite the advancements in portability techniques and tools, achieving
 %
 To illustrate, consider the differences between platforms in terms of concurrency models.
 %
-Nowadays, most applications are designed to take advantage of multicore architectures and, therefore, heavily rely on concurrency to speed up computations or to handle multiple tasks simultaneously.
+Nowadays, most applications are designed to take advantage of multicore architectures and heavily rely on concurrency to speed up computations or to handle multiple tasks simultaneously.
 %
 Nevertheless, not all platforms support this feature equally.
 %
@@ -55,17 +55,17 @@ Such fundamental differences in platform capabilities are concern permeating all
 \noindent
 \textbf{Design and implementation.}
 %
-When designing a new software product, information about the targeted platforms is an essential input for architects and designers, as they need to consider the constraints and capabilities of the different environments in which the software will operate, with the primary goal of reducing the \textit{abstraction gap}, i.e., the distance between the domain problem and the abstractions and capabilities offered by a platform.
+When designing software, architects must consider the targeted platforms' constraints and capabilities to minimize the \textit{abstraction gap} between the domain problem and platform abstractions.
 %
 The greater the abstraction gap is, the more challenging it becomes to implement the required functionalities in a clean, well-structured and maintainable way.
 %
-In this context, the maturity of a platform's ecosystem in terms of libraries and frameworks availability significantly reduce the abstraction gap developers must bridge, influencing the platform choice.
+In this context, the maturity of a platform's ecosystem, in terms of libraries and frameworks availability, significantly reduces the abstraction gap developers must bridge, influencing the platform choice.
 %
 For example, if a software product requires advanced data analysis and machine learning capabilities, targeting a platform with a rich ecosystem of libraries and frameworks in this domain, such as Python, would be a wise choice.
 
 This is particularly relevant when targeting multiple platforms, as the abstraction gap may be significantly higher with respect to a single platform scenario.
 %
-As Doeraene notes \cite{doeraene-2018}, portability is not enough: even if a language is portable, unless the ecosystem publishes portable libraries, it remains difficult to develop applications spanning multiple runtimes due to their high costs of development.
+As Doeraene notes in \cite{doeraene-2018}, portability is not enough: even if a language is portable, unless the ecosystem publishes portable libraries, it remains difficult to develop applications spanning multiple runtimes due to the high development costs.
 
 \vspace{0.5em}
 \noindent
@@ -82,11 +82,13 @@ Furthermore, different architectures may behave differently under the same platf
 %
 Releasing a multi-platform software product introduces significant complexity, as each platform has its own conventions and requirements for packaging, distributing, versioning and deployment.
 %
-For example, JVM-based artifacts are distributed as JAR via Maven central or similar repositories, JavaScript applications are often bundled using tools like Webpack and distributed via npm, while Python packages are typically distributed as wheels via PyPI.
+For example, JVM-based artifacts are distributed as JAR via Maven Central or similar repositories, JavaScript applications are often bundled using tools like Webpack and distributed via npm, while Python packages are typically distributed as wheels via PyPI.
 
 \vspace{0.5em}
 
-Despite the challenges, portability remains a crucial aspect of modern software engineering, driven by the need to reach heterogeneous infrastructures and adapt to the rapidly evolving technological landscape, reducing for the developers the burden of maintaining or re-implementing software for different platforms, which often leads to fragmentation, inconsistencies between the different versions and increased maintenance costs.
+Despite the challenges, portability remains a crucial aspect of modern software engineering, driven by the need to reach heterogeneous infrastructures and reduce the burden of maintaining or re-implementing software for different platforms.
+%
+Without it, developers face fragmentation, inconsistencies between the different versions and increased maintenance costs.
 
 \section{Language interoperability}
 
@@ -131,7 +133,7 @@ Examples of cross-platform languages include, among others, Kotlin, Scala and Fl
 %
 The primary advantage of this approach is that it enables sharing a substantial portion of the codebase across different platforms.
 %
-Indeed, when core business logic is designed to be technologically agnostic $-$ as best practices prescribe $-$ it can typically be, for the most part, if not completely, shared across all the platforms.
+Indeed, when core business logic is designed to be technologically agnostic---as best practices prescribe---it can typically be, for the most part, if not completely, shared across all the platforms.
 %
 In this respect, striving to maximize code sharing, though it may require more effort initially, pays off in the long run as it is synonymous with better design.
 
@@ -145,13 +147,13 @@ Over the years, automated binding generation tools have been developed to simpli
 %
 A well known example is the Simplified Wrapper and Interface Generator (SWIG) \cite{Beazley2003}, which can generate language bindings from C and C++ header files to a variety of high-level languages, including Python, Java, JavaScript, Ruby and others.
 %
-Unlike the cross-compilation approach, in the absence of automated tools, wrapper modules must be implemented manually $-$ a process that can be complex, error-prone and that does not scale well if the number of target languages increases.
+Unlike the cross-compilation approach, in the absence of automated tools, wrapper modules must be implemented manually---a process that can be complex, error-prone and that does not scale well if the number of target languages increases.
 
 \subsection{The case of Scala}
 
 Scala is a modern multi-paradigm programming language seamlessly integrating both object-oriented and functional programming, whose powerful static type system and advanced language abstraction features make it suitable for crafting complex and maintainable software systems in a concise, elegant and expressive way.
 
-Originally designed to run on the JVM, Scala has evolved to support also native and JavaScript platforms making it a cross-platform language.
+Originally designed to run on the JVM and interoperate with Java, Scala has evolved to support also native and JavaScript platforms making it a cross-platform language.
 %
 Despite other languages, Scala's cross-platform capabilities are not tied to the language itself but, rather, demanded by dedicated projects, each with its own compiler plugins and toolchains that extend the Scala compiler and ecosystem.
 
@@ -194,11 +196,15 @@ Nevertheless, not all the JVM standard library can be ported; for instance, bloc
 %
 When designing a cross-platform library, it is therefore essential to carefully evaluate which parts of the code can be shared and which need to be platform-specific, ensuring shared code relies only on cross-platform abstractions; for example, no blocking calls are performed.
 
+\todo{scalably typed}
+
 %Lastly, concerning performances, Scala.js is currently from 2.5 to 10 times slower than equivalent handwritten JavaScript version \cite{Doeraene-2025}.
 %
 %However, there is considerable room for optimizations, as current results lack optimizations such as method inlining, which could significantly improve performance and bring it closer to native JavaScript speeds.
 
 \subsubsection{Scala Native}
+
+\todo{sn bindgen}
 
 Following the success of Scala.js, the Scala Native project moved their first steps in 2017 as a research project at EPFL.
 %
@@ -236,7 +242,7 @@ Most notable features provided by the runtime are:
     \item most of the Scala and Java standard libraries re-implemented to work natively with the same semantics (Scala Native treats any differences in semantics between the two platforms as a bug).
 \end{itemize}
 
-Concerning the supported architectures and operating systems, Scala Native can target AMD64 (\texttt{x86-64}) and ARM64 (\texttt{aarch64}) architectures on Linux, macOS and Windows operating systems, also thanks to cross-compilation support $-$ the ability to compile code for a different target architecture and/or OS than the one of the host machine where the compilation is performed.
+Concerning the supported architectures and operating systems, Scala Native can target AMD64 (\texttt{x86-64}) and ARM64 (\texttt{aarch64}) architectures on Linux, macOS and Windows operating systems, also thanks to cross-compilation support---the ability to compile code for a different target architecture and/or OS than the one of the host machine where the compilation is performed.
 %
 This covers the vast majority of modern desktop and server environments, including some System-on-Chip (SoC) architectures, like Raspberry Pi devices.
 %
@@ -258,7 +264,7 @@ Comparing Scala.js and Scala Native, it is evident the former has reached a high
 %
 For this reason, the level of library support for Scala.js is higher with respect to Scala Native.
 %
-Nevertheless, native platform has made significant progress in recent years, and since the introduction of native concurrency primitives, many libraries $-$ such as those in the popular ZIO \footnote{\url{https://zio.dev}} and Typelevel \footnote{\url{https://typelevel.org}} ecosystems $-$ have been ported or are in the process of being ported.
+Nevertheless, native platform has made significant progress in recent years, and since the introduction of native concurrency primitives, many libraries---such as those in the popular ZIO \footnote{\url{https://zio.dev}} and Typelevel \footnote{\url{https://typelevel.org}} ecosystems---have been ported or are in the process of being ported.
 %
 Of course, porting libraries across all platforms requires time and effort, especially when done retrospectively.
 %
@@ -280,7 +286,7 @@ Kotlin Multiplatform is Scala's primary competitor in both the JVM and cross-pla
 
 Officially supported by JetBrains, Kotlin Multiplatform has gained significant traction in recent years, particularly in mobile development, after Google adopted it as the official language for Android.
 %
-Its widespread use in the mobile development community, where cross-platform development is crucial, together with JetBrains' unified management, has fostered the growth of a robust, rich and continuously improving ecosystem.
+Its widespread use in the mobile development community, where cross-platform development is crucial, together with JetBrains' unified management, has fostered the growth of a robust, rich and continuously improving ecosystem that is expected to further expand in the coming years.
 %
 Thanks to this mobile-oriented focus, Kotlin Multiplatform also supports native Apple devices, currently missing in Scala Native.
 %
@@ -298,13 +304,13 @@ Notable toolchain features in this context include the automatic generation of C
 
 Gleam is an emergent general-purpose, statically-typed functional programming language.
 %
-Guided by a minimalistic design philosophy, it emphasizes simplicity and ease of use, forgoing object-oriented constructs and advanced functional abstractions such as type classes in favor of first-class functions, algebraic data types and pattern matching.
+Guided by a minimalistic design philosophy, it emphasizes simplicity and ease of use, forgoing object-oriented constructs and advanced functional abstractions, such as type classes, in favor of first-class functions, algebraic data types and pattern matching.
 
 The language provides two distinct compilation targets: the BEAM virtual machine and JavaScript.
 %
 Targeting the BEAM VM allows Gleam to leverage server-side battle-tested Erlang ecosystem, renowned for its fault-tolerance, massive actor-based concurrency capabilities and distributed computing features.
 %
-On the other hand, the JavaScript target enables Gleam to be used in web development, both on the client-side and server-side via Node.js.
+On the other hand, the JavaScript target enables Gleam to be used in web development, both on the client and server-side via Node.js.
 
 Differently from Scala and Kotlin, Gleam targets these platforms employing a source-to-source transpilation approach, whereby it transpiles its source code into human-readable and pretty-printed Erlang or JavaScript code with TypeScript declaration files.
 %
@@ -319,6 +325,10 @@ Consequently, when adopting Erlang style it is not possible to target JavaScript
 Therefore, libraries that make use of concurrent I/O need to decide whether to target one platform or the other, limiting code sharing.
 
 This positions Gleam as a language suitable for full-stack development, allowing to write both backend and frontend code in the same language, rather than as a language offering complete cross-platform capabilities.
+
+\subsubsection{Haxe}
+
+
 
 \subsubsection{Comparison}
 
