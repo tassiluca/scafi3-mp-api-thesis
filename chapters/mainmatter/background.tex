@@ -328,12 +328,34 @@ This positions Gleam as a language suitable for full-stack development, allowing
 
 \subsubsection{Haxe}
 
+Haxe is general-purpose cross-platform language, primarily designed to target a large variety of platforms and programming languages, including JavaScript, PHP, Python, Lua, C++, Java and C\#, on a wide range of architectures and operating systems, like Windows, Linux, macOS, Android and Apple iOS.
+%
+The language is strictly-typed, object-oriented, featuring an ECMAScript-oriented syntax, similar to JavaScript and Java.
+
+Its cross-platform capabilities are achieved via a hybrid compilation strategy.
+%
+The Haxe language can both compile into bytecode to be executed on JVM or its own Virtual Machines (HashLink and NekoVM) and it can also transpile into other high-level languages.
+%
+It features a platform-agnostic standard library and an ecosystem of cross-platform libraries, supporting most of the necessary functionalities for general-purpose programming, including data structures, file I/O, networking and concurrency.
+%
+Platform-specific code can be written using conditional compilation directives, similarly to C-style preprocessor directives.
+
+Concerning interoperability, Haxe allows to interface with target-specific syntax and APIs creating, like all presented languages, typed facades.
+%
+However, unlike Scala and Kotlin, these facades are not automatically generated for most of the platforms, requiring manual effort to create them.
+%
+Moreover, for integrating with native libraries, no unified mechanism exists.
+%
+Instead, each target platform needs to rely on its own build tool to link with external libraries, which may complicate the build process when targeting many platforms.
+
+Although not as popular as other languages, Haxe has found a niche in video game development and, thanks to its broad platform coverage, is a viable option for projects that require maximum platform coverage without advanced language abstractions or dependencies on specific ecosystems.
+
+
 
 
 \subsubsection{Comparison}
 
 \todo{Architectures are complete?}
-\todo{Add column for approach?}
 
 \begin{table}[htbp]
     \centering
@@ -348,12 +370,13 @@ This positions Gleam as a language suitable for full-stack development, allowing
     \makebox[\textwidth][c]{%
         \begin{tabularx}{1.1\textwidth}{
             @{}
-            >{\raggedright\arraybackslash}p{1.6cm}  % Language
-            >{\raggedright\arraybackslash}p{2.0cm}  % Primary Target
-            >{\raggedright\arraybackslash}p{2.0cm}  % Other Supported Platforms
-            >{\raggedright\arraybackslash}p{2.5cm}  % Language Interoperability
-            >{\raggedright\arraybackslash}p{2.2cm}  % Supported Architectures
-            >{\raggedright\arraybackslash}X         % Maturity
+            >{\raggedright\arraybackslash}p{1.3cm}  % Language
+            >{\raggedright\arraybackslash}p{1.9cm}  % Paradigm(s)
+            >{\raggedright\arraybackslash}p{1.8cm}  % Supported Platforms
+            >{\raggedright\arraybackslash}p{1.8cm}  % Approach
+            >{\raggedright\arraybackslash}p{1.8cm}  % Language Interoperability
+            >{\raggedright\arraybackslash}p{2.0cm}  % Supported Architectures
+            >{\raggedright\arraybackslash}p{2.0cm}  % Maturity
             >{\raggedright\arraybackslash}X         % Toolchain
             @{}
         }
@@ -361,6 +384,7 @@ This positions Gleam as a language suitable for full-stack development, allowing
             \textbf{Language} &
             \textbf{Paradigm(s)} &
             \textbf{Supported Platforms} &
+            \textbf{Approach} &
             \textbf{Language interoperability} &
             \textbf{Supported Architectures} &
             \textbf{Ecosystem maturity} &
@@ -370,9 +394,10 @@ This positions Gleam as a language suitable for full-stack development, allowing
             Scala &
                 OOP + FP &
                 JVM$^{\circ}$, \newline JS, WASM$^{\dagger}$, \newline Native &
+                Cross-compilation &
                 Java, \newline C, \newline JS and TS &
                 Win, \newline Unix, \newline arm64, \newline aarch64 &
-                Scala.js: mature, Scala Native: discrete & 
+                JS: mature, Native: discrete & 
                 Low \\
 
             \addlinespace[3pt]
@@ -380,6 +405,7 @@ This positions Gleam as a language suitable for full-stack development, allowing
             Kotlin MP &
                 OOP+FP &
                 JVM$^{\circ}$, \newline JS, WASM$^{\dagger}$, \newline Native &
+                Cross-compilation &
                 Java, \newline C, \newline Obj-C/Swift, \newline JS and TS &
                 AppleOS, \newline Win, \newline Unix, \newline arm64, \newline aarch64 &
                 Production-ready &
@@ -390,10 +416,20 @@ This positions Gleam as a language suitable for full-stack development, allowing
             Gleam &
                 FP &
                 BEAM$^{\circ}$, \newline JS &
+                Transpilation &
                 Erlang, \newline JS and TS &
                 Win, \newline Unix, \newline arm64, \newline aarch64 &
                 Emerging &
                 Low \\
+            
+            Haxe &
+                OOP &
+                JS, \newline C++, \newline C\#, \newline Java, \newline PHP, \newline Python, \newline Lua &
+                Hybrid &
+                C++, \newline C\#, \newline Java, \newline PHP, \newline Python, \newline Lua, \newline JS and TS &
+                Win, \newline Unix, \newline arm64, \newline aarch64 &
+                Mature &
+                High \\
 
             \bottomrule
         \end{tabularx}%
