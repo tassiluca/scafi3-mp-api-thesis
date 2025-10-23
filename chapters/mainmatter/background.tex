@@ -1,17 +1,19 @@
 % !TeX root = ../../main.tex
 \chapter{Background and Related Work}
 
-This chapter aims to provide the reader the theoretical background behind the concepts of software portability, multi-platform software development and interoperability between programming languages, unfolding how these concepts play a crucial role in the comprehensive software lifecycle and why they are relevant in modern software engineering.
+This chapter provides the reader the theoretical background behind the concepts of software portability, multi-platform software development and interoperability between programming languages, unfolding how these concepts play a crucial role in the comprehensive software lifecycle and why they are relevant in modern software engineering.
 
 \section{The role of portability in Software Engineering}
 
-Software \textit{portability} is, according to the ISO/IEC standard, the quality attribute that measures the \enquote{degree of effectiveness and efficiency with which a system, product or component can be transferred from one hardware, software or other operational or usage environment to another} \cite{iso-25010}.
+Software \textit{portability} refers to the ability of a software artifact to be used in a diverse range of platforms and environments.
 %
-Put differently, a software artifact is portable, i.e. it exhibits portability, when the cost required to design and implement it for porting to multiple platforms does not exceed the cost of re-development for each of them.
+In this context, the term \textit{platform} denotes the combination of hardware architecture and operating system, whereas \textit{environment} represents the broader collection of external elements with which the software interacts, including execution runtimes and system interfaces.
 %
-Portability is, therefore, a matter of engineering a software product to maximize the reusability of their components, guaranteeing the same behavior and functionalities across the different targeted platforms, where the concept of platform is wide and embraces hardware architecture, operating system, runtime upon which the software is executed and, more generally, public interfaces on which application software depends \cite{Sommerville2020}.
+In essence, a software artifact is portable, i.e. it exhibits portability, when the cost required to design and implement it for porting to multiple platforms does not exceed the cost of re-development for each of them \cite{Mooney}.
 %
-Portability spans over multiple levels \cite{mooney-2004}:
+Portability is, therefore, a matter of engineering a software product to maximize the reusability of their components, guaranteeing the same behavior and functionalities across the different targeted platforms.
+
+Portability spans over multiple levels \cite{Mooney}:
 
 \begin{itemize}
     \item \textit{source portability} occurs when the software is adapted to the underlying platform by changing the source code, which is then recompiled for the target platform. This is the most common form of portability;
@@ -19,7 +21,7 @@ Portability spans over multiple levels \cite{mooney-2004}:
     \item \textit{intermediate-level portability} is a middle-ground between source and binary portability and entails porting an intermediate representation of the software, sitting between the source and binary code.
 \end{itemize}
 
-Portability has always been a relevant concern in software engineering since the early days of computing when the landscape of hardware architectures and operating systems was extremely fragmented and heterogeneous and software was tightly coupled to the underlying platform, requiring full rewrites when moving to a different one \cite{randal2020ideal}.
+Portability has always been a relevant concern in software engineering since the early days of computing when the landscape of hardware architectures and operating systems was extremely fragmented and heterogeneous and software was tightly coupled to the underlying platform, requiring full rewrites when moving to a different one \cite{Randal2020}.
 %
 Over time, the situation has profoundly changed thanks to a series of innovations and efforts: from the standardization of operating systems interfaces, such as POSIX, to the widespread introduction of increasingly higher-level programming languages and the diffusion of modern paradigms, like the World Wide Web, that inherently fostered portability.
 
@@ -31,13 +33,13 @@ Virtual machine approaches addressed these challenges through an additional abst
 %
 This approach has found widespread adoption, with the JVM and CLR becoming the backbone of entire ecosystems of modern languages and frameworks and enabling the famous \enquote{write once, run anywhere} paradigm $-$ the promise that applications would be portable across any platform supporting the respective runtime.
 
-However, the technical reality proved to be more nuanced: different virtual machine implementations can exhibit subtle differences in behavior and also system libraries can vary across platforms, requiring additional adaptation efforts \cite{blanco2021holistic}.
+However, the technical reality proved to be more nuanced: different virtual machine implementations can exhibit subtle differences in behavior and also system libraries can vary across platforms, requiring additional adaptation efforts \cite{Blanco2021}.
 %
 Moreover, the embedded systems and IoT domains demonstrate that virtual machines have practical limits in contexts where resource-constrained devices cannot support their overhead or large bundles, necessitating low-level compilation-based approaches.
 
 Contemporary portability solutions continue this abstraction progression, with modern languages supporting multi-target compilation to various platforms, including JVM, JavaScript, WebAssembly and native binaries using intermediate representations.
 
-However, despite the advancements in portability techniques and tools, achieving true portability remains a complex challenge as it requires ensuring consistent behavior across diverse platforms and environments that often differ in their capabilities and constraints.
+However, despite the advancements in portability techniques and tools, achieving portability remains a complex challenge as it requires ensuring consistent behavior across diverse platforms and environments that often differ in their capabilities and constraints.
 %
 To illustrate, consider the differences between platforms in terms of concurrency models.
 %
@@ -141,7 +143,7 @@ For example, many interpreted languages, such as Python, include mechanisms for 
 
 Over the years, automated binding generation tools have been developed to simplify the creation of interoperability layers.
 %
-A well known example is the Simplified Wrapper and Interface Generator (SWIG) \cite{beazley-2003-swig}, which can generate language bindings from C and C++ header files to a variety of high-level languages, including Python, Java, JavaScript, Ruby and others.
+A well known example is the Simplified Wrapper and Interface Generator (SWIG) \cite{Beazley2003}, which can generate language bindings from C and C++ header files to a variety of high-level languages, including Python, Java, JavaScript, Ruby and others.
 %
 Unlike the cross-compilation approach, in the absence of automated tools, wrapper modules must be implemented manually $-$ a process that can be complex, error-prone and that does not scale well if the number of target languages increases.
 
@@ -155,7 +157,7 @@ Despite other languages, Scala's cross-platform capabilities are not tied to the
 
 \subsubsection{Scala.js}
 
-Scala.js is the project, introduced in 2013 at EPFL, meant to compile Scala code to JavaScript with the goal of enabling developers to write rich web applications entirely in Scala and having them compiled to ready to run JavaScript code \cite{Doeraene-2025}.
+Scala.js is the project, introduced in 2013 at EPFL, meant to compile Scala code to JavaScript with the goal of enabling developers to write rich web applications entirely in Scala and having them compiled to ready to run JavaScript code \cite{doeraene-2018}.
 %
 Over the years Scala.js has matured into a stable project that allows to target both web browsers and the Node.js backend environment, making it suitable for developing full-stack applications entirely in Scala.
 %
@@ -184,7 +186,7 @@ Scala.js-specific code can, therefore, invoke JavaScript functions, manipulate D
 %
 Conversely, software products APIs can be exposed to JavaScript code by annotating Scala.js classes and methods, instructing the compiler to generate the necessary bindings.
 %
-Moreover, to maximize code reuse across the JVM and JavaScript platforms, subsets of the Scala and Java standard libraries have been re-implemented to work natively in the JavaScript environment, providing almost equivalent semantics of their JVM counterparts: some differences in semantics are mainly due to the inherent distinctions between the two platforms (e.g., the fact only \texttt{Double}s are supported as numeric types in JavaScript) \cite{Doeraene-2025}.
+Moreover, to maximize code reuse across the JVM and JavaScript platforms, subsets of the Scala and Java standard libraries have been re-implemented to work natively in the JavaScript environment, providing almost equivalent semantics of their JVM counterparts: some differences in semantics are mainly due to the inherent distinctions between the two platforms (e.g., the fact only \texttt{Double}s are supported as numeric types in JavaScript) \cite{doeraene-2018}.
 %
 A notable example of reusable standard library API is the Future-based concurrency model which, under the hood, impacts the JavaScript event-loop model while exposing the same API available on the JVM platform.
 %
@@ -192,9 +194,9 @@ Nevertheless, not all the JVM standard library can be ported; for instance, bloc
 %
 When designing a cross-platform library, it is therefore essential to carefully evaluate which parts of the code can be shared and which need to be platform-specific, ensuring shared code relies only on cross-platform abstractions; for example, no blocking calls are performed.
 
-Lastly, concerning performances, Scala.js is currently from 2.5 to 10 times slower than equivalent handwritten JavaScript version \cite{Doeraene-2025}.
+%Lastly, concerning performances, Scala.js is currently from 2.5 to 10 times slower than equivalent handwritten JavaScript version \cite{Doeraene-2025}.
 %
-However, there is considerable room for optimizations, as current results lack optimizations such as method inlining, which could significantly improve performance and bring it closer to native JavaScript speeds.
+%However, there is considerable room for optimizations, as current results lack optimizations such as method inlining, which could significantly improve performance and bring it closer to native JavaScript speeds.
 
 \subsubsection{Scala Native}
 
@@ -206,7 +208,7 @@ Since its 0.5 release, published in 2024 with the introduction of native concurr
 
 Scala Native is both an \textit{ahead of time} (AOT) compiler and standalone runtime.
 
-The AOT compiler translates Scala code into native machine code leveraging the LLVM toolchain \cite{beazley-2003-swig}, a widely adopted modular compiler infrastructure for producing optimized machine code for multiple architectures. 
+The AOT compiler translates Scala code into native machine code leveraging the LLVM toolchain \cite{Lattner}, a widely adopted modular compiler infrastructure for producing optimized machine code for multiple architectures. 
 %
 Compilation proceeds, similarly to Scala.js, through a pipeline of stages, shown in \Cref{fig:scala-native-compiler-pipeline}, performed after the Scala frontend compiler producing IR from which the final machine code is generated:
 
