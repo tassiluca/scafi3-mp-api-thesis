@@ -9,9 +9,13 @@ Finally, the main cross-platform polyglot languages are reviewed, with a particu
 
 Software \textit{portability} refers to the ability of a software artifact to be used in a diverse range of platforms and environments.
 %
-In this context, the term \textit{platform} denotes the combination of hardware architecture and operating system, whereas \textit{environment} represents the broader collection of external elements with which the software interacts, including execution runtimes and system interfaces.
+In this context, the term \textit{platform} primarily denotes the combination of hardware architecture and operating system.
 %
-In essence, a software artifact is portable, i.e. it exhibits portability, when the cost required to design and implement it for porting to multiple platforms does not exceed the cost of re-development for each of them \cite{Mooney}.
+However, very often, the term is extended to encompass also the execution runtime.
+%
+\textit{Environment} represents instead the broader collection of external elements with which the software interacts, including system interfaces, libraries and toolchains.
+%
+In essence, a software artifact is portable, i.e., it exhibits portability, when the cost required to design and implement it for porting to multiple platforms does not exceed the cost of re-development for each of them \cite{Mooney}.
 %
 Portability is, therefore, a matter of engineering a software product to maximize the reusability of their components, guaranteeing the same behavior and functionalities across the different targeted platforms.
 
@@ -35,7 +39,7 @@ Virtual machine approaches addressed these challenges through an additional abst
 %
 This approach has found widespread adoption, with the JVM and CLR becoming the backbone of entire ecosystems of modern languages and frameworks and enabling the famous \enquote{write once, run anywhere} paradigm---the promise that applications would be portable across any platform supporting the respective runtime.
 
-However, the technical reality proved to be more nuanced: different virtual machine implementations can exhibit subtle differences in behavior, and in resource-constrained environments, the overhead imposed by the virtual machine may be prohibitive.
+However, the technical reality proved to be more nuanced: different virtual machine implementations can exhibit subtle differences in behavior, and, in resource-constrained environments, the overhead imposed by the virtual machine may be prohibitive.
 
 Contemporary portability solutions continue this abstraction progression, with modern languages supporting multi-target compilation to various platforms, including JVM, JavaScript, WebAssembly and native binaries using intermediate representations.
 
@@ -73,7 +77,7 @@ As Doeraene notes in \cite{doeraene-2018}, portability is not enough: even if a 
 %
 Having a multi-platform stack significantly impacts the testing strategy, as artifacts need to be tested on each of the targeted platforms to ensure they behave correctly and consistently across them.
 %
-Furthermore, different architectures may behave differently under the same platform (e.g. ARM vs. x86 in native execution), requiring additional testing efforts to cover all the supported architectures.
+Furthermore, different architectures may behave differently under the same platform (e.g., ARM vs. x86 in native execution), requiring additional testing efforts to cover all the supported architectures.
 
 \vspace{0.5em}
 
@@ -246,7 +250,7 @@ Concerning the supported architectures and operating systems, Scala Native can t
 %
 This covers the vast majority of modern desktop and server environments, including some System-on-Chip (SoC) architectures, like Raspberry Pi devices.
 %
-Experimental or partial support exists for FreeBSD, OpenBSD, and NetBSD, though sometimes limited to particular architectures (e.g. only AMD64 on OpenBSD). 
+Experimental or partial support exists for FreeBSD, OpenBSD, and NetBSD, though sometimes limited to particular architectures (e.g., only AMD64 on OpenBSD). 
 %
 Moreover, with the 0.5 release, Scala Native introduced experimental support for 32-bit architectures, like ARMv7.
 %
