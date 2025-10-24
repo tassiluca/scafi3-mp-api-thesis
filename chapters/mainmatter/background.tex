@@ -9,15 +9,13 @@ Finally, the main cross-platform polyglot languages are reviewed, with a particu
 
 Software \textit{portability} refers to the ability of a software artifact to be used in a diverse range of platforms and environments.
 %
-In this context, the term \textit{platform} primarily denotes the combination of hardware architecture and operating system.
+In this context, the term \textit{platform} primarily denotes the combination of hardware architecture and operating system, though it is often extended to include the execution runtime \cite{ElKassas2017}.
 %
-However, very often, the term is extended to encompass also the execution runtime.
-%
-\textit{Environment} represents instead the broader collection of external elements with which the software interacts, including system interfaces, libraries and toolchains.
+The term \textit{environment}, instead, represents the broader collection of external elements with which the software interacts, including system interfaces and libraries.
 %
 In essence, a software artifact is portable, i.e., it exhibits portability, when the cost required to design and implement it for porting to multiple platforms does not exceed the cost of re-development for each of them \cite{Mooney}.
 %
-Portability is, therefore, a matter of engineering a software product to maximize the reusability of their components, guaranteeing the same behavior and functionalities across the different targeted platforms.
+Portability is, therefore, about engineering software products to maximize components reuse while ensuring consistent behavior across target platforms.
 
 Portability spans over multiple levels \cite{Mooney}:
 
@@ -35,13 +33,13 @@ From a programming language perspective, one influential shift addressing portab
 %
 These emerged to overcome the limitations of traditional compilation-based approaches, like C and C++, that require developers to create and maintain separate binaries for each target platform, often with platform-specific code and complex build configurations---a costly and time-consuming process.
 %
-Virtual machine approaches addressed these challenges through an additional abstraction layer, decoupling the software from the underlying platform by compiling programs into an intermediate representation, like the Java bytecode, that is then interpreted or just-in-time compiled by a platform-specific runtime.
+Virtual machine approaches addressed these challenges through an additional abstraction layer, decoupling the software from the underlying platform by compiling programs into an Intermediate Representation (IR), like the Java bytecode, that is then interpreted or just-in-time compiled by a platform-specific runtime.
 %
 This approach has found widespread adoption, with the JVM and CLR becoming the backbone of entire ecosystems of modern languages and frameworks and enabling the famous \enquote{write once, run anywhere} paradigm---the promise that applications would be portable across any platform supporting the respective runtime.
 
 However, the technical reality proved to be more nuanced: different virtual machine implementations can exhibit subtle differences in behavior, and, in resource-constrained environments, the overhead imposed by the virtual machine may be prohibitive.
 
-Contemporary portability solutions continue this abstraction progression, with modern languages supporting multi-target compilation to various platforms, including JVM, JavaScript, WebAssembly and native binaries using intermediate representations.
+Contemporary portability solutions continue this abstraction progression, with modern languages supporting multi-target compilation to various platforms, including JVM, JavaScript, WebAssembly and native binaries using IRs.
 
 However, despite the advancements in portability techniques and tools, achieving portability remains a complex challenge as it requires ensuring consistent behavior across diverse platforms and environments that often differ in their capabilities and constraints.
 %
@@ -53,7 +51,7 @@ Nevertheless, not all platforms support this feature equally.
 %
 For instance, the Node JS platform, widely used for server-side and web applications, is based on a single-threaded event loop model where blocking operations cannot be performed, requiring a completely different paradigm based on Continuation-Passing Style and asynchronous programming.
 
-Such fundamental differences in platform capabilities are concern permeating all stages of the software lifecycle, from design to release, requiring careful consideration.
+Such fundamental differences in platform capabilities are concern permeating all stages of the software lifecycle, from design to release, requiring careful analysis.
 
 \vspace{0.5em}
 \noindent
@@ -65,13 +63,13 @@ The greater the abstraction gap is, the more challenging it becomes to implement
 %
 In this context, the maturity of a platform's ecosystem, in terms of libraries and frameworks availability, significantly reduces the abstraction gap developers must bridge, influencing the platform choice.
 %
-For example, if a software product requires advanced data analysis and machine learning capabilities, targeting a platform with a rich ecosystem of libraries and frameworks in this domain, such as Python, would be a wise choice.
+For example, if a software product requires advanced data analysis and machine learning capabilities, targeting a platform with a rich ecosystem in this domain, such as Python, would be a wise choice.
 
 This is particularly relevant when targeting multiple platforms, as the abstraction gap may be significantly higher with respect to a single platform scenario.
 %
-As Doeraene notes in \cite{doeraene-2018}, portability is not enough: even if a language is portable, unless the ecosystem publishes portable libraries, it remains difficult to develop applications spanning multiple runtimes due to the high development costs.
+As Doeraene notes in \cite{doeraene-2018}, portability is not enough: even if a language is portable, unless the ecosystem publishes portable libraries, it remains difficult to develop applications spanning multiple runtimes because of development costs.
 
-\vspace{0.5em}
+\vspace{0.4em}
 \noindent
 \textbf{Testing.}
 %
@@ -79,16 +77,16 @@ Having a multi-platform stack significantly impacts the testing strategy, as art
 %
 Furthermore, different architectures may behave differently under the same platform (e.g., ARM vs. x86 in native execution), requiring additional testing efforts to cover all the supported architectures.
 
-\vspace{0.5em}
+\vspace{0.4em}
 
 \noindent
 \textbf{Release.}
 %
 Releasing a multi-platform software product introduces significant complexity, as each platform has its own conventions and requirements for packaging, distributing, versioning and deployment.
 %
-For example, JVM-based artifacts are distributed as JAR via Maven Central or similar repositories, JavaScript applications are often bundled using tools like Webpack and distributed via npm, while Python packages are typically distributed as wheels via PyPI.
+For example, JVM artifacts are distributed as JARs via Maven Central, JavaScript applications via npm bundles such as Webpack, and Python packages as wheels via PyPI.
 
-\vspace{0.5em}
+\vspace{0.4em}
 
 Despite the challenges, portability remains a crucial aspect of modern software engineering, driven by the need to reach heterogeneous infrastructures and reduce the burden of maintaining or re-implementing software for different platforms.
 %
@@ -100,21 +98,23 @@ Portability is only one side of the coin.
 %
 Orthogonally to the platform dimension, \textit{language interoperability} is equally important, as it refers to the ability to communicate with other languages on each targeted platform, guaranteeing uniformity in semantics across them \cite{doeraene-2018}.
 %
-Having portability without interoperability is of limited practical use: while portability make it possible to use software artifacts in different platforms, the lack of interoperability with the host platform APIs and ecosystem's libraries would make the software product isolated and unable to interact with the surrounding ecosystem.
+Having portability without interoperability is of limited practical use: while portability make it possible to use software artifacts in different platforms, the lack of interoperability with their APIs and libraries would make the software product isolated and unable to interact with the surrounding ecosystem.
 %
-For example, developing an application targeting the JavaScript platform without being able to access JavaScript platform-specific functionalities, such as manipulating the DOM, handling user events or performing file system operations leveraging Node.js API would make portability largely theoretical rather than practical.
+For example, developing an application targeting the JavaScript platform without being able to access its specific functionalities, such as manipulating the DOM, handling user events or performing file system operations leveraging Node.js API, would make portability largely theoretical rather than practical.
 
-Interoperability, however, extends beyond accessing platform-specific APIs: it entails the responsibility for library developers to expose the library APIs to the platform's native language.
+Interoperability, however, extends beyond accessing native APIs: it entails the responsibility for library developers to expose the library interfaces in the target language.
 %
-This enables the widest possible developers' audience to use the library and, most importantly, to let them integrate it with the full power of the underlying platform ecosystem.
+This enables the widest possible developers' audience to use the library and, most importantly, to let them integrate it with the full power of the underlying ecosystem.
 %
 This is particularly relevant because platform ecosystems have been evolved in silos over the years; they often lack interoperability with each other, and each of them is focused and optimized for specific domains and use cases.
 %
 Language interoperability therefore allows, together with portability, developers to choose the best platform and, consequently, the best library API for their specific needs, minimizing the risk of incurring in incompatibility issues.
 
-Crafting a ``good'' language-interoperable layer is a complex task whose main difficulty lies in the mismatch between the run-time semantics and abstractions of the involved languages; that includes, among others, dealing with different memory management strategies (e.g., garbage collection vs manual memory management), type systems (e.g., static vs dynamic typing, strong vs weak typing), and error handling mechanisms (e.g., exceptions vs error codes). 
+Crafting a ``good'' language-interoperable layer is a complex task whose main difficulty lies in the mismatch between the run-time semantics and abstractions of the involved languages.
 %
-Sometimes, these differences cannot be fully bridged: some features of the source language can be dropped or limited if they cannot be mapped to the target language and are not essential for the language ecosystem on that platform, but this must be carefully evaluated on a case-by-case basis.
+This includes, among others, dealing with different memory management strategies (e.g., garbage collection vs manual memory management), type systems (e.g., static vs dynamic typing, strong vs weak typing), and error handling mechanisms (e.g., exceptions vs error codes). 
+%
+Sometimes, these differences cannot be fully bridged: some features of the source language can be dropped or limited on a case-by-case basis if they cannot be mapped to the target language and are not essential for the target ecosystem.
 %
 For example, most of the runtime reflection capabilities available in JVM-based languages may not be fully supported when interoperating with other languages.
 %
