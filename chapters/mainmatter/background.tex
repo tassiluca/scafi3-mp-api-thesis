@@ -123,7 +123,7 @@ However, the key point about interoperability is that the implemented features m
 \section{Approaches to multi-platform and polyglotism}
 \label{sec:approaches-to-multi-platform-and-polyglotism}
 
-Industrial frameworks that have achieved maturity and widespread adoption in addressing multi-platform development and polyglotism can be classified in \textit{cross-compilation} and \textit{wrapper-based} approaches.
+While various categorizations of cross-platform approaches exist in literature \cite{ElKassas2017}, two fundamental mechanisms can be distinguished: \textit{cross-compilation} and \textit{wrapper-based} approaches.
 
 In the cross-compilation approach, the source code is written in a sort of \enquote{superset} language that is automatically compiled and/or transpiled to different platform-specific targets thanks to a dedicated toolchain, generating platform-specific artifacts.
 %
@@ -132,8 +132,6 @@ In this approach the source language itself is designed to provide both portabil
 Despite having a single super language that can be cross-compiled to different targets, that does not mean that all the code can be shared across all the platforms.
 %
 Thus, when embracing this approach, the main goal is to design the software product to maximize the reusability of its components across the different targeted platforms and fill the abstraction gap with each environment via minimal platform-specific code, leveraging, whenever possible, cross-platform libraries.
-%
-Examples of cross-platform languages include, among others, Kotlin, Scala and Flutter/Dart.
 %
 The primary advantage of this approach is that it enables sharing a substantial portion of the codebase across different platforms.
 %
@@ -163,7 +161,7 @@ Despite other languages, Scala's cross-platform capabilities are not tied to the
 
 \subsubsection{Scala.js}
 
-Scala.js is the project, introduced in 2013 at EPFL, meant to compile Scala code to JavaScript with the goal of enabling developers to write rich web applications entirely in Scala and having them compiled to ready to run JavaScript code \cite{doeraene-2018}.
+Scala.js\footnote{\url{https://www.scala-js.org}} is the project, introduced in 2013 at EPFL, meant to compile Scala code to JavaScript with the goal of enabling developers to write rich web applications entirely in Scala and having them compiled to ready to run JavaScript code \cite{doeraene-2018}.
 %
 Over the years Scala.js has matured into a stable project that allows to target both web browsers and the Node.js backend environment, making it suitable for developing full-stack applications entirely in Scala.
 %
@@ -172,8 +170,8 @@ More recently, an experimental support for WebAssembly has also been introduced.
 Compilation to JavaScript is achieved via a pipeline of stages, shown in \Cref{fig:scala-js-compiler-pipeline}, performed after the Scala frontend compiler have parsed and type-checked the source code:
 
 \begin{itemize}
-    \item in the first stage the Scala.js compiler turns Scala AST into an Intermediate Representation (\texttt{.sjsir}) specifically designed to provide both portability and interoperability;
-    \item then, \texttt{.sjsir} files are linked together, type-checked and optimized;
+    \item in the first stage the Scala.js compiler turns Scala AST into an IR (\texttt{.sjsir}) specifically designed to provide both portability and interoperability;
+    \item then, \texttt{.sjsir} files are linked together, type-checked and optimized. Optimizations include, among others, methods inlining at call sites and dead code elimination to make sure only exported API is kept, significantly reducing the final code size;
     \item finally, the optimized IR is compiled into a single \texttt{.[m]js} file containing the JavaScript code ready to be executed in the JavaScript environment.
 \end{itemize}
 
@@ -188,11 +186,17 @@ The fact this compilation pipeline is attached to the standard Scala compiler al
 
 As for interoperability, Scala.js seamlessly integrates with existing JavaScript libraries and frameworks, thanks to a dedicated interoperability layer enabling both the consumption of JavaScript APIs and the exposure of Scala.js libraries to JavaScript code.
 %
-Scala.js-specific code can, therefore, invoke JavaScript functions, manipulate DOM elements and interact with any library available in the JavaScript ecosystem, including the Node.js standard library, through typed facades mapping JavaScript APIs to Scala.js types and abstractions.
+Scala.js-specific code can therefore invoke JavaScript functions and interact with any library available in the JavaScript ecosystem, including the Node.js standard library, through typed facades mapping JavaScript APIs to Scala.js types and abstractions.
+%
+These can be manually written or, more commonly, automatically generated 
+using ScalablyTyped\footnote{\url{https://scalablytyped.org/}}, a tool that converts TypeScript declaration files 
+(\texttt{.d.ts}) into Scala.js facades via a Scala Build Tool (sbt) plugin.
 %
 Conversely, software products APIs can be exposed to JavaScript code by annotating Scala.js classes and methods, instructing the compiler to generate the necessary bindings.
 %
-Moreover, to maximize code reuse across the JVM and JavaScript platforms, subsets of the Scala and Java standard libraries have been re-implemented to work natively in the JavaScript environment, providing almost equivalent semantics of their JVM counterparts: some differences in semantics are mainly due to the inherent distinctions between the two platforms (e.g., the fact only \texttt{Double}s are supported as numeric types in JavaScript) \cite{doeraene-2018}.
+Unfortunately, the project does not support automatic generation of TypeScript type definitions from Scala.js APIs, which would greatly facilitate the consumption of Scala.js libraries from TypeScript code (and there are no plans to support this in the future\footnote{\url{https://github.com/scala-js/scala-js/issues/3836\#issuecomment-551273036}}).
+
+To maximize code reuse across the JVM and JavaScript platforms, subsets of the Scala and Java standard libraries have been re-implemented to work natively in the JavaScript environment, providing almost equivalent semantics of their JVM counterparts: some differences are due to the inherent distinctions between the two platforms (e.g., the fact only \texttt{Double}s are supported as numeric types in JavaScript) \cite{doeraene-2018}.
 %
 A notable example of reusable standard library API is the Future-based concurrency model which, under the hood, impacts the JavaScript event-loop model while exposing the same API available on the JVM platform.
 %
@@ -200,30 +204,22 @@ Nevertheless, not all the JVM standard library can be ported; for instance, bloc
 %
 When designing a cross-platform library, it is therefore essential to carefully evaluate which parts of the code can be shared and which need to be platform-specific, ensuring shared code relies only on cross-platform abstractions; for example, no blocking calls are performed.
 
-\todo{scalably typed}
-
-%Lastly, concerning performances, Scala.js is currently from 2.5 to 10 times slower than equivalent handwritten JavaScript version \cite{Doeraene-2025}.
-%
-%However, there is considerable room for optimizations, as current results lack optimizations such as method inlining, which could significantly improve performance and bring it closer to native JavaScript speeds.
-
 \subsubsection{Scala Native}
 
-\todo{sn bindgen}
-
-Following the success of Scala.js, the Scala Native project moved their first steps in 2017 as a research project at EPFL.
+Following the success of Scala.js, the Scala Native\footnote{\url{https://www.scala-native.org/}} project moved their first steps in 2017 as a research project at EPFL.
 %
 Its goal is to compile Scala code directly to bare-metal machine code without the need for the JVM, making it suitable for resource-constrained environments where the overhead imposed by the JVM in terms of memory footprint and startup time cannot be tolerated.
 %
-Since its 0.5 release, published in 2024 with the introduction of native concurrency primitives, the project has reached a decent level of maturity and stability, making it viable for production use.
+Since the 0.5 release, published in 2024 with the introduction of native concurrency primitives, the project has reached a decent level of maturity and stability, making it viable for production use.
 
 Scala Native is both an \textit{ahead of time} (AOT) compiler and standalone runtime.
 
 The AOT compiler translates Scala code into native machine code leveraging the LLVM toolchain \cite{Lattner}, a widely adopted modular compiler infrastructure for producing optimized machine code for multiple architectures. 
 %
-Compilation proceeds, similarly to Scala.js, through a pipeline of stages, shown in \Cref{fig:scala-native-compiler-pipeline}, performed after the Scala frontend compiler producing IR from which the final machine code is generated:
+Compilation proceeds, similarly to Scala.js, through a pipeline of stages, shown in \Cref{fig:scala-native-compiler-pipeline}, performed after the Scala frontend compiler, producing IR files from which the final machine code is generated:
 
 \begin{itemize}
-    \item the first stage of the pipeline is performed by the \texttt{nscplugin} that, inspecting the abstract syntax tree, translates the Scala code into a strongly typed Native Intermediate Representation (NIR) consisting of a subset of LLVM IR instructions enriched with additional information to support Scala high level abstractions;
+    \item the first stage of the pipeline is performed by the \texttt{nscplugin} that, inspecting the abstract syntax tree, translates the Scala code into a strongly typed Native IR (NIR) consisting of a subset of LLVM IR instructions enriched with additional information to support Scala high level abstractions;
     \item NIR files are then linked together with those generated from external libraries and optimized;
     \item finally, the optimized NIR is translated to low-level LLVM instructions that are then compiled by the LLVM backend to platform-specific machine code.
 \end{itemize}
@@ -231,7 +227,7 @@ Compilation proceeds, similarly to Scala.js, through a pipeline of stages, shown
 \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{resources/img/scala-native-pipeline.pdf}
-    \caption{Scala Native simplified compiler pipeline. Adapted from \cite{Wojciech-2022-sn-internals}.}
+    \caption{Scala Native simplified compiler pipeline.}
     \label{fig:scala-native-compiler-pipeline}
 \end{figure}
 
@@ -242,8 +238,9 @@ Most notable features provided by the runtime are:
 \begin{itemize}
     \item a configurable garbage collector for automatic memory management of heap-allocated Scala objects;
     \item a threading model, based on native OS threads, which maps Scala's concurrency abstractions to the underlying platform while striving to maintain maximum semantic compatibility with the JVM;
-    \item foreign function and a subset of C interoperability primitives to interface with existing C or C++ libraries and native code. Scala Native can also expose its libraries to C code via annotations, though currently only static object methods and properties (via accessor methods) can be exported.
     \item most of the Scala and Java standard libraries re-implemented to work natively with the same semantics (Scala Native treats any differences in semantics between the two platforms as a bug).
+    \item foreign function and a subset of C interoperability primitives to interface with existing C or C++ libraries and native code through type facades. These can be generated, similarly to Scala.js, via the sbt binding generator plugin\footnote{\url{https://sn-bindgen.indoorvivants.com}}, which processes C header files and produces Scala Native facades.
+    Scala Native can also expose its libraries to C code via annotations, though currently only static object methods and properties (via accessor methods) can be exported and no automatic generation of C headers is provided.
 \end{itemize}
 
 Concerning the supported architectures and operating systems, Scala Native can target AMD64 (\texttt{x86-64}) and ARM64 (\texttt{aarch64}) architectures on Linux, macOS and Windows operating systems, also thanks to cross-compilation support---the ability to compile code for a different target architecture and/or OS than the one of the host machine where the compilation is performed.
@@ -260,7 +257,7 @@ While the first limitation could be overcome in the future, the second will hard
 
 \subsubsection{Cross-platform ecosystem}
 
-To draw conclusions, let's briefly analyze the state of the multi-platform ecosystem.
+A brief analysis of the multi-platform ecosystem state is presented.
 
 The fact that the native and JavaScript platforms are targeted by separate projects, each with its own release cycles and levels of maturity, introduces fragmentation in the ecosystem.
 %
@@ -286,7 +283,7 @@ Among these the most notable examples are Kotlin Multiplatform, Gleam, Haxe and 
 
 \subsubsection{Kotlin Multiplatform}
 
-Kotlin Multiplatform is Scala's primary competitor in both the JVM and cross-platform ecosystems, as it supports object-oriented and functional paradigms---albeit with less advanced abstractions than Scala---and targets comparable architectures: rooted in the JVM, it supports JavaScript, native platforms via LLVM, and, experimentally, WebAssembly.
+Kotlin Multiplatform\footnote{\url{https://www.jetbrains.com/help/kotlin-multiplatform-dev/}} is Scala's primary competitor in both the JVM and cross-platform ecosystems, as it supports object-oriented and functional paradigms---albeit with less advanced abstractions than Scala---and targets comparable architectures: rooted in the JVM, it supports JavaScript, native platforms via LLVM, and, experimentally, WebAssembly.
 
 Officially supported by JetBrains, Kotlin Multiplatform has gained significant traction in recent years, particularly in mobile development, after Google adopted it as the official language for Android.
 %
@@ -306,7 +303,7 @@ Notable toolchain features in this context include the automatic generation of C
 
 \subsubsection{Gleam}
 
-Gleam is an emergent general-purpose, statically-typed functional programming language.
+Gleam\footnote{\url{https://gleam.run}} is an emergent general-purpose, statically-typed functional programming language.
 %
 Guided by a minimalistic design philosophy, it emphasizes simplicity and ease of use, forgoing object-oriented constructs and advanced functional abstractions, such as type classes, in favor of first-class functions, algebraic data types and pattern matching.
 
@@ -316,23 +313,25 @@ Targeting the BEAM VM allows Gleam to leverage server-side battle-tested Erlang 
 %
 On the other hand, the JavaScript target enables Gleam to be used in web development, both on the client and server-side via Node.js.
 
-Differently from Scala and Kotlin, Gleam targets these platforms employing a source-to-source transpilation approach, whereby it transpiles its source code into human-readable and pretty-printed Erlang or JavaScript code with TypeScript declaration files.
+Gleam targets these platforms employing a source-to-source transpilation approach, whereby it transpiles its source code into human-readable and pretty-printed Erlang or JavaScript code with TypeScript declaration files.
 %
 This allows full interoperability with the BEAM and JavaScript ecosystems through annotations and type facades, and allows developers to inspect and debug the generated code directly.
 %
 However, since the lack of hierarchical modules structure like Scala's or Kotlin's, this architectural choice introduces significant limitations when dealing with platform-specific incompatible abstractions, like I/O and concurrency.
 %
-Whereas when targeting Erlang concurrency is managed transparently by the runtime, with JavaScript Gleam requires explicit handling via promises or callbacks to deal with the event-loop model.
+When targeting the Erlang's platform, concurrency is managed transparently by the BEAM runtime.
 %
-Consequently, when adopting Erlang style it is not possible to target JavaScript, and vice versa.
+In contrast, the JavaScript target requires explicit handling of concurrency via promises or callbacks to accommodate the event-loop model.
+%
+Consequently, programming styles and constructs differ between targets: code employing Erlang-style concurrency I/O cannot be transpiled to JavaScript and vice versa.
 %
 Therefore, libraries that make use of concurrent I/O need to decide whether to target one platform or the other, limiting code sharing.
 
-This positions Gleam as a language suitable for full-stack development, allowing to write both backend and frontend code in the same language, rather than as a language offering complete cross-platform capabilities.
+This positions Gleam as a language suitable for full-stack development, allowing developers to write both backend and frontend code in the same language, rather than offering complete cross-platform capabilities.
 
 \subsubsection{Haxe}
 
-Haxe is general-purpose cross-platform language, primarily designed to target a large variety of platforms and programming languages, including JavaScript, PHP, Python, Lua, C++, Java and C\#, on a wide range of architectures and operating systems, like Windows, Linux, macOS, Android and Apple iOS.
+Haxe\footnote{\url{https://haxe.org}} is general-purpose cross-platform language, primarily designed to target a large variety of platforms and programming languages, including JavaScript, PHP, Python, Lua, C++, Java and C\#, on a wide range of architectures and operating systems, including Android and Apple iOS.
 %
 The language is strictly-typed, object-oriented, featuring an ECMAScript-oriented syntax, similar to JavaScript and Java.
 
@@ -342,7 +341,7 @@ The Haxe language can both compile into bytecode to be executed on JVM or its ow
 %
 It features a platform-agnostic standard library and an ecosystem of cross-platform libraries, supporting most of the necessary functionalities for general-purpose programming, including data structures, file I/O, networking and concurrency.
 %
-Platform-specific code can be written using conditional compilation directives, similarly to C-style preprocessor directives.
+Platform-specific code can be written using conditional compilation directives, similarly to C-style preprocessor macros.
 
 Concerning interoperability, Haxe allows to interface with target-specific syntax and APIs creating, like all presented languages, typed facades.
 %
@@ -356,11 +355,11 @@ Although not as popular as other languages, Haxe has found a niche in video game
 
 \subsubsection{Flutter/Dart}
 
-The last analyzed cross-platform language is Dart.
+Dart\footnote{\url{https://dart.dev}} represents another notable approach to cross-platform development.
+
+Dart, developed by Google, is a statically-typed, object-oriented language best known for powering the Flutter framework, which enables cross-platform application development for mobile, desktop, and web from a single codebase.
 %
-Built by Google, Dart is a statically-typed, object-oriented language, best known for powering the Flutter framework, used to develop cross-platform applications for both mobile, native and web platforms from a single codebase.
-%
-It targets native platforms via Ahead-of-Time (AOT) compilation and web platforms through transpilation to JavaScript and WebAssembly.
+It targets native platforms (including Android and Apple devices) via Ahead-of-Time (AOT) compilation and web platforms through transpilation to JavaScript and WebAssembly.
 
 Interoperability in Dart is achieved through different mechanisms depending on the target platform.
 %
@@ -448,9 +447,9 @@ These characteristics make Flutter and Dart primarily well-suited for UI-centric
                 Mature &
                 High \\
 
-            Flutter/Dart &
+            Flutter / Dart &
                 OOP &
-                Native$^{\circ}$, \newline JS, \newline WASM &
+                Native, \newline JS, \newline WASM &
                 Cross-compilation &
                 C, \newline Obj-C/Swift, \newline JS and TS &
                 AppleOS, \newline Win, \newline Unix, \newline arm64, \newline aarch64 &
@@ -466,5 +465,6 @@ These characteristics make Flutter and Dart primarily well-suited for UI-centric
     \footnotesize
     $^{\circ}$ Primary target platform \\
     $^{\dagger}$ Experimental feature \\
+    $^{\leadsto}$ Indirectly through a "companion" language
 \end{table}
 
