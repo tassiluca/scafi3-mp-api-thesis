@@ -351,7 +351,7 @@ Moreover, for integrating with native libraries, no unified mechanism exists.
 %
 Instead, each target platform needs to rely on its own build tool to link with external libraries, which may complicate the build process when targeting many platforms.
 
-Although not as popular as other languages, Haxe has found a niche in video game development and, thanks to its broad platform coverage, is a viable option for projects that require maximum platform coverage without advanced language abstractions or dependencies on specific ecosystems.
+Although not as popular as other languages, Haxe has found a niche in video game development and, thanks to its broad platform coverage, is a viable option for projects prioritizing maximum platform coverage over advanced language abstractions or reliance on specific ecosystems.
 
 \subsubsection{Flutter/Dart}
 
@@ -372,10 +372,6 @@ These characteristics make Flutter and Dart primarily well-suited for UI-centric
 \vspace{1.5em}
 
 \Cref{tab:comprehensive-comparison} presents a comparison of the analyzed cross-platform languages and their main characteristics, including their maturity levels in terms of ecosystem and toolchain.
-%
-Ecosystem maturity is categorized as: \textit{Emerging} (limited libraries and adoption), \textit{Growing} (expanding packages ad active development), \textit{Mature} (rich ecosystem with large community) and \textit{Established} (extensive packages and widely used in industry).
-%
-Toolchain maturity follows a similar progression: \textit{Experimental} (minimal tooling, unstable), \textit{Developing} (basic tools available with growing tool support, but still with some instability), \textit{Mature} (production-ready tools with good stability) and \textit{Production-Grade} (robust, feature-rich tools widely adopted in production environments).
 
 \begin{table}[htbp]
     \centering
@@ -444,8 +440,8 @@ Toolchain maturity follows a similar progression: \textit{Experimental} (minimal
                 JS, \newline Native, \newline .NET, \newline JVM, \newline PHP, \newline Python, \newline Lua &
                 Hybrid &
                 C++, \newline C\#, \newline Java, \newline PHP, \newline Python, \newline Lua, \newline JS and TS$^{\leadsto}$ &
-                Mature &
-                High \\
+                Growing &
+                Developing \\
 
             \addlinespace[5pt]
 
@@ -462,10 +458,17 @@ Toolchain maturity follows a similar progression: \textit{Experimental} (minimal
     }
 
     \vspace{0.4em}
-    \raggedright
     \footnotesize
-    $^{\circ}$ Primary target platform \\
-    $^{\dagger}$ Experimental feature \\
-    $^{\leadsto}$ Indirectly through a "companion" language
-\end{table}
+    \begin{tabular}{p{0.4\textwidth} p{0.6\textwidth}}
+        \raggedright
+        $^{\circ}$ Primary target platform \\
+        $^{\dagger}$ Experimental feature \\
+        $^{\leadsto}$ Indirectly, via a "companion" language
 
+        &
+
+        \raggedright
+        \textbf{Ecosystem maturity:} \textit{Emerging} (limited libraries and adoption), \textit{Growing} (expanding libraries, active development, limited community support), \textit{Mature} (rich ecosystem), \textit{Established} (extensive packages, widely used in industry) \\
+        \textbf{Toolchain maturity:} \textit{Experimental} (minimal tooling, unstable), \textit{Developing} (basic tools, some instability), \textit{Mature} (production-ready), \textit{Production-Grade} (robust, widely adopted in production)
+    \end{tabular}
+\end{table}
