@@ -371,7 +371,11 @@ These characteristics make Flutter and Dart primarily well-suited for UI-centric
 
 \vspace{1.5em}
 
-\Cref{tab:comprehensive-comparison} presents a comparison of the analyzed cross-platform languages and their main characteristics.
+\Cref{tab:comprehensive-comparison} presents a comparison of the analyzed cross-platform languages and their main characteristics, including their maturity levels in terms of ecosystem and toolchain.
+%
+Ecosystem maturity is categorized as: \textit{Emerging} (limited libraries and adoption), \textit{Growing} (expanding packages ad active development), \textit{Mature} (rich ecosystem with large community) and \textit{Established} (extensive packages and widely used in industry).
+%
+Toolchain maturity follows a similar progression: \textit{Experimental} (minimal tooling, unstable), \textit{Developing} (basic tools available with growing tool support, but still with some instability), \textit{Mature} (production-ready tools with good stability) and \textit{Production-Grade} (robust, feature-rich tools widely adopted in production environments).
 
 \begin{table}[htbp]
     \centering
@@ -379,82 +383,79 @@ These characteristics make Flutter and Dart primarily well-suited for UI-centric
     \setlength{\tabcolsep}{4pt} % Reduce horizontal padding
     \renewcommand{\arraystretch}{1.15} % Slightly tighter vertical spacing
 
-    \caption{Cross-Platform Language Comparison}
+    \caption{Cross-platform languages comparison}
     \label{tab:comprehensive-comparison}
     \vspace{0.4em}
 
     \makebox[\textwidth][c]{%
-        \begin{tabularx}{1.1\textwidth}{
+        \begin{tabularx}{\textwidth}{
             @{}
             >{\raggedright\arraybackslash}p{1.3cm}  % Language
-            >{\raggedright\arraybackslash}p{1.9cm}  % Paradigm(s)
-            >{\raggedright\arraybackslash}p{1.8cm}  % Supported Platforms
+            >{\raggedright\arraybackslash}p{1.7cm}  % Paradigm(s)
+            >{\raggedright\arraybackslash}X         % Supported Environments
             >{\raggedright\arraybackslash}p{1.8cm}  % Approach
-            >{\raggedright\arraybackslash}p{1.8cm}  % Language Interoperability
-            >{\raggedright\arraybackslash}p{2.0cm}  % Supported Architectures
-            >{\raggedright\arraybackslash}p{2.0cm}  % Maturity
-            >{\raggedright\arraybackslash}X         % Toolchain
+            >{\raggedright\arraybackslash}X         % Language Interoperability
+            >{\raggedright\arraybackslash}X         % Maturity
+            >{\raggedright\arraybackslash}p{1.8cm}  % Toolchain
             @{}
         }
             \toprule
             \textbf{Language} &
             \textbf{Paradigm(s)} &
             \textbf{Supported Environments} &
-            \textbf{Approach} &
+            \textbf{Primary Approach} &
             \textbf{Language interoperability} &
-            \textbf{Supported Architectures} &
             \textbf{Ecosystem maturity} &
             \textbf{Toolchain maturity} \\
             \midrule
 
             Scala &
                 OOP + FP &
-                JVM$^{\circ}$, \newline JS, WASM$^{\dagger}$, \newline Native &
+                JVM$^{\circ}$, \newline JS, \newline WASM$^{\dagger}$, \newline Native &
                 Cross-compilation &
-                Java, \newline C, \newline JS and TS &
-                Win, \newline Unix, \newline arm64, \newline aarch64 &
-                JS: mature, Native: discrete & 
-                Low \\
+                Java, \newline C and C++$^{\leadsto}$, \newline JS and TS$^{\leadsto}$ &
+                JS: Mature, Native: Growing & 
+                JS: Mature, Native: Developing \\
 
-            \addlinespace[3pt]
+            \addlinespace[5pt]
 
             Kotlin MP &
                 OOP+FP &
-                JVM$^{\circ}$, \newline JS, WASM$^{\dagger}$, \newline Native &
+                JVM$^{\circ}$, \newline JS, WASM$^{\dagger}$, \newline Native, \newline Mobile (Android, Apple) &
                 Cross-compilation &
-                Java, \newline C, \newline Obj-C/Swift, \newline JS and TS &
-                AppleOS, \newline Win, \newline Unix, \newline arm64, \newline aarch64 &
-                Production-ready &
-                High \\
+                Java, \newline C and C++$^{\leadsto}$, \newline Obj-C/Swift, \newline JS and TS$^{\leadsto}$ &
+                Mature &
+                Mature \\
 
-            \addlinespace[3pt]
+            \addlinespace[5pt]
 
             Gleam &
                 FP &
                 BEAM$^{\circ}$, \newline JS &
                 Transpilation &
-                Erlang, \newline JS and TS &
-                Win, \newline Unix, \newline arm64, \newline aarch64 &
+                Erlang, \newline JS and TS$^{\leadsto}$ &
                 Emerging &
-                High \\
+                Developing \\
+
+            \addlinespace[5pt]
             
             Haxe &
                 OOP &
                 JS, \newline Native, \newline .NET, \newline JVM, \newline PHP, \newline Python, \newline Lua &
                 Hybrid &
-                C++, \newline C\#, \newline Java, \newline PHP, \newline Python, \newline Lua, \newline JS and TS &
-                Win, \newline Unix, \newline arm64, \newline aarch64 &
+                C++, \newline C\#, \newline Java, \newline PHP, \newline Python, \newline Lua, \newline JS and TS$^{\leadsto}$ &
                 Mature &
                 High \\
+
+            \addlinespace[5pt]
 
             Flutter / Dart &
                 OOP &
                 Native, \newline JS, \newline WASM &
                 Cross-compilation &
-                C, \newline Obj-C/Swift, \newline JS and TS &
-                AppleOS, \newline Win, \newline Unix, \newline arm64, \newline aarch64 &
-                Production-ready &
-                High \\
+                C and C++$^{\leadsto}$, \newline Obj-C/Swift, \newline JS and TS$^{\leadsto}$ &
+                Established &
+                Production-Grade \\
 
             \bottomrule
         \end{tabularx}%
