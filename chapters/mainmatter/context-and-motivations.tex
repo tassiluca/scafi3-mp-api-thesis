@@ -95,7 +95,19 @@ On top of these constructs, a set of higher-level building blocks and libraries 
 
 \subsection{Portability and interoperability in Aggregate Computing}
 
+The nature of Aggregate Computing, with its focus on large scale distributed systems composed of a multitude of heterogeneous devices, spanning from wearables devices to embedded and mobile devices,  each with its own hardware and software capabilities, makes portability a primary concern for the effective deployment of aggregate programs.
 
+Historically, the first implementation of Aggregate Computing was \textit{Protelis} \todo{cite}, a JVM-based, Java-interoperable external domain-specific language (DSL) providing a higher-order aggregate programming language.
+%
+Then, \textit{ScaFi (Scala Fields)} \todo{cite} was introduced as a Scala 2 strongly-typed internal DSL leveraging Scala's powerful type system and functional programming features.
+
+Over the years, several other implementations have been developed or are in the process of being developed in different languages, including C++, Kotlin, Rust and Python.
+%
+The rationale behind these multiple implementations is to reach the widest possible range of platforms, enabling real-world deployments on edge devices, and to leverage the unique strengths of each programming language and its ecosystem, such as performance optimizations in C++ or Python Machine and Deep Learning libraries.
+%
+However, these implementations have been created independently of scratch, with no code reuse and not compatibility in mind.
+%
+Moreover, the lack of a common framework has led to fragmentation in the ecosystem, leading to a situation where each implementation has its own set of libraries and ad hoc extensions.
 
 \section{Scafi3 overview: a Scala 3 library for aggregate programming}
 
