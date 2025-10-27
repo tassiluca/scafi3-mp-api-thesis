@@ -15,6 +15,8 @@
 \usepackage{newlfont}
 \usepackage{geometry}   			% to customize page layout
 \usepackage{amsmath}    			% math equations: use `begin{equation[*]}`
+\usepackage{amssymb}				% math symbols
+\usepackage{mdframed}   			% to create framed boxes (used for syntax blocks)
 \usepackage{hyperref}  				% [hidelinks] = hide a box around active links
 % to reference in latex @see https://texblog.org/2013/05/06/cleveref-a-clever-way-to-reference-in-latex/
 \usepackage{cleveref}
@@ -26,6 +28,7 @@
     % for more on styles: @see https://it.overleaf.com/learn/latex/Biblatex_bibliography_styles
     style=alphabetic,
 ]{biblatex}
+\usepackage{xcolor}					% to define colors
 \usepackage{csquotes}				% to inline and display quotations
 \usepackage{enumitem}           	% to manage items spacing in `itemize`
 \setlist{noitemsep}             	% leave space around whole list but no between items
@@ -94,6 +97,33 @@
         \normalfont
         \vspace{\stretch{2}}\null
     \end{flushright}
+}
+
+\newmdenv[
+  skipabove=0pt,
+  skipbelow=0pt,
+  linewidth=0pt,
+  innerleftmargin=1em,
+  innerrightmargin=1em,
+  innertopmargin=0.3ex,
+  innerbottommargin=0.3ex
+]{syntaxblock}
+
+\newenvironment{syntax}{
+  \begin{center}
+  \vspace{-0.5\baselineskip} % tighten space above (optional)
+  \begin{syntaxblock}
+  \vspace{-0.3\baselineskip} % tighten internal spacing before math
+  \[
+  \setlength{\arraycolsep}{3pt} % tighter column spacing if desired
+  \begin{array}{rcl}
+}{
+  \end{array}
+  \]
+  \vspace{-0.5\baselineskip} % tighten after display math
+  \end{syntaxblock}
+  \vspace{-1.5\baselineskip} % tighten below
+  \end{center}
 }
 
 % ---------------------------------------------------------------------------------------------------

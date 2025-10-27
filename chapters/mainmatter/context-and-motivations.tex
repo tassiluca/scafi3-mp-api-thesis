@@ -21,33 +21,81 @@ Following this principle, developers can write a single program representing the
 %
 The paradigm embraces functional programming principles to ensure composability and modularity of programs, allowing developers to build complex systems in a succinct and declarative manner, abstracting away low-level details about communication and coordination among devices.
 
-The Aggregate Computing model is based on a collection of interconnected devices according to a neighboring relation, establishing a dynamic network topology that can evolve over time as a result of mobility, failure and network delays.
+The Aggregate Computing model is based on a collection of interconnected devices capable of exchanging information between themselves according to a neighboring relation, establishing a dynamic network topology that can evolve over time as a result of mobility, failure and network delays.
 %
 Each device dynamics is modelled as a sequence of asynchronous, discrete computational rounds, each consisting of three phases:
 %
 \begin{enumerate}[label=\roman*.]
-    \item \textit{sense}: the device collects information from local sensors through which it can observe its local environment and sent by its neighbors in the previous round to update its local context;
+    \item \textit{sense}: the device collects information from the most recent messages received from its neighbors and from its local sensors, through which it can observe its local environment;
     \item \textit{compute}: execute the aggregate program using the updated local context to produce an output (the program's return value) and the messages to be sent to neighbors;
     \item \textit{interact}: the program executes its actuations and sends the messages produced in the compute phase to neighboring devices.
 \end{enumerate}
 
 The main abstraction, formalized through the \textit{Field Calculus} \todo{cite}, is that of a \textit{computational field}, more briefly referred to as a \textit{field}.
 %
-A field is a distributed data structure mapping each device of the collectivity to a local value.
+A field is a distributed data structure mapping each device to a local value with a default in a specific point in space-time.
 %
-Aggregate programs are expressed over fields since they represent the first-class citizens of the paradigm, embodying the \textit{"everything is a field"} philosophy: for example, the program controlling the movement of a swarm of robots can be encoded as a field of vectors, where each device has an associated vector indicating the direction and speed it is moving.
+Aggregate programs are expressed in terms of fields since they represent the first-class citizens of the paradigm, embodying the \textit{"everything is a field"} philosophy: for example, the program controlling the movement of a swarm of robots can be encoded as a field of vectors, where each device has an associated vector indicating the direction and speed it is moving.
+
+Computations, in this context, are performed by manipulating fields through \textit{stateful evolution}, \textit{neighborhood interaction} and \textit{domain partitioning} constructs.
 %
-Fields are then manipulated through three kind of constructs:
+Those can be expressed by, namely, \texttt{exchange} and \texttt{branch} primitives, formalized in the \textit{Exchange Calculus} \todo{cite}, a tiny core calculus allowing to express the overall behavior of Aggregate Computing systems.
 %
 \begin{itemize}
-    \item \textit{stateful evolution} of fields over time (rounds);
-    \item \textit{neighbour interaction} to exchange information, enabling spatial evolution;
-    \item \textit{domain partitioning} to manage different sub-collectivities within the overall system.
+    \item \textit{stateful evolution} of fields over time (rounds) and \textit{neighborhood interaction} are achieved through the \texttt{exchange} primitive:
+    %
+    \begin{syntax}
+        \textcolor{violet!90!black}{\mathbf{exchange}}
+        \bigl(
+            e_i,\;
+            (\underline{n}) \;\Rightarrow\;
+            \textcolor{blue!60!black}{\mathbf{return}}\; e_r\;
+            \textcolor{blue!60!black}{\mathbf{send}}\; e_s
+        \bigr)
+    \end{syntax}
+    %
+    that is evaluated, for each round, as follows:
+    \begin{itemize}
+        \item the expression $e_i$ is computed to produce the local initial value $l_i$;
+        \item $\underline{n}$ represents the neighborhood values received from neighboring devices for this exchange. Note that, since a device is always a neighbor of itself, its own last local value for this exchange from the previous round is also included in $\underline{n}$. For those neighbors for which no value has been received $l_i$ is used as default. The expression $e_r$ is evaluated to the value to be returned by the exchange, allowing to evolve state over rounds based on the neighborhood context;
+        \item the expression $e_s$ is evaluated to produce the values to be sent to neighbors for this exchange in the next round.
+    \end{itemize}
+
+    \item \textit{domain partitioning} to manage different sub-collectivities within the overall system, achieved by the \texttt{branch} primitive. 
+    %
+    \begin{syntax}
+        \textcolor{violet!90!black}{\mathbf{branch}}
+        \bigl(
+            condition,\;
+            e_{true},\;
+            e_{false}
+        \bigr)
+    \end{syntax}
+    %
+    that evaluates the \texttt{condition} expression on each device, and depending on its truth value, evaluates either the true branch or the false branch, effectively partitioning the computational field into two sub-fields.
 \end{itemize}
 
-Both stateful evolution and neighbor interaction are embodied in a single operator called \texttt{exchange}:
+Both \texttt{exchange} and \texttt{branch} to work properly rely on \textit{alignment}, the mechanism ensuring the values produced by an exchange are processed only by corresponding exchanges, namely those in the same position within the program structure.
+%
+This avoids the situation where different exchanges interfere with each other, leading to inconsistent or erroneous behavior when programs contain multiple exchange-expressions in their structure, possibly in different branches of a conditional.
+
+Exchange is powerful enough to express also the \textit{Field Calculus} constructs:
+%
+\begin{itemize}
+    \item \texttt{nbr}, used to access \textit{neighbor values};
+    \item \texttt{evolve}, used to make evolve the local state over rounds based on the result of the same expression in the previous round;
+    \item \texttt{share}, used to access neighbors' values while computing a new value based on the previous result.
+\end{itemize}
+
+\todo{complete with FC syntax}
+
+On top of these constructs, a set of higher-level building blocks and libraries is provided to facilitate the development of aggregate programs in a composable and declarative manner.
+
+\todo{some example?}
 
 \subsection{Portability and interoperability in Aggregate Computing}
+
+
 
 \section{Scafi3 overview: a Scala 3 library for aggregate programming}
 
