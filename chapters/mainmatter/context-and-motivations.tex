@@ -57,7 +57,9 @@ Those can be expressed by, namely, \texttt{exchange} and \texttt{branch} primiti
     that is evaluated, for each round, as follows:
     \begin{itemize}
         \item the expression $e_i$ is computed to produce the local initial value $l_i$;
-        \item $\underline{n}$ represents the neighborhood values received from neighboring devices for this exchange. Note that, since a device is always a neighbor of itself, its own last local value for this exchange from the previous round is also included in $\underline{n}$. For those neighbors for which no value has been received $l_i$ is used as default. The expression $e_r$ is evaluated to the value to be returned by the exchange, allowing to evolve state over rounds based on the neighborhood context;
+        \item $\underline{n}$ represents the neighborhood values received from neighboring devices for this exchange.
+        Notationally, neighbor values are underlined to distinguish them from local values.
+        Note that, since a device is always a neighbor of itself, its own last local value for this exchange from the previous round is also included in $\underline{n}$. For those neighbors for which no value has been received $l_i$ is used as default. The expression $e_r$ is evaluated to the value to be returned by the exchange, allowing to evolve state over rounds based on the neighborhood context;
         \item the expression $e_s$ is evaluated to produce the values to be sent to neighbors for this exchange in the next round.
     \end{itemize}
 
@@ -82,9 +84,45 @@ This avoids the situation where different exchanges interfere with each other, l
 Exchange is powerful enough to express also the \textit{Field Calculus} constructs:
 %
 \begin{itemize}
-    \item \texttt{nbr}, used to access \textit{neighbor values};
-    \item \texttt{evolve}, used to make evolve the local state over rounds based on the result of the same expression in the previous round;
-    \item \texttt{share}, used to access neighbors' values while computing a new value based on the previous result.
+    \item \texttt{nbr}, used to access \textit{neighbor's values}:
+    %
+    \begin{syntax}
+        \textcolor{violet!90!black}{\mathbf{nbr}}(e: A): \underline{A}
+        \equiv
+        \textcolor{violet!90!black}{\mathbf{exchange}}
+        \bigl(
+            e,\;
+            (\underline{n}) \;\Rightarrow\;
+            \textcolor{blue!60!black}{\mathbf{return}}\; \underline{n},\;
+            \textcolor{blue!60!black}{\mathbf{send}}\; e
+        \bigr)
+    \end{syntax}
+    %
+    \item \texttt{evolve}, used to make evolve the local state over rounds based on the result of the same expression in the previous round:
+    %
+    \begin{syntax}
+        \textcolor{violet!90!black}{\mathbf{evolve}}(init: A)\{(x: A) \Rightarrow e_n \}: A
+        \equiv
+        \textcolor{violet!90!black}{\mathbf{exchange}}\bigl(
+            init,\;
+            (\underline{n}) \Rightarrow
+            \textcolor{blue!60!black}{\mathbf{retsend}}\; \underline{n}(self)
+        \bigr)
+    \end{syntax}
+
+    \item \texttt{share}, used to access neighbors' values while computing a new value based on the previous result:
+    %
+    \begin{syntax}
+        \textcolor{violet!90!black}{\mathbf{share}}(init: A)\{(x: A) \Rightarrow e_n \}: A
+        \equiv&
+        self(
+            \textcolor{violet!90!black}{\mathbf{exchange}}(
+                init,\;
+                (\underline{n}) \Rightarrow
+                \textcolor{blue!60!black}{\mathbf{retsend}}\; e_n
+            )
+        )
+    \end{syntax}
 \end{itemize}
 
 \todo{complete with FC syntax}
@@ -93,7 +131,7 @@ On top of these constructs, a set of higher-level building blocks and libraries 
 
 \todo{some example?}
 
-\subsection{Portability and interoperability in Aggregate Computing}
+\section{Portability and interoperability in Aggregate Computing}
 
 The nature of Aggregate Computing, with its focus on large scale distributed systems composed of a multitude of heterogeneous devices, spanning from wearables devices to embedded and mobile devices,  each with its own hardware and software capabilities, makes portability a primary concern for the effective deployment of aggregate programs.
 
@@ -103,12 +141,31 @@ Then, \textit{ScaFi (Scala Fields)} \todo{cite} was introduced as a Scala 2 stro
 
 Over the years, several other implementations have been developed or are in the process of being developed in different languages, including C++, Kotlin, Rust and Python.
 %
-The rationale behind these multiple implementations is to reach the widest possible range of platforms, enabling real-world deployments on edge devices, and to leverage the unique strengths of each programming language and its ecosystem, such as performance optimizations in C++ or Python Machine and Deep Learning libraries.
+The rationale behind these multiple implementations is to reach the widest possible range of platforms, enabling real-world deployments on edge devices, or to leverage the unique strengths of each programming language and its ecosystem, such as performance optimizations in C++ or Python Machine and Deep Learning libraries.
 %
-However, these implementations have been created independently of scratch, with no code reuse and not compatibility in mind.
+However, each of these implementations have been created from scratch, with no code reuse and no compatibility in mind.
 %
-Moreover, the lack of a common framework has led to fragmentation in the ecosystem, leading to a situation where each implementation has its own set of libraries and ad hoc extensions.
+Moreover, the lack of a common framework has led to fragmentation of the aggregate ecosystem, leading to a situation where each implementation has its own set of libraries, ad hoc extensions and maturity level.
+
+To address these issues, there has been growing interest towards a framework capable of targeting multiple platforms while offering interoperability with other languages.
+%
+Such a framework requires a foundational language that can effectively and idiomatically express the abstractions and computational model of Aggregate Computing.
+%
+Critically, cross-platform support must not come at the expense of expressiveness.
+%
+Scala emerges as an ideal "super"-language for this purpose, given its strong type system allowing to build powerful DSLs and its functional programming features enabling higher-order abstractions.
+%
+Moreover, Scala's growing support for multiplatform development ask for investigation whether it can be effectively leveraged to build a portable Aggregate Computing framework.
+
+The goal of this work is to explore the feasibility of building such a framework, starting from an existing modern Scala 3 implementation of Aggregate Computing, extending it to support multiple platforms and enabling interoperability with other languages.
+%
+This exploration is meant to investigate:
+%
+\begin{itemize}
+    \item architectural strategies to design a portable and interoperable layer for Aggregate programming while maintaining core abstractions and semantics intact with complete code reuse;
+    \item interoperability strategies to enable seamless communication and data exchange between aggregate programs implemented in different languages, allowing to distribute a collectiveness across heterogeneous devices with different language runtimes;
+    \item performance implications, idiomaticity of the resulting APIs and overall effort required to extend and maintain the cross-platform framework, through comprehensive benchmarks and case studies.
+\end{itemize}
 
 \section{Scafi3 overview: a Scala 3 library for aggregate programming}
 
-\todo{Why Scala as super language for multiplatform aggregate computing?}
