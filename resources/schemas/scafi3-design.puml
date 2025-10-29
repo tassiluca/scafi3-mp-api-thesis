@@ -1,0 +1,31 @@
+@startuml scafi3-design
+
+skinparam interface<<trait>> {
+  BackgroundColor lightblue
+  BorderColor blue
+  StereotypeFontColor blue
+}
+
+package "core" {
+    interface AggregateFoundation << (T,#FEFECE) trait >>
+
+    interface FieldBasedSharedData << (T,#FEFECE) trait >>
+
+    interface ExchangeCalculus << (T,#FEFECE) trait >>
+
+    interface ExchangeSyntax << (T,#FEFECE) trait >> {
+
+    }
+
+    interface FieldCalculusSyntax << (T,#FEFECE) trait >> {
+
+    }
+
+    interface ExchangeLanguage << (T,#FEFECE) trait >> extends ExchangeSyntax, FieldCalculusSyntax {
+
+    }
+
+    interface ExchangeAggregateContext << (T,#FEFECE) trait >>
+}
+
+@enduml

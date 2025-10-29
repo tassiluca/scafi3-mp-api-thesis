@@ -13,7 +13,7 @@ Finally, an overview is provided of the Scala implementation of Aggregate Comput
 
 In the realm of complex large-scale systems composed of many interconnected devices, such as Internet of Things (IoT) ecosystems and swarm robotics, traditional approaches to programming individual devices struggle to cope with the scalability, composability, fault-tolerance and declarativeness required to manage such systems effectively.
 
-Aggregate Computing \cite{Beal2015} is an emergent research paradigm aiming at programming such systems through the lens of \textit{macro-programming}.
+Aggregate Computing \cite{ac} is an emergent research paradigm aiming at programming such systems through the lens of \textit{macro-programming}.
 %
 Its core philosophy grounds on the idea of programming the collective behavior of the system as a whole rather than on the individual behavior of its components.
 %
@@ -33,7 +33,7 @@ Each device dynamics is modelled as a sequence of asynchronous, discrete computa
     \item \textit{interact}: the program executes its actuations and sends the messages produced in the compute phase to neighboring devices.
 \end{enumerate}
 
-The main abstraction, formalized through the \textit{Field Calculus} \cite{Audrito2019}, is that of a \textit{computational field}, more briefly referred to as a \textit{field}.
+The main abstraction, formalized through the \textit{Field Calculus} \cite{fc}, is that of a \textit{computational field}, more briefly referred to as a \textit{field}.
 %
 A field is a distributed data structure mapping each device to a local value in a specific point in space-time.
 %
@@ -41,7 +41,7 @@ Aggregate programs are expressed in terms of fields since they represent the fir
 
 Computations, in this context, are performed by manipulating fields through \textit{stateful evolution}, \textit{neighborhood interaction} and \textit{domain partitioning} constructs.
 %
-Those can be expressed by, namely, \texttt{exchange} and \texttt{branch} primitives, formalized in the \textit{Exchange Calculus} \cite{Audrito2024}, a tiny core calculus allowing to express the overall behavior of Aggregate Computing systems.
+Those can be expressed by, namely, \texttt{exchange} and \texttt{branch} primitives, formalized in the \textit{Exchange Calculus} (XC) \cite{xc}, a tiny core calculus allowing to express the overall behavior of Aggregate Computing systems.
 %
 \begin{itemize}
     \item \textit{stateful evolution} of fields over time (rounds) and \textit{neighborhood interaction} are achieved through the \texttt{exchange} primitive:
@@ -133,13 +133,15 @@ On top of these constructs, a set of higher-level building blocks and libraries 
 
 \todo{some example?}
 
+\todo{replace branch with if then else}
+
 \section{Portability and interoperability in Aggregate Computing}
 
 The nature of Aggregate Computing, with its focus on large scale distributed systems composed of a multitude of heterogeneous devices, spanning from wearables devices to embedded and mobile devices,  each with its own hardware and software capabilities, makes portability a primary concern for the effective deployment of aggregate programs.
 
-Historically, the first implementation of Aggregate Computing was \textit{Protelis} \cite{Pianini2017}, a JVM-based, Java-interoperable external domain-specific language (DSL) providing a higher-order aggregate programming language.
+Historically, the first implementation of Aggregate Computing was \textit{Protelis} \cite{protelis}, a JVM-based, Java-interoperable external domain-specific language (DSL) providing a higher-order aggregate programming language.
 %
-Then, \textit{ScaFi (Scala Fields)} \cite{Casadei2016} was introduced as a Scala 2 strongly-typed internal DSL leveraging Scala's powerful type system and functional programming features.
+Then, \textit{ScaFi (Scala Fields)} \cite{scafi} was introduced as a Scala 2 strongly-typed internal DSL leveraging Scala's powerful type system and functional programming features.
 
 Over the years, several other implementations have been developed or are in the process of being developed in different languages, including C++, Kotlin, Rust and Python.
 %
@@ -170,4 +172,12 @@ This exploration is meant to investigate:
 \end{itemize}
 
 \section{Scafi3 overview: a Scala 3 library for aggregate programming}
+
+ScaFi3 (Scala with Computational Fields)\footnote{\url{https://github.com/scafi/scafi3}} is a modern Scala 3-grounded implementation of Aggregate Computing, born as a complete re-engineering of the original ScaFi library to leverage the new features and capabilities of Scala 3 and to deliver full reified support for fields alongside full implementation of XC constructs.
+
+The project is organized in two modules: the \texttt{core} module, providing the core aggregate language constructs and semantics, and the \texttt{alchemist-incarnation} module, providing integration with Alchemist \cite{alchemist}, a simulator for pervasive, nature- and chemical-inspired, and aggregate computing systems, with which simulate large-scale systems.
+%
+The \texttt{core} module is implemented as a pure Scala 3 module, meaning it has no dependencies on any platform-specific capabilities, making it cross-platform by design.
+%
+The \texttt{alchemist-incarnation} module, instead, depends on the Alchemist simulator and the JVM platform, thus being limited to JVM-based platforms only.
 
