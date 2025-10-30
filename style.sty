@@ -15,7 +15,7 @@
 \usepackage{newlfont}
 \usepackage{geometry}   			% to customize page layout
 \usepackage{amsmath}    			% math equations: use `begin{equation[*]}`
-\usepackage{amssymb}				% math symbols
+\usepackage{amssymb}				  % math symbols
 \usepackage{mdframed}   			% to create framed boxes (used for syntax blocks)
 \usepackage{hyperref}  				% [hidelinks] = hide a box around active links
 % to reference in latex @see https://texblog.org/2013/05/06/cleveref-a-clever-way-to-reference-in-latex/
@@ -130,11 +130,10 @@
 % LISTING CONFIGURATIONS
 % See https://en.wikibooks.org/wiki/LaTeX/Source_Code_Listings
 % ---------------------------------------------------------------------------------------------------
-% Only if interested in italian...
 %\renewcommand{\lstlistingname}{Listato}
-%\renewcommand{\lstlistlistingname}{Elenco dei listati}
-%\crefname{lstlisting}{\lstlistingname}{listato}
-%\Crefname{lstlisting}{\lstlistingname}{Listato}
+% By default, cleveref doesn’t know how to format references to lstlisting environments and prints `??` when you try to reference them.
+\crefname{lstlisting}{\lstlistingname}{listing}
+\Crefname{lstlisting}{\lstlistingname}{Listing}
 
 \lstset{
 	showstringspaces=false,

@@ -39,6 +39,13 @@ A field is a distributed data structure mapping each device to a local value in 
 %
 Aggregate programs are expressed in terms of fields since they represent the first-class citizens of the paradigm, embodying the \textit{"everything is a field"} philosophy: for example, the program controlling the movement of a swarm of robots can be encoded as a field of vectors, where each device has an associated vector indicating the direction and speed it is moving.
 
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{resources/img/field.pdf}
+    \caption{A visual representation of a computational \textit{field} and phases of a round.}
+    \label{fig:field}
+\end{figure}
+
 Computations, in this context, are performed by manipulating fields through \textit{stateful evolution}, \textit{neighborhood interaction} and \textit{domain partitioning} constructs.
 %
 Those can be expressed by, namely, \texttt{exchange} and \texttt{branch} primitives, formalized in the \textit{Exchange Calculus} (XC) \cite{xc}, a tiny core calculus allowing to express the overall behavior of Aggregate Computing systems.
@@ -57,23 +64,20 @@ Those can be expressed by, namely, \texttt{exchange} and \texttt{branch} primiti
     \end{syntax}
     %
     that is evaluated, for each round, as follows:
-    \begin{itemize}
+    \begin{enumerate}[label=\roman*.]
         \item the expression $e_i$ is computed to produce the local initial value $l_i$;
         \item $\underline{n}$ represents the neighborhood values received from neighboring devices for this exchange.
         Notationally, neighbor values are underlined to distinguish them from local values.
         Note that, since a device is always a neighbor of itself, its own last local value for this exchange from the previous round is also included in $\underline{n}$. For those neighbors for which no value has been received $l_i$ is used as default. The expression $e_r$ is evaluated to the value to be returned by the exchange, allowing to evolve state over rounds based on the neighborhood context;
         \item the expression $e_s$ is evaluated to produce the values to be sent to neighbors for this exchange in the next round.
-    \end{itemize}
+    \end{enumerate}
 
-    \item \textit{domain partitioning} to manage different sub-collectivities within the overall system, achieved by the \texttt{branch} primitive. 
+    \item \textit{domain partitioning} to manage different sub-collectivities within the overall system: 
     %
     \begin{syntax}
-        \textcolor{violet!90!black}{\mathbf{branch}}
-        \bigl(
-            condition,\;
-            e_{true},\;
-            e_{false}
-        \bigr)
+        \textcolor{violet!90!black}{\mathbf{if}} \; condition,\; 
+            \textcolor{blue!60!black}{\mathbf{then}}\; e_{true},\;
+            \textcolor{blue!60!black}{\mathbf{else}}\; e_{false}
     \end{syntax}
     %
     that evaluates the \texttt{condition} expression on each device, and depending on its truth value, evaluates either the true branch or the false branch, effectively partitioning the computational field into two sub-fields.
@@ -133,8 +137,6 @@ On top of these constructs, a set of higher-level building blocks and libraries 
 
 \todo{some example?}
 
-\todo{replace branch with if then else}
-
 \section{Portability and interoperability in Aggregate Computing}
 
 The nature of Aggregate Computing, with its focus on large scale distributed systems composed of a multitude of heterogeneous devices, spanning from wearables devices to embedded and mobile devices,  each with its own hardware and software capabilities, makes portability a primary concern for the effective deployment of aggregate programs.
@@ -179,5 +181,28 @@ The project is organized in two modules: the \texttt{core} module, providing the
 %
 The \texttt{core} module is implemented as a pure Scala 3 module, meaning it has no dependencies on any platform-specific capabilities, making it cross-platform by design.
 %
-The \texttt{alchemist-incarnation} module, instead, depends on the Alchemist simulator and the JVM platform, thus being limited to JVM-based platforms only.
+The \texttt{alchemist-incarnation} module, instead, depends on the Alchemist simulator and the JVM platform, thus being limited to JVM-based platforms.
+
+Scafi core DSL and libraries entry-points are implemented leveraging Scala 3 contextual abstractions.
+%
+More specifically, they are implemented as pure functions in singleton objects, taking as implicit parameters the \textit{language syntaxes}, which provides the necessary capabilities to express the aggregate constructs.
+%
+These are automatically injected by the ScaFi engine, which is responsible for executing computational rounds: during each round, in the compute phase, the aggregate context is created and implicitly provided when evaluating the aggregate program.
+
+Pragmatically, to write an aggregate program in ScaFi3, the developer defines a type alias representing the required language syntaxes, expressed as intersection type compositions, and then defines the aggregate program as a contextual function over that language.
+%
+For example, in \Cref{lst:scafi3-gradient-example} a simple aggregate program computing a distance gradient from a source node is shown.can
+%
+Since the program needs to access field calculus syntax (the \texttt{share} construct) and the distance sensor, allowing to sense the distance from neighboring devices, the \texttt{Lang} type alias is defined as the intersection of the \texttt{AggregateFoundation} root syntax, where the \texttt{DeviceId} type is specialized, the \texttt{FieldCalculusSyntax} providing field calculus constructs, and \texttt{DistanceSensor} providing the distance sensor capability.
+
+\begin{minipage}{\linewidth}
+    \lstinputlisting[
+        language=Scala, 
+        caption={A ScaFi3 aggregate program computing a distance gradient from a source node. At every round each device shares with its neighbors the minimum distance with its neighbors, computed as the pointwise sum of the distance values received from neighbors and the sensed distance to them. If the device is a source node, it returns 0.0. Eventually, the gradient value converges to the minimum distance from the nearest source node.},
+        label={lst:scafi3-gradient-example},
+        linerange={14-22},
+    ]{resources/code/Gradient.scala}
+\end{minipage}
+
+
 
