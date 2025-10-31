@@ -221,8 +221,7 @@ To achieve this, the \texttt{Lang} type alias is defined as the intersection of 
 \begin{minipage}{0.40\textwidth} % right column: image
     \centering
     \includegraphics[width=\textwidth]{./resources/img/gradient-round0.pdf}
-    \label{fig:gradient-round0}
 \end{minipage}
 \captionof{lstlisting}[ScaFi3 gradient example]{On the left, a ScaFi3 aggregate program computing a distance gradient from a source node. At each round, every device shares with its neighbors the minimum distance among them, computed as the pointwise sum of the values received from neighbors and the sensed distance to them. If the device is a source node, it returns 0.0. Eventually, the gradient value converges to the minimum distance from the nearest source node. On the right, a visual representation of the gradient field computed by the program at round 1. The source node is represented in yellow. Links are labeled with the sensed distance values, while nodes are labeled with the computed gradient value.}
-\label{fig:code-and-diagram}
+\label{lst:scafi3-gradient-example}
 \end{adjustwidth}
