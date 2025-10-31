@@ -5,9 +5,9 @@ This chapter sets the context and motivations behind the thesis work.
 %
 First, the fundamentals of Aggregate Computing are introduced.
 %
-Next, interest in portability and language interoperability in this context is explained, along with the motivations behind this thesis project.
+Next, interest in portability and language interoperability in this field is explained, along with the motivations behind this thesis project.
 %
-Finally, an overview is provided of the Scala implementation of Aggregate Computing, which will be the subject of extension.
+Finally, an overview of the Scala 3 implementation of Aggregate Computing is provided, which will be extended in this work.
 
 \section{Aggregate computing: a bird's eye view}
 
@@ -25,7 +25,7 @@ The Aggregate Computing model is based on a collection of interconnected devices
 %
 This establishes a dynamic network topology that can evolve over time as a result of mobility, failure and network delays.
 %
-Each device dynamics is modelled as a sequence of asynchronous, discrete computational rounds, each consisting of three phases:
+Each device's dynamics is modelled as a sequence of asynchronous, discrete computational rounds, each consisting of three phases:
 %
 \begin{enumerate}[label=\roman*.]
     \item \textit{sense}: the device collects information from the most recent messages received from its neighbors and from its local sensors, through which it can observe its local environment;
@@ -48,7 +48,7 @@ Aggregate programs are expressed in terms of fields since they represent the fir
 
 Computations, in this context, are performed by manipulating fields through \textit{stateful evolution}, \textit{neighborhood interaction} and \textit{domain partitioning} constructs.
 %
-Those can be expressed by, namely, \texttt{exchange} and \texttt{branch} primitives, formalized in the \textit{Exchange Calculus} (XC) \cite{xc}, a tiny core calculus allowing to express the overall behavior of Aggregate Computing systems.
+Those can be expressed by the \texttt{exchange} and \texttt{branch} primitives, formalized in the \textit{Exchange Calculus} (XC) \cite{xc}, a tiny core calculus allowing to express the overall behavior of Aggregate Computing systems:
 %
 \begin{itemize}
     \item \textit{stateful evolution} of fields over time (rounds) and \textit{neighborhood interaction} are achieved through the \texttt{exchange} primitive:
@@ -66,21 +66,29 @@ Those can be expressed by, namely, \texttt{exchange} and \texttt{branch} primiti
     that is evaluated, for each round, as follows:
     \begin{enumerate}[label=\roman*.]
         \item the expression $e_i$ is computed to produce the local initial value $l_i$;
-        \item $\underline{n}$ represents the neighborhood values received from neighboring devices for this exchange.
-        Notationally, neighbor values are underlined to distinguish them from local values.
-        Note that, since a device is always a neighbor of itself, its own last local value for this exchange from the previous round is also included in $\underline{n}$. For those neighbors for which no value has been received $l_i$ is used as default. The expression $e_r$ is evaluated to the value to be returned by the exchange, allowing to evolve state over rounds based on the neighborhood context;
+        \item $\underline{n}$ represents the neighboring (\textit{field}) value received from nearby devices for this exchange.
+        Notationally, neighboring values are underlined to distinguish them from local values.
+        Note that, since a device is always considered a neighbor of itself, its own last local value for this exchange from the previous round is also included in $\underline{n}$. For those neighbors for which no value has been received $l_i$ is used as default. The expression $e_r$ is evaluated to the value to be returned by the exchange, allowing to evolve state over rounds based on the neighborhood context;
         \item the expression $e_s$ is evaluated to produce the values to be sent to neighbors for this exchange in the next round.
     \end{enumerate}
+
+    Often, $e_r$ and $e_s$ coincide; in that case the \texttt{retsend} shorthand is used: 
+    %
+    \begin{syntax}
+        \textcolor{violet!90!black}{\mathbf{exchange}}(e_i, 
+            (\underline{n}) \Rightarrow
+            \textcolor{blue!60!black}{\mathbf{retsend}}\; e)
+    \end{syntax}
 
     \item \textit{domain partitioning} to manage different sub-collectivities within the overall system: 
     %
     \begin{syntax}
-        \textcolor{violet!90!black}{\mathbf{if}} \; condition,\; 
-            \textcolor{blue!60!black}{\mathbf{then}}\; e_{true},\;
-            \textcolor{blue!60!black}{\mathbf{else}}\; e_{false}
+        \textcolor{blue!60!black}{\mathbf{if}}\; (condition) \; 
+            \{ e_{true} \} \;
+            \textcolor{blue!60!black}{\mathbf{else}}\; \{ e_{false} \}
     \end{syntax}
     %
-    that evaluates the \texttt{condition} expression on each device, and depending on its truth value, evaluates either the true branch or the false branch, effectively partitioning the computational field into two sub-fields.
+    that evaluates the \texttt{condition} expression on each device and, depending on its truth value, evaluates either the true branch or the false branch, effectively partitioning the computational field into two sub-fields.
 \end{itemize}
 
 Both \texttt{exchange} and \texttt{branch} to work properly rely on \textit{alignment}, the mechanism ensuring the values produced by an exchange are processed only by corresponding exchanges, namely those in the same position within the program structure.
@@ -90,7 +98,7 @@ This avoids the situation where different exchanges interfere with each other, l
 Exchange is powerful enough to express also the \textit{Field Calculus} constructs:
 %
 \begin{itemize}
-    \item \texttt{nbr}, used to access \textit{neighbor's values}:
+    \item \texttt{nbr}, used to access neighbor's values:
     %
     \begin{syntax}
         \textcolor{violet!90!black}{\mathbf{nbr}}(e: A): \underline{A}
@@ -104,26 +112,26 @@ Exchange is powerful enough to express also the \textit{Field Calculus} construc
         \bigr)
     \end{syntax}
     %
-    \item \texttt{evolve}, used to make evolve the local state over rounds based on the result of the same expression in the previous round:
+    \item \texttt{rep}, used to make evolve the local state over rounds based on the result of the same expression in the previous round:
     %
     \begin{syntax}
-        \textcolor{violet!90!black}{\mathbf{evolve}}(init: A)\{(x: A) \Rightarrow e_n \}: A
+        \textcolor{violet!90!black}{\mathbf{rep}}(e_i: A)\{(x) \Rightarrow e_n \}: A
         \equiv
         \textcolor{violet!90!black}{\mathbf{exchange}}\bigl(
-            init,\;
+            e_i,\;
             (\underline{n}) \Rightarrow
-            \textcolor{blue!60!black}{\mathbf{retsend}}\; \underline{n}(self)
+            \textcolor{blue!60!black}{\mathbf{retsend}}\; e_n[x := self(\underline{n})]
         \bigr)
     \end{syntax}
 
     \item \texttt{share}, used to access neighbors' values while computing a new value based on the previous result:
     %
     \begin{syntax}
-        \textcolor{violet!90!black}{\mathbf{share}}(init: A)\{(x: A) \Rightarrow e_n \}: A
+        \textcolor{violet!90!black}{\mathbf{share}}(e_i: A)\{(\underline{x}) \Rightarrow e_n \}: A
         \equiv&
         self(
             \textcolor{violet!90!black}{\mathbf{exchange}}(
-                init,\;
+                e_i,\;
                 (\underline{n}) \Rightarrow
                 \textcolor{blue!60!black}{\mathbf{retsend}}\; e_n
             )
@@ -131,25 +139,25 @@ Exchange is powerful enough to express also the \textit{Field Calculus} construc
     \end{syntax}
 \end{itemize}
 
-\todo{complete with FC syntax}
-
-On top of these constructs, a set of higher-level building blocks and libraries is provided to facilitate the development of aggregate programs in a composable and declarative manner.
-
-\todo{some example?}
+On top of these constructs, a set of higher-level building blocks and libraries can be built to facilitate the development of aggregate programs in a composable and declarative manner.
+%
+These include gradient functions for distance estimation, information spreading mechanisms, state management and time-related constructs to handle stateful and temporal behaviors.
 
 \section{Portability and interoperability in Aggregate Computing}
 
-The nature of Aggregate Computing, with its focus on large scale distributed systems composed of a multitude of heterogeneous devices, spanning from wearables devices to embedded and mobile devices,  each with its own hardware and software capabilities, makes portability a primary concern for the effective deployment of aggregate programs.
+Aggregate Computing targets large-scale distributed systems made up of many heterogeneous devices, from wearables to embedded and mobile ones, each with distinct hardware and software capabilities.
+%
+Ensuring portability is therefore a primary concern for deploying aggregate programs effectively.
 
 Historically, the first implementation of Aggregate Computing was \textit{Protelis} \cite{protelis}, a JVM-based, Java-interoperable external domain-specific language (DSL) providing a higher-order aggregate programming language.
 %
 Then, \textit{ScaFi (Scala Fields)} \cite{scafi} was introduced as a Scala 2 strongly-typed internal DSL leveraging Scala's powerful type system and functional programming features.
 
-Over the years, several other implementations have been developed or are in the process of being developed in different languages, including C++, Kotlin, Rust and Python.
+Over the years, several other implementations have been developed---or are currently being developed---in different languages, including C++, Kotlin, Rust and Python.
 %
-The rationale behind these multiple implementations is to reach the widest possible range of platforms, enabling real-world deployments on edge devices, or to leverage the unique strengths of each programming language and its ecosystem, such as performance optimizations in C++ or Python Machine and Deep Learning libraries.
+These implementations aim to support the widest range of platforms, enabling real-world deployments on edge devices, while taking advantage of each language's and ecosystem's strengths, such as C++ performance optimizations or Python machine and deep learning libraries.
 %
-However, each of these implementations have been created from scratch, with no code reuse and no compatibility in mind.
+However, they were created from scratch, with neither code reuse nor compatibility in mind.
 %
 Moreover, the lack of a common framework has led to fragmentation of the aggregate ecosystem, leading to a situation where each implementation has its own set of libraries, ad hoc extensions and maturity level.
 
@@ -161,23 +169,25 @@ Critically, cross-platform support must not come at the expense of expressivenes
 %
 Scala emerges as an ideal "super"-language for this purpose, given its strong type system allowing to build powerful DSLs and its functional programming features enabling higher-order abstractions.
 %
-Moreover, Scala's growing support for multiplatform development ask for investigation whether it can be effectively leveraged to build a portable Aggregate Computing framework.
+Moreover, Scala's growing support for multiplatform development calls for an investigation into whether it can be effectively used to build a portable Aggregate Computing framework.
 
 The goal of this work is to explore the feasibility of building such a framework, starting from an existing modern Scala 3 implementation of Aggregate Computing, extending it to support multiple platforms and enabling interoperability with other languages.
 %
 This exploration is meant to investigate:
 %
 \begin{itemize}
-    \item architectural strategies to design a portable and interoperable layer for Aggregate programming while maintaining core abstractions and semantics intact with complete code reuse;
-    \item interoperability strategies to enable seamless communication and data exchange between aggregate programs implemented in different languages, allowing to distribute a collectiveness across heterogeneous devices with different language runtimes;
-    \item performance implications, idiomaticity of the resulting APIs and overall effort required to extend and maintain the cross-platform framework, through comprehensive benchmarks and case studies.
+    \item architectural strategies to design a portable and interoperable layer for Aggregate programming, while maintaining core abstractions and semantics and enabling complete code reuse;
+    \item interoperability and distribution strategies enabling seamless data exchange and collective execution across heterogeneous devices and language runtimes;
+    \item performance implications, idiomaticity of the resulting APIs and overall effort required to extend and maintain a cross-platform and polyglot API.
 \end{itemize}
 
 \section{Scafi3 overview: a Scala 3 library for aggregate programming}
 
-ScaFi3 (Scala with Computational Fields)\footnote{\url{https://github.com/scafi/scafi3}} is a modern Scala 3-grounded implementation of Aggregate Computing, born as a complete re-engineering of the original ScaFi library to leverage the new features and capabilities of Scala 3 and to deliver full reified support for fields alongside full implementation of XC constructs.
+ScaFi3\footnote{\url{https://github.com/scafi/scafi3}} is a modern Scala 3-grounded implementation of Aggregate Computing.
+%
+Born as a complete re-engineering of the original ScaFi library to leverage the new features and capabilities of Scala 3, it delivers full reified support for fields alongside full implementation of XC constructs.
 
-The project is organized in two modules: the \texttt{core} module, providing the core aggregate language constructs and semantics, and the \texttt{alchemist-incarnation} module, providing integration with Alchemist \cite{alchemist}, a simulator for pervasive, nature- and chemical-inspired, and aggregate computing systems, with which simulate large-scale systems.
+The project is organized into two modules: the \texttt{core} module, providing the core aggregate language constructs and semantics, and the \texttt{alchemist-incarnation} module, providing integration with Alchemist \cite{alchemist}, a simulator for pervasive, nature- and chemical-inspired, and aggregate computing systems that enable the simulation of large-scale systems.
 %
 The \texttt{core} module is implemented as a pure Scala 3 module, meaning it has no dependencies on any platform-specific capabilities, making it cross-platform by design.
 %
@@ -189,11 +199,13 @@ More specifically, they are implemented as pure functions in singleton objects, 
 %
 These are automatically injected by the ScaFi engine, which is responsible for executing computational rounds: during each round, in the compute phase, the aggregate context is created and implicitly provided when evaluating the aggregate program.
 
-Pragmatically, to write an aggregate program in ScaFi3, the developer defines a type alias representing the required language syntaxes, expressed as intersection type compositions, and then defines the aggregate program as a contextual function over that language.
+In practice, to write an aggregate program in ScaFi3, the developer defines a type alias representing the required language syntaxes, expressed as intersection type compositions, and then defines the aggregate program as a contextual function over that language.
 %
-For example, in \Cref{lst:scafi3-gradient-example} a simple aggregate program computing a distance gradient from a source node is shown.can
+For example, in \Cref{lst:scafi3-gradient-example} a simple aggregate program computing a distance gradient from a source node is shown.
 %
-Since the program needs to access field calculus syntax (the \texttt{share} construct) and the distance sensor, allowing to sense the distance from neighboring devices, the \texttt{Lang} type alias is defined as the intersection of the \texttt{AggregateFoundation} root syntax, where the \texttt{DeviceId} type is specialized, the \texttt{FieldCalculusSyntax} providing field calculus constructs, and \texttt{DistanceSensor} providing the distance sensor capability.
+The program requires access to field calculus syntax (the \texttt{share} construct) and the distance sensor, allowing to sense the distance from neighboring devices.
+%
+To achieve this, the \texttt{Lang} type alias is defined as the intersection of the \texttt{AggregateFoundation} root syntax, where the \texttt{DeviceId} type is specialized, the \texttt{FieldCalculusSyntax}, providing field calculus constructs, and \texttt{DistanceSensor}, providing the distance sensor capability.
 
 \begin{minipage}{\linewidth}
     \lstinputlisting[
