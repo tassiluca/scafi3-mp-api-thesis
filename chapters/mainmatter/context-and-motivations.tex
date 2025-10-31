@@ -207,18 +207,21 @@ The program requires access to field calculus syntax (the \texttt{share} constru
 %
 To achieve this, the \texttt{Lang} type alias is defined as the intersection of the \texttt{AggregateFoundation} root syntax, where the \texttt{DeviceId} type is specialized, the \texttt{FieldCalculusSyntax}, providing field calculus constructs, and \texttt{DistanceSensor}, providing the distance sensor capability.
 
-\begin{minipage}{\linewidth}
+\begin{adjustwidth}{-0.5cm}{-1.5cm} % reduce left and right margins by 1cm
+\begin{minipage}{0.70\textwidth} % left column: code
     \lstinputlisting[
         language=Scala, 
-        caption={A ScaFi3 aggregate program computing a distance gradient from a source node. At every round each device shares with its neighbors the minimum distance with its neighbors, computed as the pointwise sum of the distance values received from neighbors and the sensed distance to them. If the device is a source node, it returns 0.0. Eventually, the gradient value converges to the minimum distance from the nearest source node. \Cref{fig:gradient-round0} shows a visual representation of the computed gradient field at round 1.},
         label={lst:scafi3-gradient-example},
-        linerange={14-23},
+        linerange={14-26},
+        basicstyle=\scriptsize\ttfamily
     ]{resources/code/Gradient.scala}
-\end{minipage}
+\end{minipage}%
 \hfill
-\begin{figure}[h]
+\begin{minipage}{0.40\textwidth} % right column: image
     \centering
-    \includegraphics[width=0.5\textwidth]{./resources/img/gradient-round0.pdf}
-    \caption{A visual representation of the gradient field computed by the program in \Cref{lst:scafi3-gradient-example} at round 1. The source node is represented in yellow. Links are labeled with the sensed distance values, while nodes are labeled with the computed gradient value.}
+    \includegraphics[width=\textwidth]{./resources/img/gradient-round0.pdf}
     \label{fig:gradient-round0}
-\end{figure}
+\end{minipage}
+\captionof{lstlisting}{On the left, a ScaFi3 aggregate program computing a distance gradient from a source node. At every round each device shares with its neighbors the minimum distance with its neighbors, computed as the pointwise sum of the distance values received from neighbors and the sensed distance to them. If the device is a source node, it returns 0.0. Eventually, the gradient value converges to the minimum distance from the nearest source node. On the right, a visual representation of the gradient field computed by the program at round 1. The source node is represented in yellow. Links are labeled with the sensed distance values, while nodes are labeled with the computed gradient value.}
+\label{fig:code-and-diagram}
+\end{adjustwidth}

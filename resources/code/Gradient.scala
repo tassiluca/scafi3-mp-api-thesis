@@ -12,7 +12,10 @@ import it.unibo.scafi.libraries.All.given
 import it.unibo.scafi.message.Codables.given
 
 object Gradient:
-  private type Lang = AggregateFoundation { type DeviceId = Int } & FieldCalculusSyntax & DistanceSensor[Double]
+  private type Lang = 
+    AggregateFoundation { type DeviceId = Int } 
+      & FieldCalculusSyntax 
+      & DistanceSensor[Double]
   
   def gradient(using Lang): Double =
     share(Double.MaxValue): nvalues =>
