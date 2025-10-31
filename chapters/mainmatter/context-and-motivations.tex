@@ -210,11 +210,15 @@ To achieve this, the \texttt{Lang} type alias is defined as the intersection of 
 \begin{minipage}{\linewidth}
     \lstinputlisting[
         language=Scala, 
-        caption={A ScaFi3 aggregate program computing a distance gradient from a source node. At every round each device shares with its neighbors the minimum distance with its neighbors, computed as the pointwise sum of the distance values received from neighbors and the sensed distance to them. If the device is a source node, it returns 0.0. Eventually, the gradient value converges to the minimum distance from the nearest source node.},
+        caption={A ScaFi3 aggregate program computing a distance gradient from a source node. At every round each device shares with its neighbors the minimum distance with its neighbors, computed as the pointwise sum of the distance values received from neighbors and the sensed distance to them. If the device is a source node, it returns 0.0. Eventually, the gradient value converges to the minimum distance from the nearest source node. \Cref{fig:gradient-round0} shows a visual representation of the computed gradient field at round 1.},
         label={lst:scafi3-gradient-example},
-        linerange={14-22},
+        linerange={14-23},
     ]{resources/code/Gradient.scala}
 \end{minipage}
-
-
-
+\hfill
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{./resources/img/gradient-round0.pdf}
+    \caption{A visual representation of the gradient field computed by the program in \Cref{lst:scafi3-gradient-example} at round 1. The source node is represented in yellow. Links are labeled with the sensed distance values, while nodes are labeled with the computed gradient value.}
+    \label{fig:gradient-round0}
+\end{figure}
