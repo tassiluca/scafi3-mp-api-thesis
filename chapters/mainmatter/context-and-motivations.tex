@@ -199,7 +199,7 @@ More specifically, they are implemented as pure functions in singleton objects, 
 %
 These are automatically injected by the ScaFi engine, which is responsible for executing computational rounds: during each round, in the compute phase, the aggregate context is created and implicitly provided when evaluating the aggregate program.
 
-In practice, to write an aggregate program in ScaFi3, the developer defines a type alias representing the required language syntaxes, expressed as intersection type compositions, and then defines the aggregate program as a contextual function over that language.
+In practice, to write an aggregate program in ScaFi3, the developer defines a type alias representing the required language syntaxes, expressed as intersection type composition, and then defines the aggregate program as a contextual function over that language.
 %
 For example, in \Cref{lst:scafi3-gradient-example} a simple aggregate program computing a distance gradient from a source node is shown.
 %
@@ -222,6 +222,6 @@ To achieve this, the \texttt{Lang} type alias is defined as the intersection of 
     \centering
     \includegraphics[width=\textwidth]{./resources/img/gradient-round0.pdf}
 \end{minipage}
-\captionof{lstlisting}[ScaFi3 gradient example]{On the left, a ScaFi3 aggregate program computing a distance gradient from a source node. At each round, every device shares with its neighbors the minimum distance among them, computed as the pointwise sum of the values received from neighbors and the sensed distance to them. If the device is a source node, it returns 0.0. Eventually, the gradient value converges to the minimum distance from the nearest source node. On the right, a visual representation of the gradient field computed by the program at round 1. The source node is represented in yellow. Links are labeled with the sensed distance values, while nodes are labeled with the computed gradient value.}
+\captionof{lstlisting}[ScaFi3 gradient example]{On the left, a ScaFi3 aggregate program computing a distance gradient from a source node. At each round, every device shares with its neighbors the minimum distance among them, computed as the pointwise sum of the values received from neighbors and the sensed distance to them (itself excluded). If the device is a source node, it returns 0.0. Eventually, the gradient value converges to the minimum distance from the nearest source node. On the right, a visual representation of the gradient field computed by the program at round 1. The source node is represented in yellow. Links are labeled with the sensed distance values, while nodes are labeled with the computed gradient value.}
 \label{lst:scafi3-gradient-example}
 \end{adjustwidth}
