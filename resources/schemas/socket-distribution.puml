@@ -69,7 +69,7 @@ package "distributed" {
         core.NetworkManager <|--- ConnectionOrientedNetworkManager
 
         object SocketNetworkManager <<object>> {
-            + withFixedNeighborhood[DeviceId](\n    deviceId: DeviceId,\n    port: Port,\n    neighbors: Map[DeviceId, Endpoint]\n)
+            + withFixedNeighborhood[DeviceId](deviceId: DeviceId, port: Port, neighbors: Map[DeviceId, Endpoint])
         }
         SocketNetworkManager .up.> ConnectionOrientedNetworkManager
     }

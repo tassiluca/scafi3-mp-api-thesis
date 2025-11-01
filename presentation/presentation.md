@@ -141,7 +141,7 @@ Luca Tassinari
 
 ### Motivations
 
-- Aggregate Computing span heterogeneous devices and platforms 
+- Aggregate Computing span heterogeneous devices and platforms;
 - Several implementations of AC exist for different programming languages to:
   - target different platforms and environments;
   - leverage unique strengths of the host programming languages;
@@ -344,4 +344,45 @@ def writeValue[Format, Value: EncodableTo[Format]](default: Value, overrides: Ma
 
 ---
 
+- In non-distribution scenarios, like simulation or local testing, encoding and decoding is a no-op:
 
+```scala
+given forInMemoryCommunications[Message]: Codable[Message, Message] with
+  inline def encode(msg: Message): Message = msg
+  inline def decode(msg: Message): Message = msg
+```
+
+- Useful for API using exchange primitive only for state evolution, like `evolve`, where we do not want to force users to provide encoders/decoders for their values:
+  - network managers needs to be implemented to ignore any non-Format values
+
+```scala
+override def evolve[Value](initial: Value)(evolution: Value => Value): Value =
+  // `exchange` is called only to update the self-value: `None` is shared with neighbors, so an in-memory
+  // codec is enough; non-in-memory network managers will ignore it since it is not serialized.
+  exchange(None)(nones =>
+    val previousValue = nones(localId).getOrElse(initial)
+    nones.set(localId, Some(evolution(previousValue))),
+  )(using Codables.forInMemoryCommunications)(localId).get
+```
+
+---
+
+### Contribution
+
+The contribution of this thesis span three main axes:
+
+1. Add a cross-platform _distribution_ module;
+
+2. Add support for a general _cross-platform_ and _polyglot_ serialization binding;
+
+3. **Add a _cross-platform_, _polyglot_ library abstraction layer.**
+
+---
+
+**Primary problem**: both Scala Native and Scala.js 
+
+---
+
+![w:1000](../resources/img/architecture.svg)
+
+---
