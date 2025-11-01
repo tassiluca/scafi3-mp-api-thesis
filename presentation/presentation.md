@@ -4,10 +4,10 @@ theme: uncover
 footer: 'Towards a cross-platform polyglot implementation of AC in ScaFi3'
 paginate: true
 style: |
-  h1 { font-size: 1.6rem; }
-  h2 { font-size: 1.3rem; }
-  h3 { font-size: 1.1rem; margin-bottom: 0.2em; }
-  h4 { font-size: 0.9rem; margin-bottom: 0.2em; }
+  h1 { font-size: 1.4rem; }
+  h2 { font-size: 1.2rem; }
+  h3 { font-size: 1.0rem; margin-bottom: 0.2em; }
+  h4 { font-size: 0.7rem; margin-bottom: 0.2em; }
   p { 
     font-size: 0.6rem;
     line-height: 1.2;
@@ -117,9 +117,9 @@ style: |
   }
   section .block-title {
     font-weight: 700;
-    font-size: 1.3em;
+    font-size: 1.0rem;
     color: #b76e00;
-    margin-bottom: 0.4em;
+    margin-bottom: 0.2em;
   }
 ---
 
@@ -139,7 +139,7 @@ Luca Tassinari
 
 ---
 
-## Motivations
+### Motivations
 
 - Aggregate Computing span heterogeneous devices and platforms 
 - Several implementations of AC exist for different programming languages to:
@@ -164,11 +164,11 @@ In particular the work focuses on:
 - interoperability and distribution strategies enabling seamless data exchange and collective execution across heterogeneous devices and language runtimes;
 - evaluation of performance, API idiomaticity, and maintenance effort.
 
-$\Rightarrow$ Scala 3 as the perfect fit to model AC abstractions and model in a strongly typed internal DSL.
+$\Rightarrow$ _Scala 3_ as the perfect fit to implement AC abstractions and model in a strongly typed internal DSL.
 
 ---
 
-#### Scala 3 compilation targets
+### Scala 3 cross-platform capabilities
 
 - **JVM** (desktop, server, Android) \& _Java_ interop;
 - **JS** via Scala.js:
@@ -202,10 +202,10 @@ The contribution of this thesis span three main axes:
 
 ---
 
-#### Distribution module
-
 <div class="cols">
 <div class="flex-3">
+
+#### Cross-platform distribution module
 
 - Technology: _stream_, _TCP_-based _connection-oriented sockets_;
   - Each device is bound to a specific _endpoint_ (IP + port);
@@ -268,5 +268,44 @@ The contribution of this thesis span three main axes:
 2. **Add support for a general _cross-platform_ and _polyglot_ serialization binding;**
 
 3. Add a _cross-platform_, _polyglot_ library abstraction layer.
+
+---
+
+#### Cross-platform and polyglot serialization binding
+
+- Devices exchange (ID, Value Tree) pairs
+- When exchanging data, values are inserted into the Value Tree encoded using a specific serialization format (e.g., JSON, binary, ...)
+  - This is possible since, in the context of an `exchange`, the type information of the value is known
+- When receiving data, the Value Tree is decoded but values remain encoded in their serialized format
+- Only when the corresponding exchange in the aggregate program is evaluated the value is decoded 
+  - Again, this is possible since the type information of the expected value is known at that point
+- Technically, this is achieved via a combination of Scala 3 _type classes_ and _type lambdas_ that abstract over the serialization format and allow to cleanly express encoding and decoding requirements as _type bounds_.
+
+---
+
+```scala
+/**
+ * A type class for encoding messages.
+ * @tparam From the type of the message to encode.
+ * @tparam To the type of the encoded message.
+ */
+trait Encodable[-From, +To]:
+
+  /** @return the encoded value in the target type. */
+  def encode(value: From): To
+
+/**
+ * A type class for decoding messages.
+ * @tparam From the type of the data to decode.
+ * @tparam To the type of the decoded data.
+ */
+trait Decodable[-From, +To]:
+
+  /**
+   * @return the decoded data in the target type.
+   */
+  def decode(data: From): To
+```
+
 
 ---
