@@ -274,7 +274,7 @@ The contribution of this thesis span three main axes:
 #### Cross-platform and polyglot serialization binding
 
 - Devices exchange (ID, Value Tree) pairs
-- When exchanging data, values are inserted into the Value Tree encoded using a specific serialization format (e.g., JSON, binary, ...)
+- When exchanging data, values are inserted into the Value Tree encoded using a specific serialization format
   - This is possible since, in the context of an `exchange`, the type information of the value is known
 - When receiving data, the Value Tree is decoded but values remain encoded in their serialized format
 - Only when the corresponding exchange in the aggregate program is evaluated the value is decoded 
@@ -283,29 +283,65 @@ The contribution of this thesis span three main axes:
 
 ---
 
+![w:1000](../resources/img/serde.svg)
+
+---
+
+- Encodable and Decodable type classes for encoding and decoding generic messages from/to a format (e.g., JSON, binary, ...)
+
 ```scala
-/**
- * A type class for encoding messages.
- * @tparam From the type of the message to encode.
- * @tparam To the type of the encoded message.
- */
+/** A type class for encoding messages. */
 trait Encodable[-From, +To]:
 
   /** @return the encoded value in the target type. */
   def encode(value: From): To
 
-/**
- * A type class for decoding messages.
- * @tparam From the type of the data to decode.
- * @tparam To the type of the decoded data.
- */
+/** A type class for decoding messages. */
 trait Decodable[-From, +To]:
 
-  /**
-   * @return the decoded data in the target type.
-   */
+  /** @return the decoded data in the target type. */
   def decode(data: From): To
+
+/** A type class for encoding and decoding messages. */
+trait Codable[Message, Format] extends Encodable[Message, Format] with Decodable[Format, Message]
+
+// Type alias for express encodable and decodable capabilities as type bound on values
+
+type EncodableTo[Format] = [Message] =>> Encodable[Message, Format]
+
+type DecodableFrom[Format] = [Message] =>> Decodable[Format, Message]
+
+type CodableFromTo[Format] = [Message] =>> Codable[Message, Format]
 ```
 
+---
+
+Every function dealing with, possibly, values distribution add as type bound a Codable instance
+
+```scala
+// inside this function body, Values can be both encoded and decoded
+override def xc[Format, Value: CodableFromTo[Format]](
+  init: SharedData[Value],
+)(
+  f: SharedData[Value] => (SharedData[Value], SharedData[Value]),
+): SharedData[Value] =
+  alignmentScope("exchange"): () =>
+    val messages = alignedMessages.map { case (id, value) => id -> value }
+    val field = Field(init(localId), messages)
+    val (ret, send) = f(field)
+    writeValue(send.default, send.alignedValues)
+    ret
+
+// extracts the aligned values from the Value Tree and decode them using contextually 
+// available decoder for Value
+def alignedMessages[Format, Value: DecodableFrom[Format]]: Map[DeviceId, Value] = ...
+
+// add a new value into the Value Tree that will be sent to neighbors already serialized using 
+// contextually available encoder for Value
+def writeValue[Format, Value: EncodableTo[Format]](default: Value, overrides: Map[DeviceId, Value]): Unit = 
+  ...
+```
 
 ---
+
+
