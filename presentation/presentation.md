@@ -121,6 +121,9 @@ style: |
     color: #b76e00;
     margin-bottom: 0.2em;
   }
+  section.no-footer::after {
+    display: none !important;
+  }
 ---
 
 <!-- _class: invert -->
@@ -141,7 +144,11 @@ Luca Tassinari
 
 ### Motivations
 
-- Aggregate Computing span heterogeneous devices and platforms;
+<!--
+Aggregate Computing reference scenario: swarm robotics and large-scale pervasive environments characterized by high densities of interconnected devices such as wearables and smartphones.
+-->
+
+- Aggregate Computing (AC) reference scenario: swarm robotics and large-scale pervasive environments (wearables, smartphones).
 - Several implementations of AC exist for different programming languages to:
   - target different platforms and environments;
   - leverage unique strengths of the host programming languages;
@@ -149,7 +156,7 @@ Luca Tassinari
 However:
 
 - Each of these were developed from scratch, with no code reuse and compatibility in mind;
-- No common framework led to fragmentation.
+- No common framework led to AC ecosystem fragmentation.
 
 ---
 
@@ -170,23 +177,20 @@ $\Rightarrow$ _Scala 3_ as the perfect fit to implement AC abstractions and mode
 
 ### Scala 3 cross-platform capabilities
 
-- **JVM** (desktop, server, Android) \& _Java_ interop;
-- **JS** via Scala.js:
-  - Supported platforms:
-    - Web (browser);
-    - Node.js;
-    - WebAssembly (experimental).
-  - _JavaScript_ interop via annotations, indirectly supporting _TypeScript_;
-  - Mature ecosystem.
-- **Native** via Scala Native:
-  - Supported platforms:
-    - `x86-64` and `aarch64` on Linux, macOS and Windows;
-    - experimental 32-bit support;
-    - suitable for SoC-based IoT devices but <ins>not</ins> microcontrollers;
-  - _C_ interop via annotations;
-  - Growing ecosystem maturity, limited toolchain support.
+_Primary target_: **JVM** (desktop, server, Android) \& _Java_ interop;
 
-ADD PRO AND CONS
+| Target         | Supported environment                                    | Language interop                              | Ecosystem maturity | Toolchain maturity |
+| -------------- | -------------------------------------------------------- | --------------------------------------------- | ------------------ | ------------------ |
+| **JavaScript** | browser, <br/> Node.js, <br/> WebAssembly*               | _JS_ via annotations, _TypeScript_ indirectly | Mature             | Mature             |
+| **Native**     | <br/> x86-64, <br/> aarch64, <br/> 32-bit architectures* | _C_                                           | Growing            | Developing         |
+
+_Note_: Scala Native <ins>cannot</ins> target microcontrollers! SoC like _Raspberry Pi_ are supported instead.
+
+<div class="smaller">
+
+$^*$ Experimental support
+
+</div>
 
 ---
 
@@ -216,8 +220,8 @@ The contribution of this thesis span three main axes:
   - _JS_ support via _Node.js net_ module using Scala.js type facades;
   - **Implications**:
     - shared code cannot perform blocking operations;
-    - all the API is designed to be asynchronous and non-blocking using Futures;
-    - the primary goal: write as much shared code as possible, minimizing platform-specific implementations.
+    - all the API is designed to be asynchronous and non-blocking;
+    - primary goal: write as much shared code as possible, minimizing platform-specific implementations.
 
 </div>
 <div class="flex-1">
@@ -229,11 +233,7 @@ The contribution of this thesis span three main axes:
 
 ---
 
-<div class="smaller">
-
 Simplified class diagram of the socket-based distribution module:
-
-</div>
 
 <div class="full-image">
 
@@ -271,19 +271,19 @@ The contribution of this thesis span three main axes:
 
 ---
 
-#### Cross-platform and polyglot serialization binding
+#### Serialization binding
 
-- Devices exchange (ID, Value Tree) pairs
+![w:1000](../resources/img/serde.svg)
+
+---
+
+- Devices exchange (ID, Value Tree) pairs;
 - When exchanging data, values are inserted into the Value Tree encoded using a specific serialization format
   - This is possible since, in the context of an `exchange`, the type information of the value is known
 - When receiving data, the Value Tree is decoded but values remain encoded in their serialized format
 - Only when the corresponding exchange in the aggregate program is evaluated the value is decoded 
   - Again, this is possible since the type information of the expected value is known at that point
 - Technically, this is achieved via a combination of Scala 3 _type classes_ and _type lambdas_ that abstract over the serialization format and allow to cleanly express encoding and decoding requirements as _type bounds_.
-
----
-
-![w:1000](../resources/img/serde.svg)
 
 ---
 
@@ -367,6 +367,29 @@ override def evolve[Value](initial: Value)(evolution: Value => Value): Value =
 
 ---
 
+#### Polyglot serialization format
+
+<div class="cols">
+<div class="flex-2">
+
+- Aggregate programs interoperability depends on common serialization formats
+  - if formats are not compatible, values decoding fails;
+- Cross-language interoperability is achieved via common serialization formats
+  - Different languages have different abstractions: data classes/structures in one language may not have direct equivalents in another;
+  - Manual serialization in a common format can be error-prone and tedious;
+
+- **_Protobuf_ as language- and platform-agnostic serialization library**
+  - generates code for multiple languages from a single schema definition, including Scala, Python, Java, C, C++, JS, TS, Go, Rust, ...
+
+</div>
+<div class="flex-2">
+
+![protobuf serde](../resources/img/protobuf-serde.svg)
+
+</div>
+
+---
+
 ### Contribution
 
 The contribution of this thesis span three main axes:
@@ -379,10 +402,234 @@ The contribution of this thesis span three main axes:
 
 ---
 
-**Primary problem**: both Scala Native and Scala.js 
+#### Architecture
 
----
+</div class="smaller">
+
+The `scafi3-mp-api` module serves as the **User-to-Product Interface**, _exposing_ the Scafi API to multiple languages.
+
+</div>
 
 ![w:1000](../resources/img/architecture.svg)
 
 ---
+
+- Currently, C and JavaScript are the two reference languages for, respectively, Native and JS targets;
+- API exposure is achieved via annotation;
+
+**Problems**:
+
+- both Scala Native and Scala.js deals with language semantics mismatch reifying them in the type system with specific types.
+- only a subset of Scala type constructs can be mapped and exposed to other languages
+  - the fact a Scala 3 construct can be cross-compiled to other platforms doesn't imply it can be exposed to other languages;
+
+$\Downarrow$
+
+**Consequence**: 
+
+- in order to write a unified wrapper API that can be exported, an abstraction layer is used. Their goals are:
+  - create abstract language-independent types, leaving their implementation and mapping to Scala 3 types to the specific platform module;
+  - expose to other languages a simplified version of the ScaFi3 API containing only constructs that can be mapped and implement it as a thin wrapper that internally decodes/encodes values to/from the abstract types.
+
+---
+
+<div class="cols">
+<div class="flex-2 smaller">
+
+An isomorphism type class to express a dual conversion between abstract portable types and Scala types:
+
+```scala
+/** An isomorphism between two types `A` and `B`. */
+trait Iso[A, B]:
+  def to(a: A): B
+  def from(b: B): A
+
+object Iso:
+  given [A, B](using iso: Iso[A, B]): Conversion[A, B] with
+    inline def apply(a: A): B = iso.to(a)
+
+  given [A, B](using iso: Iso[A, B]): Conversion[B, A] with
+    inline def apply(b: B): A = iso.from(b)
+```
+
+</div>
+<div class="flex-2 smaller">
+
+Polyglot abstract independent types:
+
+```scala
+trait PortableTypes:
+
+  /** A portable Map that can be used across different lang. */
+  type Map[K, V]
+
+  /** Portable maps are isomorphic to Scala's `collection.Map`. */
+  given [K, V] => Iso[Map[K, V], collection.Map[K, V]] = 
+    compiletime.deferred
+
+  /** Portable 0-arg function type that can be used across lang. */
+  type Function0[R]
+
+  /** Portable 0-arg function can be converted to Scala's `() => R`. */
+  given toScalaFunction0[R]: Conversion[Function0[R], () => R]
+
+  // ... all the other portable types needed by the wrapper API ...
+```
+
+</div>
+</div>
+
+<div class="cols">
+<div class="flex-2 smaller">
+
+On _Native_:
+
+```scala
+trait NativeTypes extends PortableTypes:
+
+  // maps are exposed as void* pointers in C
+  override type Map[K, V] = Ptr[Byte]
+  override given [K, V] => Iso[Map[K, V], collection.Map[K, V]] = 
+    Iso(CMap.of(_).toMap, m => CMap(mutable.Map.from(m)))
+
+  // A function pointer R (*f)() in C
+  override type Function0[R] = CFuncPtr0[R]
+  given toScalaFunction0[R]: Conversion[Function0[R], () => R] with
+    inline def apply(f: Function0[R]): () => R = f.apply
+
+  // ... all the other portable types needed by the wrapper API ...
+```
+
+</div>
+<div class="flex-2 smaller">
+
+On _JS_:
+
+```scala
+trait JSTypes extends PortableTypes:
+
+  // maps are exposed as js.Map in JavaScript
+  override type Map[K, V] = js.Map[K, V]
+  override given [K, V] => Iso[Map[K, V], collection.Map[K, V]] = 
+    Iso(_.toMap, m => js.Map(m.toSeq*))
+
+  // A JavaScript function () => R
+  override type Function0[R] = js.Function0[R]
+  given toScalaFunction0[R]: Conversion[Function0[R], () => R] with
+    inline def apply(f: Function0[R]): () => R = f.apply
+
+  // ... all the other portable types needed by the wrapper API ...
+```
+
+</div>
+</div>
+
+---
+
+![w:800](../resources/img/portable-types-mapping.svg)
+
+---
+
+<div class="smaller">
+
+Then, wrapper API is written as a thin layer over ScaFi3 using only portable types:
+
+```scala
+trait PortableLibrary:
+  self: PortableTypes => // requires PortableTypes
+  export it.unibo.scafi.language.AggregateFoundation
+
+  /** The language type comprising all the needed syntaxes needed to implement the library functionalities. */
+  type Language <: AggregateFoundation
+
+  /** The [[Language]] instance used by the library to which delegate the syntax operations. */
+  val language: Language
+
+  /** A portable, semantically equivalent definition of the [[language.SharedData]] data structure. */
+  type SharedData[Value]
+
+  /** [[SharedData]] is isomorphic to [[language.SharedData]]. */
+  given [Value]: Iso[SharedData[Value], language.SharedData[Value]] = compiletime.deferred
+
+trait PortableExchangeCalculusLibrary extends PortableLibrary:
+  self: PortableTypes =>
+  export it.unibo.scafi.language.xc.syntax.ReturnSending as RetSend
+
+  // requires ExchangeSyntax to delegate exchange implementation
+  override type Language <: AggregateFoundation & ExchangeSyntax
+
+  /** A portable, semantically equivalent definition of the [[language.RetSend]] data structure. */
+  type ReturnSending
+
+  given [Value] => Conversion[ReturnSending, RetSend[language.SharedData[Value]]] = 
+    compiletime.deferred
+
+  @JSExport
+  def exchange[Value](initial: SharedData[Value])(
+    f: Function1[SharedData[Value], ReturnSending]
+  ): SharedData[Value] = 
+    // Thanks to the Iso in scope the wrapper implementation is just delegation...
+    language.exchange(initial)(f(_))
+```
+
+</div>
+
+---
+
+***Implementation challenges***
+
+- every language difference must be modeled as an abstract portable type with its mapping to Scala types:
+  
+  ```js
+  await Runtime.engine(id, port, neighbors, lang => aggregateProgram(lang), async result => {
+    console.log(`Round ${currentRound}: ${result.toString()}\n`);
+    await sleep(1000); // Requires explicit async handling in JS!
+    return currentRound++ < rounds;
+  });
+  ```
+
+  This is a Promise-based function in JS, while in Native and JVM it is a blocking call! This calls for:
+
+  ```scala
+  /**
+   * A portable type representing a suspending computation that will eventually produce a
+   * value of type `T` that can be used both in synchronous and asynchronous platforms 
+   * where blocking is not possible.
+   */
+  type Outcome[T]
+
+  /** Outcomes are isomorphic to Scala's `Future`. */
+  given [T] => Iso[Outcome[T], Future[T]] = compiletime.deferred
+  ```
+
+- in Scala values are compared agains `equals` and `hashCode`: a wrapper around those values must be provided with custom implementations of those methods to ensure correct behavior when used in collections like `Map` and `Set`.
+
+--- 
+
+Polyglot cross-platform serialization
+
+---
+
+<div class="cols">
+<div class="flex-2">
+
+**Cons**:
+
+- on Scala Native only static objects can be exported. To simulate class-like behavior function pointers as struct fields are used but requires boilerplate code to manually implement method dispatching;
+- Scala Native API is untyped since C has no generics!
+- On native, memory management is manual: portable types wrapping heap-allocated structures must provide custom allocation and deallocation methods to avoid memory leaks;
+  - this can be mitigated using allocation strategies keeping track of all allocated objects and deallocating them at once at the end of each round;
+- On Scala Native and for Typescript no automatism for generating type definitions.
+
+</div>
+<div class="flex-2">
+
+**Pros**:
+
+- Unified clean and idiomatic API leveraging full Scala support
+- Wrapper implementation is just delegation thanks to isomorphisms and implicit conversions;
+- Full code reuse across all supported platforms and languages: any change in the core and distributed modules is automatically reflected in all the exposed APIs.
+  - if new API features are added, they require to be wrapped only once in the portable library layer.
+
+</div>
+

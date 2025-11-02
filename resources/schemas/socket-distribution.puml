@@ -7,7 +7,7 @@ skinparam interface<<trait>> {
 }
 
 package "core" {
-    interface NetworkManager << (T,#FEFECE) trait >> {
+    interface NetworkManager << (T,#b2a7e0) trait >> {
         + type DeviceId
         + send(message: Export[DeviceId])
         + receive(): Import[DeviceId]
@@ -24,7 +24,7 @@ package "distributed" {
         '     + ...
         ' }
 
-        interface ConnectionOrientedNetworking << (T,#FEFECE) trait >> {
+        interface ConnectionOrientedNetworking << (T,#b2a7e0) trait >> {
             + type MessageIn
             + type MessageOut
             + out(endpoint: Endpoint): Future[Connection]
@@ -34,7 +34,7 @@ package "distributed" {
         ConnectionOrientedNetworking +- ListenerRef
         ListenerRef +- Listener
 
-        interface Connection << (T,#FEFECE) trait >> {
+        interface Connection << (T,#b2a7e0) trait >> {
             + send(message: MessageOut): Future[Unit]
             + close()
         }
@@ -44,12 +44,12 @@ package "distributed" {
             + accept: Future[Unit]
         }
 
-        interface Listener << (T,#FEFECE) trait >> {
+        interface Listener << (T,#b2a7e0) trait >> {
             + boundPort: Port
             + close()
         }
 
-        interface ConnectionOrientedTemplate << (T,#FEFECE) trait >> extends ConnectionOrientedNetworking {
+        interface ConnectionOrientedTemplate << (T,#b2a7e0) trait >> extends ConnectionOrientedNetworking {
             + type MessageIn : BinaryDecodable
             + type MessageOut : BinaryEncodable
         }
@@ -59,38 +59,42 @@ package "distributed" {
             platform-agnostic logic
         end note
 
-        interface NeighborhoodResolver << (T,#FEFECE) trait >> {
+        interface NeighborhoodResolver << (T,#b2a7e0) trait >> {
             + type Neighborhood[DeviceId] = Set[DeviceId]
             + neighborhood: Neighborhood[DeviceId]
         }
 
-        interface ConnectionOrientedNetworkManager << (T,#FEFECE) trait >> extends ConnectionOrientedNetworking
+        interface ConnectionOrientedNetworkManager << (T,#b2a7e0) trait >> extends ConnectionOrientedNetworking
         ConnectionOrientedNetworkManager *-left-> NeighborhoodResolver : mixed in
         core.NetworkManager <|--- ConnectionOrientedNetworkManager
 
-        object SocketNetworkManager <<object>> {
+        object SocketNetworkManager << object>> {
             + withFixedNeighborhood[DeviceId](deviceId: DeviceId, port: Port, neighbors: Map[DeviceId, Endpoint])
         }
+        note left of SocketNetworkManager
+            Socket-based network
+            manager entry-point
+        end note
         SocketNetworkManager .up.> ConnectionOrientedNetworkManager
     }
 
     package "jvm-native" {
-        interface SocketNetworking << (T,#FEFECE) trait >>
+        interface SocketNetworking << (T,#b2a7e0) trait >>
         SocketNetworking --up-|> distributed.shared.ConnectionOrientedTemplate
         note bottom of SocketNetworking
-            JVM-native socket-based 
-            implementation
+            JVM-native socket-based implementation
         end note
     }
 
     package "js" {
-        interface SocketNetworking << (T,#FEFECE) trait >> 
+        interface SocketNetworking << (T,#b2a7e0) trait >> 
         SocketNetworking --up-|> distributed.shared.ConnectionOrientedTemplate
         note bottom of SocketNetworking
-            JavaScript socket-based 
-            implementation
+            JavaScript socket-based implementation
         end note
     }
+
+    interface Pippo
 }
 
 @enduml
