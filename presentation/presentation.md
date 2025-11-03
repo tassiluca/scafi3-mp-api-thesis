@@ -140,13 +140,13 @@ Luca Tassinari
 
 </div>
 
----
-
-### Motivations
-
 <!--
 Aggregate Computing reference scenario: swarm robotics and large-scale pervasive environments characterized by high densities of interconnected devices such as wearables and smartphones.
 -->
+
+---
+
+### Motivations
 
 - Aggregate Computing (AC) reference scenario: swarm robotics and large-scale pervasive environments (wearables, smartphones).
 - Several implementations of AC exist for different programming languages to:
@@ -165,11 +165,15 @@ However:
   Investigate the feasibility of building a framework capable of targeting multiple   platforms while offering interoperability with other languages.
 </div>
 
+<!--
+
 In particular the work focuses on:
 
 - architectural design of a portable, interoperable layer for Aggregate programming, preserving core abstractions and full code reuse.
 - interoperability and distribution strategies enabling seamless data exchange and collective execution across heterogeneous devices and language runtimes;
 - evaluation of performance, API idiomaticity, and maintenance effort.
+
+-->
 
 $\Rightarrow$ _Scala 3_ as the perfect fit to implement AC abstractions and model in a strongly typed internal DSL.
 
@@ -423,13 +427,11 @@ The `scafi3-mp-api` module serves as the **User-to-Product Interface**, _exposin
 - only a subset of Scala type constructs can be mapped and exposed to other languages
   - the fact a Scala 3 construct can be cross-compiled to other platforms doesn't imply it can be exposed to other languages;
 
-$\Downarrow$
-
-**Consequence**: 
+**Proposed solution**: 
 
 - in order to write a unified wrapper API that can be exported, an abstraction layer is used. Their goals are:
   - create abstract language-independent types, leaving their implementation and mapping to Scala 3 types to the specific platform module;
-  - expose to other languages a simplified version of the ScaFi3 API containing only constructs that can be mapped and implement it as a thin wrapper that internally decodes/encodes values to/from the abstract types.
+  - expose to other languages a simplified version of the ScaFi3 API containing only constructs that can be mapped and implement it as a thin wrapper that internally decodes/encodes values to/from the abstract types delegating all the logic to ScaFi3.
 
 ---
 
@@ -572,46 +574,29 @@ trait PortableExchangeCalculusLibrary extends PortableLibrary:
     language.exchange(initial)(f(_))
 ```
 
-</div>
-
 ---
 
 ***Implementation challenges***
 
-- every language difference must be modeled as an abstract portable type with its mapping to Scala types:
-  
-  ```js
-  await Runtime.engine(id, port, neighbors, lang => aggregateProgram(lang), async result => {
-    console.log(`Round ${currentRound}: ${result.toString()}\n`);
-    await sleep(1000); // Requires explicit async handling in JS!
-    return currentRound++ < rounds;
-  });
-  ```
+More specifically the abstraction layer must take into account several challenges:
 
-  This is a Promise-based function in JS, while in Native and JVM it is a blocking call! This calls for:
-
-  ```scala
-  /**
-   * A portable type representing a suspending computation that will eventually produce a
-   * value of type `T` that can be used both in synchronous and asynchronous platforms 
-   * where blocking is not possible.
-   */
-  type Outcome[T]
-
-  /** Outcomes are isomorphic to Scala's `Future`. */
-  given [T] => Iso[Outcome[T], Future[T]] = compiletime.deferred
-  ```
-
-- in Scala values are compared agains `equals` and `hashCode`: a wrapper around those values must be provided with custom implementations of those methods to ensure correct behavior when used in collections like `Map` and `Set`.
-
---- 
-
-Polyglot cross-platform serialization
+- every language difference must be modeled as an abstract portable type with its mapping to Scala types;
+- difference in semantics of asynchronous computations;
+- differences in equality and hashing semantics;
+- differences in memory management and resource cleanup.
 
 ---
 
-<div class="cols">
-<div class="flex-2">
+**Pros**:
+
+- Unified clean and idiomatic API in Scala 3;
+- Wrapper implementation is just delegation thanks to isomorphisms and implicit conversions;
+- Full code reuse across all supported platforms: any change in the core and distributed modules is automatically reflected in all platforms;
+- Code reuse for polyglot serialization is maximized
+  - if new API features are added, they require to be wrapped only once in the portable library layer;
+  - though, for Typescript and C manual type definitions must be written, no code generation automatism is provided (possible future work).
+
+---
 
 **Cons**:
 
@@ -621,15 +606,87 @@ Polyglot cross-platform serialization
   - this can be mitigated using allocation strategies keeping track of all allocated objects and deallocating them at once at the end of each round;
 - On Scala Native and for Typescript no automatism for generating type definitions.
 
+---
+
+#### Integration Testing
+
+- tests are run on each platform to ensure correctness and interoperability;
+- polyglot API is tested using a simple framework inspired to _snapshots testing_:
+  - a template for each supported language is defined containing common logic to setup the environment and run aggregate programs;
+  - variable logic and aggregate programs are injected into the template by the testing framework using placeholders (`{{...}}`);
+  - once test source code is complete, it is compiled, run and its output compared to the expected one.
+
+![w:800](../resources/img/it-testing.svg)
+
+---
+
+#### Demo: gradient by _hop count_
+
+<div class="cols">
+<div class="flex-2 smaller">
+
+Scala implementation:
+
+```scala
+given Ordering[Distance] = (x, y) => x.value.compare(y.value)
+
+given UpperBounded[Distance] = new UpperBounded[Distance]:
+  override def upperBound: Distance = Distance(Float.MaxValue)
+
+def aggregateProgram(using Lang): Distance =
+  share(Distance(Float.MaxValue)): nvalues =>
+    val minDistance = nvalues.withoutSelf.min.value
+    if isSource then Distance(0) else Distance(minDistance + 1.0)
+```
+
 </div>
-<div class="flex-2">
+<div class="flex-2 smaller">
 
-**Pros**:
+C implementation:
 
-- Unified clean and idiomatic API leveraging full Scala support
-- Wrapper implementation is just delegation thanks to isomorphisms and implicit conversions;
-- Full code reuse across all supported platforms and languages: any change in the core and distributed modules is automatically reflected in all the exposed APIs.
-  - if new API features are added, they require to be wrapped only once in the portable library layer.
+```c
+float min(Array* nvalues) {
+    float min_distance = FLT_MAX;
+    for (size_t i = 0; i < nvalues->size; i++) {
+        const ProtobufValue* d = nvalues->items[i];
+        float neighbor_dist = ((const Distance*)d->message)->value;
+        min_distance = neighbor_dist < min_distance ? neighbor_dist : min_distance;
+    }
+    Array_destroy(nvalues);
+    return min_distance;
+}
 
+const void* aggregate_program(const AggregateLibrary* lang) {
+    return lang->share(distance_of(FLT_MAX), fn(const BinaryCodable*, (const Field* f), {
+        float min_distance = min(without_self(f));
+        free(f);
+        return is_source ? distance_of(0.0) : distance_of(min_distance + 1.0);
+    }));
+}
+```
+
+</div>
+</div>
+
+<div class="cols">
+<div class="flex-2 smaller">
+
+Typescript/JS implementation:
+
+```scala
+function aggregateProgram(lang: Language) {
+    return lang.share(distanceOf(Infinity), (nvalues) => {
+        const minDistance = nvalues.withoutSelf()
+            .map((dist) => dist.value)
+            .reduce((min, d) => Math.min(min, d), Infinity);
+        return isSource ? distanceOf(0) : distanceOf(minDistance + 1.0);
+    });
+}
+```
+
+</div>
+<div class="flex-2 smaller">
+
+</div>
 </div>
 
