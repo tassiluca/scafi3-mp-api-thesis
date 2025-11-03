@@ -175,7 +175,7 @@ In particular the work focuses on:
 
 -->
 
-$\Rightarrow$ _Scala 3_ as the perfect fit to implement AC abstractions and model in a strongly typed internal DSL.
+$\Rightarrow$ _Scala 3_ is perfectly suited for implementing AC abstractions and models in a strongly typed internal DSL.
 
 ---
 
@@ -237,7 +237,11 @@ The contribution of this thesis span three main axes:
 
 ---
 
+<div class="smaller">
+
 Simplified class diagram of the socket-based distribution module:
+
+</div>
 
 <div class="full-image">
 
@@ -528,13 +532,14 @@ trait JSTypes extends PortableTypes:
 
 ---
 
+- Wrapper API is written as a thin layer over ScaFi3 using only portable types
+- all the logic is delegated to ScaFi3 after converting portable types to Scala types using the provided isomorphisms and implicit conversions
+
 ![w:800](../resources/img/portable-types-mapping.svg)
 
 ---
 
 <div class="smaller">
-
-Then, wrapper API is written as a thin layer over ScaFi3 using only portable types:
 
 ```scala
 trait PortableLibrary:
@@ -589,10 +594,10 @@ More specifically the abstraction layer must take into account several challenge
 
 **Pros**:
 
-- Unified clean and idiomatic API in Scala 3;
-- Wrapper implementation is just delegation thanks to isomorphisms and implicit conversions;
-- Full code reuse across all supported platforms: any change in the core and distributed modules is automatically reflected in all platforms;
-- Code reuse for polyglot serialization is maximized
+- unified AC model and clean and idiomatic API in Scala 3;
+- wrapper implementation is just delegation thanks to isomorphisms and implicit conversions;
+- full code reuse across all supported platforms: any change in the core and distributed modules is automatically reflected in all platforms;
+- code reuse for polyglot serialization is maximized
   - if new API features are added, they require to be wrapped only once in the portable library layer;
   - though, for Typescript and C manual type definitions must be written, no code generation automatism is provided (possible future work).
 
@@ -600,11 +605,12 @@ More specifically the abstraction layer must take into account several challenge
 
 **Cons**:
 
-- on Scala Native only static objects can be exported. To simulate class-like behavior function pointers as struct fields are used but requires boilerplate code to manually implement method dispatching;
-- Scala Native API is untyped since C has no generics!
-- On native, memory management is manual: portable types wrapping heap-allocated structures must provide custom allocation and deallocation methods to avoid memory leaks;
+- ScaFi Native APIs are often untyped where C lacks generics—generic containers and callbacks use `void*`, requiring unsafe casts;
+- on native only static objects can be exported. To simulate class-like behavior function pointers as struct fields are used but requires boilerplate code to manually implement method dispatching;
+- on native, memory management is manual: heap-allocated structures must provide custom allocation and deallocation methods to avoid memory leaks;
   - this can be mitigated using allocation strategies keeping track of all allocated objects and deallocating them at once at the end of each round;
-- On Scala Native and for Typescript no automatism for generating type definitions.
+- on Scala Native and for Typescript no automatism for generating type definitions.
+  - Future work: sbt plugin to generate C header files and Typescript definition files from Scala annotated code.
 
 ---
 
