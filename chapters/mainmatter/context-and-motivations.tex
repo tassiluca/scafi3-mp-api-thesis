@@ -13,7 +13,7 @@ Finally, an overview of the Scala 3 implementation of Aggregate Computing is pro
 
 In the realm of complex large-scale systems composed of many interconnected devices, such as Internet of Things (IoT) ecosystems and swarm robotics, traditional approaches to programming individual devices struggle to cope with the scalability, composability, fault-tolerance and declarativeness required to manage such systems effectively.
 
-Aggregate Computing \cite{ac} is an emergent research paradigm aiming at programming such systems through the lens of \textit{macro-programming}.
+Aggregate Computing \cite{ac} is an emergent research paradigm aiming at programming such systems through the lens of \textit{macro-programming} \cite{macroprogramming}.
 %
 Its core philosophy grounds on the idea of programming the collective behavior of the system as a whole rather than on the individual behavior of its components.
 %
@@ -21,17 +21,21 @@ Following this principle, developers can write a single program representing the
 %
 The paradigm embraces functional programming principles to ensure composability and modularity of programs, allowing developers to build complex systems in a succinct and declarative manner, abstracting away low-level details about communication and coordination among devices.
 
+\subsection*{Aggregate Computing model}
+
 The Aggregate Computing model is based on a collection of interconnected devices capable of exchanging information between themselves according to a neighboring relation.
 %
 This establishes a dynamic network topology that can evolve over time as a result of mobility, failure and network delays.
 %
-Each device's dynamics is modelled as a sequence of asynchronous, discrete computational rounds, each consisting of three phases:
+Each device's dynamics is modelled as a sequence of asynchronous, discrete computational rounds, each consisting of three phases, as illustrated in \Cref{fig:field}:
 %
 \begin{enumerate}[label=\roman*.]
     \item \textit{sense}: the device collects information from the most recent messages received from its neighbors and from its local sensors, through which it can observe its local environment;
     \item \textit{compute}: execute the aggregate program using the updated local context to produce an output (the program's return value) and the messages to be sent to neighbors;
     \item \textit{interact}: the program executes its actuations and sends the messages produced in the compute phase to neighboring devices.
 \end{enumerate}
+
+\subsection*{Core Calculus and Operator Semantics}
 
 The main abstraction, formalized through the \textit{Field Calculus} \cite{fc}, is that of a \textit{computational field}, more briefly referred to as a \textit{field}.
 %
@@ -42,13 +46,13 @@ Aggregate programs are expressed in terms of fields since they represent the fir
 \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{resources/img/field.pdf}
-    \caption{A visual representation of a computational \textit{field} and phases of a round.}
+    \caption{Visual representation of a computational \textit{field} and phases of a round.}
     \label{fig:field}
 \end{figure}
 
 Computations, in this context, are performed by manipulating fields through \textit{stateful evolution}, \textit{neighborhood interaction} and \textit{domain partitioning} constructs.
 %
-Those can be expressed by the \texttt{exchange} and \texttt{branch} primitives, formalized in the \textit{Exchange Calculus} (XC) \cite{xc}, a tiny core calculus allowing to express the overall behavior of Aggregate Computing systems:
+Those can be expressed by the \texttt{exchange} primitive and conditional expressions, as formalized in the \textit{Exchange Calculus} (XC) \cite{xc}, a tiny core calculus allowing to express the overall behavior of Aggregate Computing systems:
 %
 \begin{itemize}
     \item \textit{stateful evolution} of fields over time (rounds) and \textit{neighborhood interaction} are achieved through the \texttt{exchange} primitive:
@@ -66,7 +70,7 @@ Those can be expressed by the \texttt{exchange} and \texttt{branch} primitives, 
     that is evaluated, for each round, as follows:
     \begin{enumerate}[label=\roman*.]
         \item the expression $e_i$ is computed to produce the local initial value $l_i$;
-        \item $\underline{n}$ represents the neighboring (\textit{field}) value received from nearby devices for this exchange.
+        \item $\underline{n}$ represents the neighboring values (\textit{field}) received from nearby devices for this exchange.
         Notationally, neighboring values are underlined to distinguish them from local values.
         Note that, since a device is always considered a neighbor of itself, its own last local value for this exchange from the previous round is also included in $\underline{n}$. For those neighbors for which no value has been received $l_i$ is used as default. The expression $e_r$ is evaluated to the value to be returned by the exchange, allowing to evolve state over rounds based on the neighborhood context;
         \item the expression $e_s$ is evaluated to produce the values to be sent to neighbors for this exchange in the next round.
@@ -90,10 +94,6 @@ Those can be expressed by the \texttt{exchange} and \texttt{branch} primitives, 
     %
     that evaluates the \texttt{condition} expression on each device and, depending on its truth value, evaluates either the true branch or the false branch, effectively partitioning the computational field into two sub-fields.
 \end{itemize}
-
-Both \texttt{exchange} and \texttt{branch} to work properly rely on \textit{alignment}, the mechanism ensuring the values produced by an exchange are processed only by corresponding exchanges, namely those in the same position within the program structure.
-%
-This avoids the situation where different exchanges interfere with each other, leading to inconsistent or erroneous behavior when programs contain multiple exchange-expressions in their structure, possibly in different branches of a conditional.
 
 Exchange is powerful enough to express also the \textit{Field Calculus} constructs:
 %
@@ -142,6 +142,27 @@ Exchange is powerful enough to express also the \textit{Field Calculus} construc
 On top of these constructs, a set of higher-level building blocks and libraries can be built to facilitate the development of aggregate programs in a composable and declarative manner.
 %
 These include gradient functions for distance estimation, information spreading mechanisms, state management and time-related constructs to handle stateful and temporal behaviors.
+
+\subsection*{Alignment}
+
+Both \texttt{exchange} and domain partitioning constructs to work properly rely on \textit{alignment}, the mechanism ensuring the values produced by an exchange are processed only by the corresponding exchanges of neighboring devices, namely those in the same position within the program structure.
+%
+This avoids the situation where different exchanges interfere with each other, leading to inconsistent or erroneous behavior when programs contain multiple exchange-expressions in their structure, possibly in different branches of a conditional.
+
+As an illustrative example, the program presented in \Cref{fig:alignment-example} contains two \texttt{nbr} located in separate branches of a conditional statement.
+%
+In any round, each device always evaluates the same branch of the conditional depending on the value of its identifier.
+%
+When evaluating the neighboring values, however, only the values produced by devices evaluating the same \texttt{nbr} in the same branch should be considered, otherwise the program would mix values coming from different contexts, resulting in incorrect outcomes.
+%
+Those devices are said to be \textit{aligned} with each other.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{resources/img/alignment.pdf}
+    \caption{...}
+    \label{fig:alignment-example}
+\end{figure}
 
 \section{Portability and interoperability in Aggregate Computing}
 
@@ -207,8 +228,9 @@ The program requires access to field calculus syntax (the \texttt{share} constru
 %
 To achieve this, the \texttt{Lang} type alias is defined as the intersection of the \texttt{AggregateFoundation} root syntax, where the \texttt{DeviceId} type is specialized, the \texttt{FieldCalculusSyntax}, providing field calculus constructs, and \texttt{DistanceSensor}, providing the distance sensor capability.
 
-\begin{adjustwidth}{-0.5cm}{-1.5cm} % reduce left and right margins by 1cm
-\begin{minipage}{0.70\textwidth} % left column: code
+\begin{figure}[htbp]
+  \centering
+  \begin{minipage}{0.58\textwidth}
     \lstinputlisting[
         language=Scala, 
         label={lst:scafi3-gradient-example},
@@ -216,12 +238,12 @@ To achieve this, the \texttt{Lang} type alias is defined as the intersection of 
         basicstyle=\scriptsize\ttfamily,
         nolol=true,
     ]{resources/code/Gradient.scala}
-\end{minipage}%
-\hfill
-\begin{minipage}{0.40\textwidth} % right column: image
+  \end{minipage}%
+  \hfill
+  \begin{minipage}{0.36\textwidth}
     \centering
     \includegraphics[width=\textwidth]{./resources/img/gradient-round0.pdf}
-\end{minipage}
-\captionof{lstlisting}[ScaFi3 gradient example]{On the left, a ScaFi3 aggregate program computing a distance gradient from a source node. At each round, every device shares with its neighbors the minimum distance among them, computed as the pointwise sum of the values received from neighbors and the sensed distance to them (itself excluded). If the device is a source node, it returns 0.0. Eventually, the gradient value converges to the minimum distance from the nearest source node. On the right, a visual representation of the gradient field computed by the program at round 1. The source node is represented in yellow. Links are labeled with the sensed distance values, while nodes are labeled with the computed gradient value.}
-\label{lst:scafi3-gradient-example}
-\end{adjustwidth}
+  \end{minipage}
+  \caption[ScaFi3 gradient example]{On the left, a ScaFi3 aggregate program computing a distance gradient from a source node. At each round, every device shares with its neighbors the minimum distance among them, computed as the pointwise sum of the values received from neighbors and the sensed distance to them (itself excluded). If the device is a source node, it returns 0.0. Eventually, the gradient value converges to the minimum distance from the nearest source node. On the right, a visual representation of the gradient field computed by the program at round 1. The source node is represented in yellow. Links are labeled with the sensed distance values, while nodes are labeled with the computed gradient value.}
+  \label{lst:scafi3-gradient-example}
+\end{figure}

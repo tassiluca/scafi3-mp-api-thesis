@@ -20,7 +20,8 @@ object Gradient:
   def gradient(using Lang): Double =
     share(Double.MaxValue): nvalues =>
       val distances = senseDistance[Double]
-      val minDistance = (nvalues, distances).map2(_ + _)
+      val minDistance = (nvalues, distances)
+        .map2(_ + _)
         .withoutSelf.min
       if isSource then 0.0 else minDistance
 
