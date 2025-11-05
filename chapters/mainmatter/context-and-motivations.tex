@@ -157,10 +157,18 @@ When evaluating the neighboring values, however, only the values produced by dev
 %
 Those devices are said to be \textit{aligned} with each other.
 
+As a result, when evaluating \texttt{exchange}-based expressions, the \textit{field} of neighboring values is restricted to include only those coming from aligned devices.
+%
+In \Cref{fig:alignment-example}, for instance, when evaluating the \texttt{nbr} expression, each device can only observe neighboring values coming from devices with the same parity of identifier.
+
 \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{resources/img/alignment.pdf}
-    \caption{...}
+    \caption[Alignment example]{Alignment example. The upper part shows a Moore grid of interconnected devices, each identified by a unique integer.
+    The lower part provides an enlarged view of the four devices in the upper-left corner of the grid, showing their program structure represented as an AST.
+    Grey dashed branches denote the conditional branches that a device does not evaluate.
+    During the evaluation of the \texttt{nbr} expression, aligned devices---connected by solid lines---are those whose identifiers share the same parity: devices with even identifiers align only with others having even identifiers, and likewise for odd ones.
+    }
     \label{fig:alignment-example}
 \end{figure}
 
@@ -174,7 +182,7 @@ Historically, the first implementation of Aggregate Computing was \textit{Protel
 %
 Then, \textit{ScaFi (Scala Fields)} \cite{scafi} was introduced as a Scala 2 strongly-typed internal DSL leveraging Scala's powerful type system and functional programming features.
 
-Over the years, several other implementations have been developed---or are currently being developed---in different languages, including C++, Kotlin, Rust and Python.
+Over the years, several other implementations have been developed---or are currently being developed---in different languages, including FCPP \cite{fcpp} in C++, Collektive \cite{collektive}\cite{collektive2} in Kotlin, Rufi \cite{rufi} in Rust.
 %
 These implementations aim to support the widest range of platforms, enabling real-world deployments on edge devices, while taking advantage of each language's and ecosystem's strengths, such as C++ performance optimizations or Python machine and deep learning libraries.
 %
@@ -192,19 +200,21 @@ Scala emerges as an ideal "super"-language for this purpose, given its strong ty
 %
 Moreover, Scala's growing support for multiplatform development calls for an investigation into whether it can be effectively used to build a portable Aggregate Computing framework.
 
-The goal of this work is to explore the feasibility of building such a framework, starting from an existing modern Scala 3 implementation of Aggregate Computing, extending it to support multiple platforms and enabling interoperability with other languages.
+More generally, abstracting away from AC, the goal of this work is to investigate the feasibility of building a multi-platform and multi-language architecture for building Scala distributed, cross-platform and polyglot libraries.
 %
-This exploration is meant to investigate:
+Ultimately, such architecture could be reified into the AC domain.
+%
+More specifically, this exploration is meant to investigate:
 %
 \begin{itemize}
-    \item architectural strategies to design a portable and interoperable layer for Aggregate programming, while maintaining core abstractions and semantics and enabling complete code reuse;
-    \item interoperability and distribution strategies enabling seamless data exchange and collective execution across heterogeneous devices and language runtimes;
+    \item architectural strategies to design a portable and interoperable layer, while maintaining core abstractions and semantics and enabling complete code reuse;
+    \item interoperability and distribution strategies enabling seamless data exchange and execution across heterogeneous devices and language runtimes;
     \item performance implications, idiomaticity of the resulting APIs and overall effort required to extend and maintain a cross-platform and polyglot API.
 \end{itemize}
 
 \section{Scafi3 overview: a Scala 3 library for aggregate programming}
 
-ScaFi3\footnote{\url{https://github.com/scafi/scafi3}} is a modern Scala 3-grounded implementation of Aggregate Computing.
+ScaFi3\footnote{\url{https://github.com/scafi/scafi3}} \cite{scafi3} is a modern Scala 3-grounded implementation of Aggregate Computing.
 %
 Born as a complete re-engineering of the original ScaFi library to leverage the new features and capabilities of Scala 3, it delivers full reified support for fields alongside full implementation of XC constructs.
 
@@ -214,7 +224,7 @@ The \texttt{core} module is implemented as a pure Scala 3 module, meaning it has
 %
 The \texttt{alchemist-incarnation} module, instead, depends on the Alchemist simulator and the JVM platform, thus being limited to JVM-based platforms.
 
-Scafi core DSL and libraries entry-points are implemented leveraging Scala 3 contextual abstractions.
+ScaFi3 core DSL and libraries entry-points are implemented leveraging Scala 3 contextual abstractions \cite{scala-contextual-abstractions}.
 %
 More specifically, they are implemented as pure functions in singleton objects, taking as implicit parameters the \textit{language syntaxes}, which provides the necessary capabilities to express the aggregate constructs.
 %
@@ -240,7 +250,7 @@ To achieve this, the \texttt{Lang} type alias is defined as the intersection of 
     ]{resources/code/Gradient.scala}
   \end{minipage}%
   \hfill
-  \begin{minipage}{0.36\textwidth}
+  \begin{minipage}{0.40\textwidth}
     \centering
     \includegraphics[width=\textwidth]{./resources/img/gradient-round0.pdf}
   \end{minipage}

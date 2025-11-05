@@ -170,7 +170,7 @@ More recently, an experimental support for WebAssembly has also been introduced.
 Compilation to JavaScript is achieved via a pipeline of stages, shown in \Cref{fig:scala-js-compiler-pipeline}, performed after the Scala frontend compiler have parsed and type-checked the source code:
 
 \begin{itemize}
-    \item in the first stage the Scala.js compiler turns Scala AST into an IR (\texttt{.sjsir}) specifically designed to provide both portability and interoperability;
+    \item in the first stage the Scala.js compiler turns Scala Abstract Syntax Tree (AST) into an IR (\texttt{.sjsir}) specifically designed to provide both portability and interoperability;
     \item then, \texttt{.sjsir} files are linked together, type-checked and optimized. Optimizations include, among others, methods inlining at call sites and dead code elimination to make sure only exported API is kept, significantly reducing the final code size;
     \item finally, the optimized IR is compiled into a single \texttt{.[m]js} file containing the JavaScript code ready to be executed in the JavaScript environment.
 \end{itemize}
@@ -219,7 +219,7 @@ The AOT compiler translates Scala code into native machine code leveraging the L
 Compilation proceeds, similarly to Scala.js, through a pipeline of stages, shown in \Cref{fig:scala-native-compiler-pipeline}, performed after the Scala frontend compiler, producing IR files from which the final machine code is generated:
 
 \begin{itemize}
-    \item the first stage of the pipeline is performed by the \texttt{nscplugin} that, inspecting the abstract syntax tree, translates the Scala code into a strongly typed Native IR (NIR) consisting of a subset of LLVM IR instructions enriched with additional information to support Scala high level abstractions;
+    \item the first stage of the pipeline is performed by the \texttt{nscplugin} that, inspecting the AST, translates the Scala code into a strongly typed Native IR (NIR) consisting of a subset of LLVM IR instructions enriched with additional information to support Scala high level abstractions;
     \item NIR files are then linked together with those generated from external libraries and optimized;
     \item finally, the optimized NIR is translated to low-level LLVM instructions that are then compiled by the LLVM backend to platform-specific machine code.
 \end{itemize}
