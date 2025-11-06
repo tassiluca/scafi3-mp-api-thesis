@@ -7,7 +7,7 @@ Its discussion is structured as follows.
 %
 First, the intents and application scenarios motivating the proposed architecture are discussed.
 %
-Subsequently, the corresponding requirements are formalized.
+Subsequently, the corresponding requirements and constraints are formalized.
 %
 Thereafter, the elements composing the architecture are presented.
 %
@@ -23,12 +23,73 @@ Both intents must be achieved while maintaining a unified and unique version of 
 
 \section{Requirements}
 
+Requirements describe formally the boundary of applicability of the proposed architecture and the conditions it is designed to satisfy.
+%
+These can be categorized into \textit{user}, \textit{system} and \textit{implementation} requirements and concern two types of users: \textit{end-users}, that are the developers intended to use the libraries and frameworks designed following the proposed architecture, henceforth simply \textit{library}; and \textit{developers}, that are the ones designing and implementing such libraries and frameworks.
+
+\subsubsection{User requirements}
+
+\begin{enumerate}[label=U\arabic*.]
+    \item End-users interact with the library from multiple programming languages through a consistent API exploiting its functionalities while benefiting from language-specific ecosystem features. Supported languages include:
+    \begin{itemize}
+        \item Scala;
+        \item Java;
+        \item JavaScript; 
+        \item TypeScript;
+        \item C and C++.
+    \end{itemize}
+    \item End-users are able to write their own code leveraging the library functionalities:
+    \begin{itemize}
+        \item using Scala, with deployment possibly spanning across multiple platforms and runtimes:
+        \begin{itemize}
+            \item JVM;
+            \item JavaScript environments, both in browser and server-side (Node.js);
+            \item Native environments. These include desktop, server or System on Chip (SoC) devices running on 64-bit and ARM architectures.
+        \end{itemize}
+        \item using other supported languages (Java, JavaScript, TypeScript, C, C++), targeting their respective native platforms.
+    \end{itemize}
+    \item End-users are able to distribute the execution of their code leveraging the library functionalities across multiple machines exploiting some distributed communication mechanism, running on top of different platforms and runtimes, and possibly programmed in different languages.
+\end{enumerate}
+
+\todo{different environments because of different requirements}
+
+\subsubsection{System requirements}
+
+\begin{enumerate}[label=S\arabic*.]
+    \item Library application logic is implemented once and reused across all supported platforms and runtimes. Modifications to the application logic must be applied only once and automatically reflected across all supported platforms and runtimes.
+    \item Library API is consistent across all supported languages and it behaves uniformly regardless of the target platform, runtime or programming language.
+\end{enumerate}
+
+\subsubsection{Implementation requirements}
+
+\begin{enumerate}[label=I\arabic*.]
+    \item Developers implement the library using Scala, enabling them to harness functional programming, type-safe abstractions, expressive syntax and compositional design patterns to facilitate the development of robust, scalable, distributed, and concurrent software systems.
+\end{enumerate}
+
+\section{Constraints}
+
+The proposed architecture imposes a fundamental constraint that significantly influences architectural decisions: all dependencies must support multi-platform compilation across target platforms. 
+%
+Where such multi-platform support is unavailable, platform-specific implementations must be provided to bridge the abstraction gap.
+%
+If an existing Scala library heavily relies on platform-specific dependency or its design is tightly coupled with a specific platform or runtime, adapting it to the proposed architecture may prove impractical or require substantial reengineering efforts.
+
+\todo{Example, Akka?}
+
 \section{Architectural elements}
+
+The proposed architecture is composed of four main elements.
+
+\subsection{Pure library core module}
 
 \subsection{Cross-platform distribution module}
 
 \subsection{Support for a general cross-platform and polyglot serialization binding}
 
-\subsection{Cross-platform and polyglot library abstraction layer}
+\subsection{Polyglot library abstraction layer}
 
 \section{Consequences}
+
+\begin{enumerate}
+    \item The expressiveness of exchanged messages is limited to the capabilities of the serialization binding adopted.
+\end{enumerate}

@@ -94,7 +94,6 @@ package "distributed" {
         end note
     }
 
-    interface Pippo
 }
 
 @enduml
