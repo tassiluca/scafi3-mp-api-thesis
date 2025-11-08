@@ -151,23 +151,40 @@ While the first it's a desideratum to ensure flexibility and interchangeability 
 %
 Indeed, if the serialization format is not compatible across all supported languages and platforms, the library would not be able to consistently exchange messages between different end nodes, thus undermining its distributed nature.
 
+The selection of a serialization format requires careful consideration of multiple factors.
+%
+Performance and efficiency trade-offs between textual and binary formats must be evaluated alongside compatibility with all supported programming languages and platforms.
+%
+Additionally, the choice between schema-based and schema-less formats affects flexibility and evolution capabilities of the serialized data structures.
+%
+A critical consideration is the degree of automation in serializer and deserializer generation: while automatic code generation simplifies development, it may constrain the ability to define custom data types and structures that leverage language-specific abstractions.
+%
+This tension is particularly relevant given that different programming languages offer distinct type systems and abstractions that cannot always be straightforwardly mapped across platforms.
 
+\subsection*{Polyglot library abstraction layer}
 
+This layer exposes a uniform interface that enables cross-language interaction with the library's core functionalities. 
+%
+Its introduction is necessitated by two critical problems facing when exposing a Scala API to the Native and JavaScript platforms: type system mismatches and limited type construct mapping.
 
+Type system mismatches arise because both Scala Native and Scala.js deals with language semantics mismatch reifying them into the type system with the introduction of additional types.
+%
+While this approach preserve type-safety, guarantees correct usage and force users to be aware of the underlying platform constraints and peculiarities, it makes impossible to expose a unified API across all supported languages.
+%
+Without this layer, end-users would be forced to create different facades for both JavaScript and C, leading to code duplication, increased maintenance effort and potential inconsistencies.
 
-% - responsible for enabling distribution of library functionalities across multiple end nodes and platforms and runtimes interaction
+Limited type construct mapping is a consequence of the fact that only a subset of Scala type constructs can be mapped and exposed to JavaScript and C. 
+%
+Indeed, while Scala code can be cross-compiled to both JavaScript and native binaries, not all Scala type constructs have a direct counterpart in these target languages.
+%
+Consequently, the ability to cross-compile a Scala construct does not guarantee it can be exposed to or utilized by other programming languages.
 
-% - can be implemented using adapters for different technologies, ref. to the clean architecture pattern
-
-% - general serialization binding
-
-% - format agnostic and interoperable
-
-\subsection{Polyglot library abstraction layer}
-
-- exposes simplified and consistent interface API to end-users through different programming languages
-
-- isomorphisms and portable types
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{resources/img/portable-types-mapping.pdf}
+    \caption{Mapping of portable types across different programming languages.}
+    \label{fig:portable-types-mapping}
+\end{figure}
 
 \section{Consequences}
 
