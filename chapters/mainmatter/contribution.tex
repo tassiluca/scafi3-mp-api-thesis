@@ -165,26 +165,65 @@ This tension is particularly relevant given that different programming languages
 
 This layer exposes a uniform interface that enables cross-language interaction with the library's core functionalities. 
 %
-Its introduction is necessitated by two critical problems facing when exposing a Scala API to the Native and JavaScript platforms: type system mismatches and limited type construct mapping.
+Two critical challenges converge to demand the presence of this layer: type system mismatches and limited type construct mapping.
 
-Type system mismatches arise because both Scala Native and Scala.js deals with language semantics mismatch reifying them into the type system with the introduction of additional types.
+Type system mismatches arise because both Scala Native and Scala.js address language semantics differences by reifying them into new types.
 %
-While this approach preserve type-safety, guarantees correct usage and force users to be aware of the underlying platform constraints and peculiarities, it makes impossible to expose a unified API across all supported languages.
+For example, Scala.js introduce the \texttt{js.Map} type to represent JavaScript maps, distinct from Scala's native \texttt{Map} type.
+%
+Similarly, both projects represent lambda functions or nullable types using specific types: \texttt{js.UndefOr} in Scala.js and \texttt{null} in Scala Native for nullable types or \texttt{js.FunctionN} for JavaScript lambdas and \texttt{CFuncPtrN} for C function pointers.
+%
+While this approach preserve type-safety, guarantees correct usage, and ensures users to be aware of the underlying platform constraints and peculiarities, it prevents exposing a unified API across all supported languages.
 %
 Without this layer, end-users would be forced to create different facades for both JavaScript and C, leading to code duplication, increased maintenance effort and potential inconsistencies.
 
-Limited type construct mapping is a consequence of the fact that only a subset of Scala type constructs can be mapped and exposed to JavaScript and C. 
+Limited type construct mapping is a consequence of the fact that only a subset of Scala type constructs can be mapped and exposed to JavaScript and C.
 %
 Indeed, while Scala code can be cross-compiled to both JavaScript and native binaries, not all Scala type constructs have a direct counterpart in these target languages.
 %
 Consequently, the ability to cross-compile a Scala construct does not guarantee it can be exposed to or utilized by other programming languages.
+%
+For example, Scala's rich type system includes Path Dependent Types and implicit parameters, which have no direct equivalents in other programming languages.
 
+The proposed polyglot abstraction layer tackles these challenges by introducing \textit{abstract, language-independent types} that are \textit{isomorphic} to their Scala counterparts.
+%
+This means that, although being abstract and decoupled from any specific programming language or platform, they can be mapped one-to-one to some corresponding Scala type.
+%
+These types, referred to as \textbf{Portable Types}, are then instantiated within each supported platform and language, providing language-specific implementations and dedicated bidirectional conversion between language-specific types and their corresponding Scala equivalents.
+
+Using this approach the core library API is exposed to end-users through portable types, providing simplified interfaces as a thin wrapper around the core library API, internally handling the conversion between portable types and the corresponding Scala types with which the core library operates.
+%
+These interfaces---referred to as \textbf{Portable Libraries}---can then be exported, packed and distributed as native packages for each supported programming language since, during cross-compilation, Portable Types are translated to the corresponding language-specific types.
+%
+Substantially, the portable types act as a small standard library for this module, written in a subsetted version of Scala that is limited, in its expressiveness, to the constructs that can be mapped and exported to all supported programming languages.
+%
+An overview of this mapping and the exchange of data structures across different programming languages is presented in \Cref{fig:portable-types-mapping}.
+%
 \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{resources/img/portable-types-mapping.pdf}
-    \caption{Mapping of portable types across different programming languages.}
+    \caption[Language-Agnostic API access through Portable Libraries and isomorphic type mappings]{Language-Agnostic API access through Portable Libraries and isomorphic type mappings. Clients interact with the core library API through Portable Libraries, which expose a simplified interface towards the core library using Portable Types. Thanks to language-specific instantiations of Portable Types and appropriate isomorphic mappings, Portable Libraries simply delegate calls to the core library API after converting Portable Types to their corresponding Scala types.}
     \label{fig:portable-types-mapping}
 \end{figure}
+
+Beyond collection-types, each Portable Library can extend the set of portable types by defining domain-specific Abstract Data Types (ADTs) that model the library domain, mirroring standard type definition practices.
+%
+These ADTs maintain the same isomorphic mapping principle, ensuring seamless conversion between portable and Scala types.
+
+Implementation-wise, Portable Libraries are structured as a thin wrapper around the core library API, using only Portable Types in their public interface.
+%
+Internally, the logic is delegated to the core library after converting Portable Types to their corresponding Scala types using the provided isomorphic mappings.
+
+Notably, the polyglot abstraction layer must account for fundamental differences across all supported programming languages, modeling and abstracting these distinctions to enable their exposure through a unified API. These differences encompass:
+%
+\begin{itemize}
+\item error handling mechanisms, such as exceptions in JavaScript versus error codes in C;
+\item API design paradigms, including asynchronous versus synchronous approaches;
+\item equality and hashing semantics;
+\item memory management models.
+\end{itemize}
+%
+\Cref{chapter:scafi3-arch-reification} presents how Portable Types and Portable Libraries can be implemented to model and abstract these language-level differences.
 
 \section{Consequences}
 
