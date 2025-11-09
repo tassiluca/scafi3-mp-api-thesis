@@ -30,7 +30,7 @@ These can be categorized into \textit{user}, \textit{system} and \textit{impleme
 \subsubsection{User requirements}
 
 \begin{enumerate}[label=U\arabic*.]
-    \item End-users interact with the library from multiple programming languages through a consistent API exploiting its functionalities while benefiting from language-specific ecosystem features. Supported languages include:
+    \item End-users must interact with the library from multiple programming languages through a consistent API exploiting its functionalities while benefiting from language-specific ecosystem features. Supported languages include:
     \begin{itemize}
         \item Scala;
 % todo: \item Java;
@@ -38,7 +38,7 @@ These can be categorized into \textit{user}, \textit{system} and \textit{impleme
         \item TypeScript;
         \item C and C++.
     \end{itemize}
-    \item End-users are able to write their own code leveraging the library functionalities:
+    \item The library must support execution across heterogeneous platforms and runtimes to accommodate diverse end-user deployment environments. More specifically, they are able to write their own code leveraging the library functionalities:
     \begin{itemize}
         \item using Scala, with deployment possibly spanning across multiple platforms and runtimes:
         \begin{itemize}
@@ -46,24 +46,22 @@ These can be categorized into \textit{user}, \textit{system} and \textit{impleme
             \item JavaScript environments, both in browser and server-side (Node.js);
             \item Native environments. These include desktop, server or System on Chip (SoC) devices running on 64-bit and ARM architectures.
         \end{itemize}
-        \item using other supported languages (Java, JavaScript, TypeScript, C, C++), targeting their respective native platforms.
+        \item using other supported languages, targeting their respective native platforms.
     \end{itemize}
     \item End-users are able to distribute the execution of their code leveraging the library functionalities across multiple machines exploiting some distributed communication mechanism, running on top of different platforms and runtimes, and possibly programmed in different languages.
 \end{enumerate}
-
-\todo{different environments because of different requirements}
 
 \subsubsection{System requirements}
 
 \begin{enumerate}[label=S\arabic*.]
     \item Library application logic is implemented once and reused across all supported platforms and runtimes. Modifications to the application logic must be applied only once and automatically reflected across all supported platforms and runtimes.
-    \item Library API is consistent across all supported languages and it behaves uniformly regardless of the target platform, runtime or programming language.
+    \item Library API is consistent across all supported languages, and it behaves uniformly regardless of the target platform, runtime or programming language.
 \end{enumerate}
 
 \subsubsection{Implementation requirements}
 
 \begin{enumerate}[label=I\arabic*.]
-    \item Developers implement the library using Scala, enabling them to harness functional programming, type-safe abstractions, expressive syntax and compositional design patterns to facilitate the development of robust, scalable, distributed, and concurrent software systems.
+    \item Developers implement the library using all the Scala language features and capabilities, enabling them to harness functional programming, type-safe abstractions, expressive syntax and compositional design patterns to facilitate the development of robust, scalable, distributed, and concurrent software systems.
 \end{enumerate}
 
 \section{Constraints}
@@ -199,10 +197,11 @@ Substantially, the portable types act as a small standard library for this modul
 %
 An overview of this mapping and the exchange of data structures across different programming languages is presented in \Cref{fig:portable-types-mapping}.
 %
-\begin{figure}
+\begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth]{resources/img/portable-types-mapping.pdf}
-    \caption[Language-Agnostic API access through Portable Libraries and isomorphic type mappings]{Language-Agnostic API access through Portable Libraries and isomorphic type mappings. Clients interact with the core library API through Portable Libraries, which expose a simplified interface towards the core library using Portable Types. Thanks to language-specific instantiations of Portable Types and appropriate isomorphic mappings, Portable Libraries simply delegate calls to the core library API after converting Portable Types to their corresponding Scala types.}
+    \caption[Language-Agnostic API access through Portable Libraries and isomorphic type mappings]{Language-Agnostic API access through Portable Libraries and isomorphic type mappings enabling to expose a unified interface across multiple programming languages, while delegating the implementation to the core library.}
+    % Clients interact with the core library API through Portable Libraries, which expose a simplified interface towards the core library using Portable Types. Thanks to language-specific instantiations of Portable Types and appropriate isomorphic mappings, Portable Libraries simply delegate calls to the core library API after converting Portable Types to their corresponding Scala types.
     \label{fig:portable-types-mapping}
 \end{figure}
 
@@ -227,6 +226,14 @@ Notably, the polyglot abstraction layer must account for fundamental differences
 
 \section{Consequences}
 
+This architecture enables the development of cross-platform, polyglot and distributed Scala libraries and frameworks by addressing the challenges associated with platform heterogeneity, language interoperability and distributed communication.
+%
+It's main focus is to maximize code sharing and reuse across all supported platforms and programming languages, while minimizing platform-specific code and complexity and provide a consistent and unified API to end-users.
+
+However, some considerations and trade-offs are presented hereafter:
+%
 \begin{enumerate}
-    \item The expressiveness of exchanged messages is limited to the capabilities of the serialization binding adopted.
+    \item \textit{API Maintenance:} while every code change in the core library is automatically reflected across all supported platforms and runtimes, the addition of new API functionalities requires extending the polyglot abstraction layer to expose the new features to end-users. Despite not being a significant overhead, since the polyglot abstraction layer is designed to be thin and minimal, it still requires some additional effort to maintain and evolve;
+    \item \textit{Performance Overhead:} Interoperability across programming languages is achieved through type conversion, which introduces performance overhead, particularly when handling complex data structures or large data volumes. However, this overhead remains significantly lower than alternative approaches based on remote procedure calls (RPC) or inter-process communication (IPC), which incur additional serialization and network/process boundary crossing costs;
+    \item \textit{Data Expressiveness:} the expressiveness of exchanged messages between nodes is limited to the capabilities of the adopted cross-platform and polyglot serialization format. Complex data structures or language-specific constructs may not be fully representable, potentially requiring simplifications or alternative representations.
 \end{enumerate}
