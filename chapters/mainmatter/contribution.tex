@@ -1,7 +1,7 @@
 % !TeX root = ../../main.tex
 \chapter{Contribution}
 
-In this chapter it is presented the conceptualization of a proposed Scala-based reference architecture for enabling the development of cross-platform, polyglot and distributed libraries and frameworks.
+In this chapter is presented the conceptualization of a proposed Scala-based reference architecture for enabling the development of cross-platform, polyglot and distributed libraries and frameworks.
 
 Its discussion is structured as follows.
 %
@@ -15,22 +15,31 @@ Finally, the implications of adopting this design are analyzed.
 
 \section{Intents}
 
-The intents of the proposed architecture are to enable the development of distributed Scala libraries and frameworks to be both cross-platform, that is, able to run on multiple platforms and runtimes; and polyglot, that is, designed to be able to interoperate with its public interface from multiple programming languages.
+The intents of the proposed architecture are to enable the development of distributed Scala libraries and frameworks to be both \textit{cross-platform}, that is, able to run on multiple platforms and runtimes; and \textit{polyglot}, that is, designed to be able to interoperate with its public interface from multiple programming languages.
 %
-Both intents must be achieved while maintaining a unified and unique version of the components implementing the application logic of the software product.
+Both intents are achieved while maintaining a unified version of the components implementing the application logic of the software product.
 
 \section{Application scenarios}
 
+This architecture is well suited when the following scenarios arise:
+
+\begin{itemize}
+    \item \textbf{Application environment heterogeneity.} The library or framework implements functionalities that should be deployed and executed in heterogeneous environments, spanning across multiple platforms and runtimes. This may arise from the heterogeneity of end-user deployment environments or the requirement that platform and runtime selection remain contingent upon the specific application context in which the library is used.
+    \item \textbf{Polyglot end-user base.} The library is designed for developers working across different programming languages, enabling team diversity, facilitating integration with existing codebases in various languages, and leveraging language-specific features and ecosystems.
+    \item \textbf{Unified application logic.} The library exposes its functionalities through a unified API, regardless of the target platform, runtime or programming language. This ensures behavioral consistency across all supported environments, enabling seamless interoperability between programs utilizing the library, regardless of their target platform or implementation language.
+\end{itemize}
+
 \section{Requirements}
 
-Requirements describe formally the boundary of applicability of the proposed architecture and the conditions it is designed to satisfy.
+Requirements formally describe the boundary of applicability of the proposed architecture.
 %
-These can be categorized into \textit{user}, \textit{system} and \textit{implementation} requirements and concern two types of users: \textit{end-users}, that are the developers intended to use the libraries and frameworks designed following the proposed architecture, henceforth simply \textit{library}; and \textit{developers}, that are the ones designing and implementing such libraries and frameworks.
+These can be categorized into \textit{user}, \textit{system} and \textit{implementation} requirements and address two types of stakeholders: \textit{library users}, who are developers intending to use the libraries and frameworks designed following the proposed architecture; and \textit{library developers}, who design and implement such libraries and frameworks.
 
 \subsubsection{User requirements}
 
 \begin{enumerate}[label=U\arabic*.]
-    \item End-users must interact with the library from multiple programming languages through a consistent API exploiting its functionalities while benefiting from language-specific ecosystem features. Supported languages include:
+    \item Library users must be able to interact with the library from multiple programming languages through a consistent API that leverages its functionalities and benefits from language-specific ecosystem features. Supported languages include:
+    %
     \begin{itemize}
         \item Scala;
 % todo: \item Java;
@@ -38,43 +47,45 @@ These can be categorized into \textit{user}, \textit{system} and \textit{impleme
         \item TypeScript;
         \item C and C++.
     \end{itemize}
-    \item The library must support execution across heterogeneous platforms and runtimes to accommodate diverse end-user deployment environments. More specifically, they are able to write their own code leveraging the library functionalities:
+    %
+    \item The library must support execution across heterogeneous platforms and runtimes to accommodate diverse Library User deployment environments. Library users must be able to implement their own solution by building upon the library's core functionalities:
+    %
     \begin{itemize}
-        \item using Scala, with deployment possibly spanning across multiple platforms and runtimes:
+        \item using Scala, with deployments possibly spanning across multiple platforms and runtimes:
         \begin{itemize}
             \item JVM;
-            \item JavaScript environments, both in browser and server-side (Node.js);
-            \item Native environments. These include desktop, server or System on Chip (SoC) devices running on 64-bit and ARM architectures.
+            \item JavaScript environments, both browser-based and server-side (Node.js);
+            \item Native environments, including desktop, server, and System on Chip (SoC) devices running on 64-bit and ARM architectures.
         \end{itemize}
-        \item using other supported languages, targeting their respective native platforms.
+        \item using other supported languages, targeting their respective platforms. Except for Scala, Library Users should not need to compile code written for one platform to run on another; e.g., compiling C code to run on Node.js.
     \end{itemize}
-    \item End-users are able to distribute the execution of their code leveraging the library functionalities across multiple machines exploiting some distributed communication mechanism, running on top of different platforms and runtimes, and possibly programmed in different languages.
+    \item Library users can distribute the execution of their application-specific code across multiple machines, with each node potentially running on different platforms, runtimes, and programming languages. The library provides distributed communication mechanisms that enable seamless interoperability and coordination among heterogeneous nodes.
 \end{enumerate}
 
 \subsubsection{System requirements}
 
 \begin{enumerate}[label=S\arabic*.]
-    \item Library application logic is implemented once and reused across all supported platforms and runtimes. Modifications to the application logic must be applied only once and automatically reflected across all supported platforms and runtimes.
-    \item Library API is consistent across all supported languages, and it behaves uniformly regardless of the target platform, runtime or programming language.
+    \item Library developers must be able to implement the library logic once reuse it across all supported platforms and runtimes. Modifications to the library logic are automatically reflected across all target platforms and runtimes.
+    \item Library API must be consistent across all supported languages and behaves uniformly regardless of the target platform, runtime and programming language.
 \end{enumerate}
 
 \subsubsection{Implementation requirements}
 
 \begin{enumerate}[label=I\arabic*.]
-    \item Developers implement the library using all the Scala language features and capabilities, enabling them to harness functional programming, type-safe abstractions, expressive syntax and compositional design patterns to facilitate the development of robust, scalable, distributed, and concurrent software systems.
+    \item Developers implement the library taking advantage of the full Scala language features and capabilities, enabling them to harness functional programming, type-safe abstractions, expressive syntax and compositional design patterns to facilitate the development of robust, scalable and distributed software systems.
 \end{enumerate}
 
 \section{Constraints}
 
-The proposed architecture imposes a fundamental constraint that significantly influences architectural decisions: all dependencies must support multi-platform compilation across target platforms. 
+The proposed architecture imposes a fundamental constraint that significantly influences architectural decisions: all dependencies must support cross-compilation to all target platforms.
 %
-Where such multi-platform support is unavailable, platform-specific implementations must be provided to bridge the abstraction gap.
+Where such multi-platform support is unavailable, platform-specific implementations must be provided explicitly to bridge the abstraction gap.
 %
 If an existing Scala library heavily relies on platform-specific dependency or its design is tightly coupled with a specific platform or runtime, adapting it to the proposed architecture may prove impractical or require substantial reengineering efforts.
 
-For example, a distributed Scala library heavily relying on Akka and its actor model, together with its remoting and clustering capabilities, would require a complete redesign to be adapted to the proposed architecture, since Akka is JVM-only.
+For example, a distributed Scala library built on Akka\footnote{\url{https://akka.io}} and utilizing its remoting, and clustering capabilities would require substantial redesign to support multi-platform execution, as Akka targets only the JVM, unless these dependencies have been carefully abstracted as replaceable components.
 %
-Moreover, when such platform-specific dependencies are essential for achieving critical non-functional requirements---such as fault tolerance or scalability attributes---that cannot be replicated though multi-platform alternatives, the adaptation becomes not merely impractical but potentially unfeasible.
+Furthermore, when platform-specific dependencies provide critical non-functional properties---such as fault tolerance or scalability---that multi-platform alternatives cannot yet match, adapting to a cross-platform architecture becomes not merely impractical but potentially unfeasible.
 %
 In these cases, the tight coupling to a specific platform represents an architectural constraint rather than an implementation detail, and the proposed architecture may not constitute a suitable approach for such libraries without fundamentally revisiting their core design principles.
 
