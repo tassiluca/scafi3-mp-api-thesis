@@ -153,13 +153,15 @@ As an illustrative example, the program presented in \Cref{fig:alignment-example
 %
 In any round, each device always evaluates the same branch of the conditional depending on the value of its identifier.
 %
-When evaluating the neighboring values, however, only the values produced by devices evaluating the same \texttt{nbr} in the same branch should be considered, otherwise the program would mix values coming from different contexts, resulting in incorrect outcomes.
+When evaluating the neighboring values, however, only the values produced by devices executing the same \texttt{nbr} in the same branch should be considered.
+%
+Otherwise, the program would mix values coming from different contexts, resulting in incorrect outcomes.
 %
 Those devices are said to be \textit{aligned} with each other.
 
 As a result, when evaluating \texttt{exchange}-based expressions, the \textit{field} of neighboring values is restricted to include only those coming from aligned devices.
 %
-In \Cref{fig:alignment-example}, for instance, when evaluating the \texttt{nbr} expression, each device can only observe neighboring values coming from devices with the same parity of identifier.
+In \Cref{fig:alignment-example}, for instance, when evaluating the \texttt{nbr} expression, each device can only observe neighboring values coming from devices with the same identifier parity.
 
 \begin{figure}
     \centering
@@ -182,7 +184,7 @@ Historically, the first implementation of Aggregate Computing was \textit{Protel
 %
 Then, \textit{ScaFi (Scala Fields)} \cite{scafi} was introduced as a Scala 2 strongly-typed internal DSL leveraging Scala's powerful type system and functional programming features.
 
-Over the years, several other implementations have been developed---or are currently being developed---in different languages, including FCPP \cite{fcpp} in C++, Collektive \cite{collektive}\cite{collektive2} in Kotlin, Rufi \cite{rufi} in Rust.
+Over the years, several other implementations have been developed---or are currently being developed---in different languages, including FCPP \cite{fcpp} in C++, Collektive \cite{collektive}\cite{collektive2} in Kotlin and Rufi \cite{rufi} in Rust.
 %
 These implementations aim to support the widest range of platforms, enabling real-world deployments on edge devices, while taking advantage of each language's and ecosystem's strengths, such as C++ performance optimizations or Python machine and deep learning libraries.
 %
@@ -200,11 +202,11 @@ Scala emerges as an ideal "super"-language for this purpose, given its strong ty
 %
 Moreover, Scala's growing support for multiplatform development calls for an investigation into whether it can be effectively used to build a portable Aggregate Computing framework.
 
-More generally, abstracting away from AC, the goal of this work is to investigate the feasibility of building a multi-platform and multi-language architecture for building Scala distributed, cross-platform and polyglot libraries.
+More generally, abstracting away from AC, the goal of this work is to investigate the feasibility of building a cross-platform and polyglot architecture for building Scala distributed libraries and frameworks.
 %
 Ultimately, such architecture could be reified into the AC domain.
 %
-More specifically, this exploration is meant to investigate:
+Specifically, this exploration is meant to investigate:
 %
 \begin{itemize}
     \item architectural strategies to design a portable and interoperable layer, while maintaining core abstractions and semantics and enabling complete code reuse;
