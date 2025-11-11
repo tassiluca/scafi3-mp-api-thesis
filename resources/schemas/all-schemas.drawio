@@ -1,4 +1,4 @@
-<mxfile host="Electron" modified="2025-11-11T13:02:08.421Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.5.3 Chrome/124.0.6367.207 Electron/30.0.6 Safari/537.36" etag="TtkYyKkZoBoHyDD40LIJ" version="24.5.3" type="device" pages="8">
+<mxfile host="Electron" modified="2025-11-11T14:12:21.190Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.5.3 Chrome/124.0.6367.207 Electron/30.0.6 Safari/537.36" etag="iMJY9BWZ_g9Nn7DSmkC2" version="24.5.3" type="device" pages="8">
   <diagram name="Page-1" id="ha3-Y03p4xSsjCJIenTy">
     <mxGraphModel dx="1434" dy="848" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
       <root>
@@ -500,7 +500,7 @@
     </mxGraphModel>
   </diagram>
   <diagram id="fxHOr25zW_47L_-577if" name="architecture">
-    <mxGraphModel dx="2193" dy="606" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+    <mxGraphModel dx="1990" dy="598" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -535,7 +535,7 @@
             <mxPoint x="500" y="1295.8700000000001" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="02O0ooF7v4ZSzKm9LRiF-9" value="&amp;nbsp;writes&amp;nbsp;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="qncKTMAEYIfeK9gm7Acq-7">
+        <mxCell id="02O0ooF7v4ZSzKm9LRiF-9" value="&amp;nbsp;writes&amp;nbsp;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="qncKTMAEYIfeK9gm7Acq-7" vertex="1" connectable="0">
           <mxGeometry x="0.0184" y="1" relative="1" as="geometry">
             <mxPoint x="3" y="-2" as="offset" />
           </mxGeometry>
@@ -1591,6 +1591,11 @@
             <mxPoint x="762" y="1294.5200000000002" as="targetPoint" />
           </mxGeometry>
         </mxCell>
+        <mxCell id="gGnVSU5XCd9lYqPovIdm-1" value="&amp;nbsp;writes&amp;nbsp;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="ns5G_fXzgAdQIX84pfQG-34" vertex="1" connectable="0">
+          <mxGeometry x="0.0698" y="-1" relative="1" as="geometry">
+            <mxPoint x="4" as="offset" />
+          </mxGeometry>
+        </mxCell>
         <mxCell id="ns5G_fXzgAdQIX84pfQG-46" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;endArrow=none;endFill=0;startArrow=open;startFill=0;" parent="1" target="ns5G_fXzgAdQIX84pfQG-39" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="797" y="1219" as="sourcePoint" />
@@ -1663,10 +1668,10 @@
         <mxCell id="qncKTMAEYIfeK9gm7Acq-10" value="&lt;div style=&quot;&quot;&gt;&lt;span style=&quot;background-color: initial; font-family: monospace; font-size: 8px;&quot;&gt;&amp;lt;&amp;lt;artifact&amp;gt;&amp;gt;&amp;nbsp; &amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;span style=&quot;font-family: monospace; font-size: 10px;&quot;&gt;&lt;div style=&quot;&quot;&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;lib.sjs&amp;nbsp;&amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;/span&gt;" style="html=1;outlineConnect=0;whiteSpace=wrap;fillColor=#FFCC00;shape=mxgraph.archimate3.application;appType=artifact;archiType=square;align=center;opacity=60;" parent="qncKTMAEYIfeK9gm7Acq-13" vertex="1">
           <mxGeometry x="10.470000000000027" y="34.678799999999896" width="83.53" height="33.156000000000006" as="geometry" />
         </mxCell>
-        <mxCell id="02O0ooF7v4ZSzKm9LRiF-7" value="&lt;pre&gt;&lt;br&gt;&lt;/pre&gt;&lt;pre&gt;&lt;br&gt;&lt;/pre&gt;&lt;pre&gt;&lt;br&gt;&lt;/pre&gt;&lt;pre&gt;&lt;br&gt;&lt;/pre&gt;&lt;pre&gt;&lt;br&gt;&lt;/pre&gt;&lt;pre&gt;&lt;br&gt;&lt;/pre&gt;&lt;pre&gt;&lt;br&gt;&lt;/pre&gt;&lt;pre&gt;&lt;br&gt;&lt;/pre&gt;&lt;pre&gt;&lt;br&gt;&lt;/pre&gt;&lt;pre&gt;&lt;br&gt;&lt;/pre&gt;&lt;pre&gt;&lt;br&gt;&lt;/pre&gt;&lt;pre&gt;&lt;font size=&quot;1&quot;&gt;Native / Bare Metal platform&lt;/font&gt;&lt;/pre&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=none;fillColor=#99CC00;opacity=10;arcSize=6;" vertex="1" parent="1">
-          <mxGeometry x="585" y="1130" width="365" height="310" as="geometry" />
+        <mxCell id="02O0ooF7v4ZSzKm9LRiF-7" value="&lt;pre&gt;&lt;br&gt;&lt;/pre&gt;&lt;pre&gt;&lt;br&gt;&lt;/pre&gt;&lt;pre&gt;&lt;br&gt;&lt;/pre&gt;&lt;pre&gt;&lt;br&gt;&lt;/pre&gt;&lt;pre&gt;&lt;br&gt;&lt;/pre&gt;&lt;pre&gt;&lt;br&gt;&lt;/pre&gt;&lt;pre&gt;&lt;br&gt;&lt;/pre&gt;&lt;pre&gt;&lt;br&gt;&lt;/pre&gt;&lt;pre&gt;&lt;br&gt;&lt;/pre&gt;&lt;pre&gt;&lt;br&gt;&lt;/pre&gt;&lt;pre&gt;&lt;br&gt;&lt;/pre&gt;&lt;pre&gt;&lt;font size=&quot;1&quot;&gt;Native / Bare Metal platform&lt;/font&gt;&lt;/pre&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=none;fillColor=#99CC00;opacity=10;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="585.3" y="1129.9" width="365" height="310" as="geometry" />
         </mxCell>
-        <mxCell id="02O0ooF7v4ZSzKm9LRiF-8" value="&lt;pre style=&quot;font-size: 11px;&quot;&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;Node.js platform&lt;/pre&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=none;fillColor=#FFCC00;opacity=10;arcSize=6;" vertex="1" parent="1">
+        <mxCell id="02O0ooF7v4ZSzKm9LRiF-8" value="&lt;pre style=&quot;font-size: 11px;&quot;&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;Node.js platform&lt;/pre&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=none;fillColor=#FFCC00;opacity=10;arcSize=6;" parent="1" vertex="1">
           <mxGeometry x="190" y="1130" width="295" height="310" as="geometry" />
         </mxCell>
         <mxCell id="ns5G_fXzgAdQIX84pfQG-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;endArrow=none;endFill=0;startArrow=open;startFill=0;" parent="1" source="qncKTMAEYIfeK9gm7Acq-10" target="ns5G_fXzgAdQIX84pfQG-3" edge="1">
@@ -1693,12 +1698,12 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="02O0ooF7v4ZSzKm9LRiF-26" value="&amp;nbsp;depends on&amp;nbsp;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="ns5G_fXzgAdQIX84pfQG-17">
+        <mxCell id="02O0ooF7v4ZSzKm9LRiF-26" value="&amp;nbsp;depends on&amp;nbsp;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="ns5G_fXzgAdQIX84pfQG-17" vertex="1" connectable="0">
           <mxGeometry x="0.5109" y="-2" relative="1" as="geometry">
             <mxPoint y="-6" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="02O0ooF7v4ZSzKm9LRiF-6" value="&lt;pre&gt;&lt;br&gt;&lt;/pre&gt;&lt;pre&gt;&lt;br&gt;&lt;/pre&gt;&lt;pre&gt;&lt;br&gt;&lt;/pre&gt;&lt;pre&gt;&lt;br&gt;&lt;/pre&gt;&lt;pre&gt;&lt;br&gt;&lt;/pre&gt;&lt;pre&gt;&lt;br&gt;&lt;/pre&gt;&lt;pre&gt;&lt;br&gt;&lt;/pre&gt;&lt;pre&gt;&lt;br&gt;&lt;/pre&gt;&lt;pre&gt;&lt;br&gt;&lt;/pre&gt;&lt;pre&gt;&lt;br&gt;&lt;/pre&gt;&lt;pre&gt;&lt;br&gt;&lt;/pre&gt;&lt;pre&gt;&lt;font size=&quot;1&quot;&gt;JVM platform&lt;/font&gt;&lt;/pre&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=none;fillColor=#FFA6C9;opacity=10;arcSize=20;" vertex="1" parent="1">
+        <mxCell id="02O0ooF7v4ZSzKm9LRiF-6" value="&lt;pre&gt;&lt;br&gt;&lt;/pre&gt;&lt;pre&gt;&lt;br&gt;&lt;/pre&gt;&lt;pre&gt;&lt;br&gt;&lt;/pre&gt;&lt;pre&gt;&lt;br&gt;&lt;/pre&gt;&lt;pre&gt;&lt;br&gt;&lt;/pre&gt;&lt;pre&gt;&lt;br&gt;&lt;/pre&gt;&lt;pre&gt;&lt;br&gt;&lt;/pre&gt;&lt;pre&gt;&lt;br&gt;&lt;/pre&gt;&lt;pre&gt;&lt;br&gt;&lt;/pre&gt;&lt;pre&gt;&lt;br&gt;&lt;/pre&gt;&lt;pre&gt;&lt;br&gt;&lt;/pre&gt;&lt;pre&gt;&lt;font size=&quot;1&quot;&gt;JVM platform&lt;/font&gt;&lt;/pre&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=none;fillColor=#FFA6C9;opacity=10;arcSize=20;" parent="1" vertex="1">
           <mxGeometry x="487.8" y="1129.5" width="94.5" height="310" as="geometry" />
         </mxCell>
       </root>
