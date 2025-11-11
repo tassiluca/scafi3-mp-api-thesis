@@ -1,7 +1,7 @@
 % !TeX root = ../../main.tex
 \chapter{Contribution}
 
-In this chapter is presented the conceptualization of a proposed Scala-based reference architecture for enabling the development of cross-platform, polyglot and distributed libraries and frameworks.
+This chapter presents the conceptualization of a proposed Scala-based architecture for enabling the development of cross-platform, polyglot and distributed libraries and frameworks.
 
 Its discussion is structured as follows.
 %
@@ -26,7 +26,7 @@ This architecture is well suited when the following scenarios arise:
 \begin{itemize}
     \item \textbf{Application environment heterogeneity.} The library or framework implements functionalities that should be deployed and executed in heterogeneous environments, spanning across multiple platforms and runtimes. This may arise from the heterogeneity of end-user deployment environments or the requirement that platform and runtime selection remain contingent upon the specific application context in which the library is used.
     \item \textbf{Polyglot end-user base.} The library is designed for developers working across different programming languages, enabling team diversity, facilitating integration with existing codebases in various languages, and leveraging language-specific features and ecosystems.
-    \item \textbf{Unified application logic.} The library exposes its functionalities through a unified API, regardless of the target platform, runtime or programming language. This ensures behavioral consistency across all supported environments, enabling seamless interoperability between programs utilizing the library, regardless of their target platform or implementation language.
+    \item \textbf{Unified application logic.} The library exposes its functionalities through a unified API, regardless of the target platform, runtime or programming language. This ensures behavioral consistency across all supported environments, enabling seamless interoperability between programs utilizing the library.
 \end{itemize}
 
 \section{Requirements}
@@ -38,7 +38,7 @@ These can be categorized into \textit{user}, \textit{system} and \textit{impleme
 \subsubsection{User requirements}
 
 \begin{enumerate}[label=U\arabic*.]
-    \item Library users must be able to interact with the library from multiple programming languages through a consistent API that leverages its functionalities and benefits from language-specific ecosystem features. Supported languages include:
+    \item Library users must be able to interact with the library from multiple programming languages through a consistent API, benefiting from language-specific ecosystem features. Supported languages include:
     %
     \begin{itemize}
         \item Scala;
@@ -48,24 +48,26 @@ These can be categorized into \textit{user}, \textit{system} and \textit{impleme
         \item C and C++.
     \end{itemize}
     %
-    \item The library must support execution across heterogeneous platforms and runtimes to accommodate diverse Library User deployment environments. Library users must be able to implement their own solution by building upon the library's core functionalities:
+    \item The library must support execution across heterogeneous platforms and runtimes to accommodate diverse library user deployment environments. Library users must be able to implement their own solution by building upon the library's core functionalities:
     %
     \begin{itemize}
-        \item using Scala, with deployments possibly spanning across multiple platforms and runtimes:
+        \item using Scala, with deployments possibly spanning across the following platforms and runtimes:
+        %
         \begin{itemize}
             \item JVM;
             \item JavaScript environments, both browser-based and server-side (Node.js);
             \item Native environments, including desktop, server, and System on Chip (SoC) devices running on 64-bit and ARM architectures.
         \end{itemize}
+        %
         \item using other supported languages, targeting their respective platforms. Except for Scala, Library Users should not need to compile code written for one platform to run on another; e.g., compiling C code to run on Node.js.
     \end{itemize}
-    \item Library users can distribute the execution of their application-specific code across multiple machines, with each node potentially running on different platforms, runtimes, and programming languages. The library provides distributed communication mechanisms that enable seamless interoperability and coordination among heterogeneous nodes.
+    \item Library users can distribute the execution of their application-specific code across multiple machines, with each node potentially running on different platforms, runtimes, and programming languages. The library provides distributed communication mechanisms that enable seamless interoperability and coordination among them.
 \end{enumerate}
 
 \subsubsection{System requirements}
 
 \begin{enumerate}[label=S\arabic*.]
-    \item Library developers must be able to implement the library logic once reuse it across all supported platforms and runtimes. Modifications to the library logic are automatically reflected across all target platforms and runtimes.
+    \item Library developers must be able to implement the library logic once and reuse it across all supported platforms and runtimes. Modifications to the library logic are automatically reflected across all target platforms and runtimes.
     \item Library API must be consistent across all supported languages and behaves uniformly regardless of the target platform, runtime and programming language.
 \end{enumerate}
 
@@ -83,12 +85,14 @@ The proposed architecture imposes a fundamental constraint that significantly in
 Where such multi-platform support is unavailable, platform-specific implementations must be provided explicitly to bridge the abstraction gap.
 %
 If an existing Scala library heavily relies on platform-specific dependency or its design is tightly coupled with a specific platform or runtime, adapting it to the proposed architecture may prove impractical or require substantial reengineering efforts.
-
-For example, a distributed Scala library built on Akka\footnote{\url{https://akka.io}} and utilizing its remoting, and clustering capabilities would require substantial redesign to support multi-platform execution, as Akka targets only the JVM, unless these dependencies have been carefully abstracted as replaceable components.
+%
+For example, a distributed Scala library built on Akka\footnote{\url{https://akka.io}} and utilizing its remoting and clustering capabilities would require substantial redesign to support multi-platform execution, as Akka targets only the JVM. 
+%
+However, this challenge can be mitigated if these dependencies have been carefully abstracted as replaceable components.
 %
 Furthermore, when platform-specific dependencies provide critical non-functional properties---such as fault tolerance or scalability---that multi-platform alternatives cannot yet match, adapting to a cross-platform architecture becomes not merely impractical but potentially unfeasible.
 %
-In these cases, the tight coupling to a specific platform represents an architectural constraint rather than an implementation detail, and the proposed architecture may not constitute a suitable approach for such libraries without fundamentally revisiting their core design principles.
+In these cases, the tight coupling to a specific platform represents an architectural constraint rather than an implementation detail, and the proposed architecture may not constitute a suitable approach for such libraries without revisiting their core design principles.
 
 \section{Architectural elements}
 
@@ -115,6 +119,19 @@ Library developers, meanwhile, can focus on implementing the core logic without 
     \label{fig:reference-architecture}
 \end{figure}
 
+Once applied, library users can take advantage of the library as depicted in \Cref{fig:architectural-workflow}.
+%
+They can implement their application logic directly in Scala, leveraging its full language features and capabilities and cross-compiling it to all target platforms and runtimes, by consuming the respective library artifact from a Central repository (e.g., Maven Central).
+%
+Alternatively, they can program their application logic in any of the supported programming languages, utilizing the corresponding artifacts generated by the polyglot abstraction layer and published to the respective platform-specific package repositories.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{resources/img/architecture-workflow.pdf}
+    \caption{Library usage workflow enabled by the proposed architecture.}
+    \label{fig:architectural-workflow}
+\end{figure}
+
 \subsection*{Pure library core module}
 
 The core module is the heart of the library, implementing its core application logic and functionalities in terms of domain modeling, business rules and application use cases.
@@ -139,13 +156,15 @@ For distributed communication, the library can leverage different underlying tec
 %
 Regardless of the chosen communication model, the design must maximize code reuse across all supported platforms and runtimes.
 %
-This is achieved through well-defined Platform Interfaces that abstract platform-specific capabilities and services. 
+This is achieved through well-defined \textit{Platform Interfaces} that abstract platform-specific capabilities and services, isolating them from the shared library logic. 
 %
-These interfaces are designed to balance the library's functional requirements with the paradigms and constraints of each target platform, such as using asynchronous APIs that can be consistently mapped across all supported platforms.
+These interfaces are designed to satisfy both the library's functional requirements and the native paradigms of each target platform.
+%
+For example, the interfaces use asynchronous API patterns that can be uniformly implemented across all supported environments.
 %
 Platform-specific adapters then implement these interfaces, encapsulating only the minimal necessary platform-dependent code.
 %
-Whenever possible, existing multi-platform libraries and frameworks should be leveraged to minimize platform-specific code.
+Whenever possible, existing multi-platform libraries and frameworks should be leveraged.
 %
 Conversely, when no suitable multi-platform library exists, custom platform-specific implementations must be developed by interacting directly with the underlying platform capabilities and ecosystem via Scala Native or Scala.js interoperability features.
 %
@@ -167,7 +186,7 @@ Additionally, the choice between schema-based and schema-less formats affects th
 %
 A critical consideration is the degree of automation in serializer and deserializer generation: while automatic code generation simplifies development, it may limit the ability to define custom data types and structures that leverage language-specific abstractions.
 %
-This tension is particularly relevant given that different programming languages offer distinct type systems and abstractions that cannot always be straightforwardly mapped.
+This tension is particularly relevant given that different programming languages offer distinct abstractions that cannot always be straightforwardly mapped.
 
 \subsection*{Polyglot library abstraction layer}
 
@@ -211,7 +230,7 @@ Using this approach the core library API is exposed to library users through por
 %
 Within the polyglot abstraction layer, the conversion between portable types and the corresponding Scala types used by the core library is handled.
 %
-These interfaces---referred to as \textbf{Portable Libraries}---can then be exported, packed and distributed as native packages for each supported programming language, since, during cross-compilation, Portable Types are translated to the corresponding language-specific types.
+The exposed interfaces---referred to as \textbf{Portable Libraries}---can then be exported, packed and distributed as native packages for each supported programming language, since, during cross-compilation, Portable Types are translated to the corresponding language-specific types.
 %
 Essentially, Portable Types act as a small standard library for this module, written in a "de-powered" version of Scala that is limited, in its expressiveness, to the constructs that can be mapped and exported to all supported programming languages.
 %
@@ -249,12 +268,12 @@ These differences encompass:
 
 This architecture enables the development of cross-platform, polyglot and distributed Scala libraries and frameworks by addressing the challenges associated with platform heterogeneity, language interoperability and distributed communication.
 %
-Its main focus is to maximize code sharing and reuse across all supported platforms and programming languages, while minimizing platform-specific code and complexity, and provide a consistent and unified API to library users.
+Its main focus is to maximize code sharing and reuse across all supported platforms and languages, and provide a consistent and unified API to library users.
 
-However, some considerations and trade-offs are presented hereafter.
+Some considerations and trade-offs are presented hereafter.
 %
 \begin{enumerate}
     \item \textbf{API Maintenance.} While every code change in the core library is automatically reflected across all supported platforms and runtimes, the addition of new API functionalities requires extending the polyglot abstraction layer to expose the new features to library users. Despite not being a significant overhead, since the polyglot abstraction layer is designed to be thin and minimal, it still requires some additional effort to maintain and evolve.
-    \item \textbf{Performance Overhead.} Interoperability across programming languages is achieved through type conversion, which introduces performance overhead, particularly when handling complex data structures or large data volumes. However, this overhead remains significantly lower than alternative approaches based on remote procedure calls (RPC) or inter-process communication (IPC) primitives, which incur additional serialization and network/process boundary crossing costs.
-    \item \textbf{Data Expressiveness.} The expressiveness of exchanged messages between nodes is limited to the capabilities of the adopted cross-platform and polyglot serialization format. While this normally does not pose significant limitations, since exchanged messages are represented as \textit{records}--—immutable data classes composed of fields with no additional behavior--—it is necessary to consider that complex data structures or language-specific constructs may not be fully representable, potentially requiring simplifications or alternative representations.
+    \item \textbf{Performance Overhead.} Interoperability across programming languages is achieved through type conversion, which may introduces performance overhead if compared with native implementations, particularly when handling complex data structures or large data volumes. However, this overhead is significantly lower than RPC or IPC approaches, which require additional serialization and boundary crossing costs.
+    \item \textbf{Data Expressiveness.} The expressiveness of exchanged messages between nodes is limited to the capabilities of the adopted cross-platform and polyglot serialization format. This normally does not pose significant limitations since exchanged messages are represented as \textit{records}—--immutable data classes composed of fields with no additional behavior. However, complex data structures or language-specific constructs may not be fully representable and may require simplifications or alternative representations.
 \end{enumerate}
