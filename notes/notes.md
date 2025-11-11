@@ -1,5 +1,12 @@
 # Notes in random order
 
+- **Important**: sometimes BibTex stop working properly (sigh). If that happens, the following steps fix the issue:
+  - ```bash
+    rm -rf $(biber --cache)
+    ```
+  - then, in VSCode, run the command "LaTeX Workshop: Clean up auxiliary files".
+  - rebuild the PDF (making some change in the tex file to trigger a rebuild, if needed).
+
 - to set, for a document section, a different margin size:
   ```tex
   \newgeometry{margin=2cm}
