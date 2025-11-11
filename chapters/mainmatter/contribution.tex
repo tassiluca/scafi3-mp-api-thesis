@@ -188,6 +188,7 @@ A critical consideration is the degree of automation in serializer and deseriali
 %
 This tension is particularly relevant given that different programming languages offer distinct abstractions that cannot always be straightforwardly mapped.
 
+\vspace{-0.5em}
 \subsection*{Polyglot library abstraction layer}
 
 The polyglot abstraction layer exposes a uniform interface enabling cross-language interaction with the library's core functionalities. 
@@ -233,15 +234,6 @@ Within the polyglot abstraction layer, the conversion between portable types and
 The exposed interfaces---referred to as \textbf{Portable Libraries}---can then be exported, packed and distributed as native packages for each supported programming language, since, during cross-compilation, Portable Types are translated to the corresponding language-specific types.
 %
 Essentially, Portable Types act as a small standard library for this module, written in a "de-powered" version of Scala that is limited, in its expressiveness, to the constructs that can be mapped and exported to all supported programming languages.
-%
-An overview of this mapping and the exchange of data structures across different programming languages is presented in \Cref{fig:portable-types-mapping}.
-%
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=\textwidth]{resources/img/portable-types-mapping.pdf}
-    \caption[Language-Agnostic API access through Portable Libraries and isomorphic type mappings]{Clients interact with the core library API through Portable Libraries, which expose a simplified interface towards the core library using Portable Types. Thanks to language-specific instantiations of Portable Types and appropriate isomorphic mappings, Portable Libraries simply delegate to the core library API their implementation.}
-    \label{fig:portable-types-mapping}
-\end{figure}
 
 Beyond collection-types, each Portable Library can extend the set of portable types by defining domain-specific data types to model the library domain, mirroring standard type definition practices.
 %
@@ -249,7 +241,14 @@ These must maintain the same isomorphic mapping principle, ensuring seamless con
 
 Implementation-wise, Portable Libraries are structured as a thin wrapper around the core library API, using only Portable Types in their public interface.
 %
-Internally, the logic is delegated to the core library after converting Portable Types to their corresponding Scala types using the provided isomorphic mappings.
+Internally, the logic is delegated to the core library after converting Portable Types to their corresponding Scala types using the provided isomorphic mappings, as shown in \Cref{fig:portable-types-mapping}.
+%
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{resources/img/portable-types-mapping.pdf}
+    \caption[Language-Agnostic API access through Portable Libraries and isomorphic type mappings]{Clients interact with the core library API through Portable Libraries, which expose a simplified interface towards the core library using Portable Types. Thanks to language-specific instantiations of Portable Types and appropriate isomorphic mappings, Portable Libraries simply delegate to the core library API their implementation.}
+    \label{fig:portable-types-mapping}
+\end{figure}
 
 Notably, the polyglot abstraction layer must account for fundamental differences among all supported programming languages, modeling and abstracting these distinctions to present them through a unified API.
 %
