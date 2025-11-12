@@ -1,0 +1,20 @@
+@startuml scafi3-architecture
+
+skinparam component {
+    BackgroundColor<<registry-server>> White
+    BackgroundColor<<executable>> #ccffcc
+    BackgroundColor<<test>> cyan
+}
+skinparam DatabaseBackgroundColor LightYellow
+
+component ":scafi3-core"
+
+component ":scafi3-alchemist-incarnation"
+
+component ":scafi3-distributed"
+
+component ":scafi3-polyglot-api"
+
+
+
+@enduml

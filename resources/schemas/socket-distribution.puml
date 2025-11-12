@@ -16,25 +16,31 @@ package "core" {
 
 package "distributed" {
     package "shared" {
-        ' object InetTypes {
+        ' object InetTypes << object >> {
         '     + type IPv4
+        '     + type IPv6
+        '     + type Address
         '     + type Port
         '     + type Hostname
         '     + type Endpoint
-        '     + ...
         ' }
 
         interface ConnectionOrientedNetworking << (T,#b2a7e0) trait >> {
             + type MessageIn
             + type MessageOut
+            ---
             + out(endpoint: Endpoint): Future[Connection]
-            + in(port: Port)(onReceive: MessageIn => Unit): Future[ListenerRef]
+            ---
+            + in(port: Port)(\n    onReceive: MessageIn => Unit\n): Future[ListenerRef]
         }
-        ConnectionOrientedNetworking +-left- Connection
-        ConnectionOrientedNetworking +- ListenerRef
-        ListenerRef +- Listener
+        ConnectionOrientedNetworking +-- Connection
+        ConnectionOrientedNetworking +-right-- ListenerRef
 
-        interface Connection << (T,#b2a7e0) trait >> {
+        interface ConnectionState << (T,#b2a7e0) trait >> {
+            + isOpen: Boolean
+        }
+
+        interface Connection << (T,#b2a7e0) trait >> extends ConnectionState {
             + send(message: MessageOut): Future[Unit]
             + close()
         }
@@ -43,8 +49,9 @@ package "distributed" {
             + listener: Listener
             + accept: Future[Unit]
         }
+        ListenerRef *- Listener
 
-        interface Listener << (T,#b2a7e0) trait >> {
+        interface Listener << (T,#b2a7e0) trait >> extends ConnectionState {
             + boundPort: Port
             + close()
         }
@@ -53,7 +60,7 @@ package "distributed" {
             + type MessageIn : BinaryDecodable
             + type MessageOut : BinaryEncodable
         }
-        note right of ConnectionOrientedTemplate
+        note bottom of ConnectionOrientedTemplate
             Template class 
             implementing common 
             platform-agnostic logic
@@ -64,16 +71,22 @@ package "distributed" {
             + neighborhood: Neighborhood[DeviceId]
         }
 
-        interface ConnectionOrientedNetworkManager << (T,#b2a7e0) trait >> extends ConnectionOrientedNetworking
+        interface ConnectionOrientedNetworkManager<ID> << (T,#b2a7e0) trait >> {
+            + override type DeviceId = ID
+            + type Envelope = (DeviceId, ValueTree)
+            + override type MessageIn = Envelope
+            + override type MessageOut = Envelope
+        }
+        ConnectionOrientedNetworkManager *-right-> ConnectionOrientedNetworking : mixed in
         ConnectionOrientedNetworkManager *-left-> NeighborhoodResolver : mixed in
         core.NetworkManager <|--- ConnectionOrientedNetworkManager
 
-        object SocketNetworkManager << object>> {
-            + withFixedNeighborhood[DeviceId](deviceId: DeviceId, port: Port, neighbors: Map[DeviceId, Endpoint])
+        object SocketNetworkManager <<object>> {
+            + withFixedNeighborhood[DeviceId](\n    deviceId: DeviceId,\n    port: Port,\n    neighbors: Map[DeviceId, Endpoint]\n)
         }
-        note left of SocketNetworkManager
+        note bottom of SocketNetworkManager
             Socket-based network
-            manager entry-point
+            manager factories
         end note
         SocketNetworkManager .up.> ConnectionOrientedNetworkManager
     }
@@ -90,7 +103,7 @@ package "distributed" {
         interface SocketNetworking << (T,#b2a7e0) trait >> 
         SocketNetworking --up-|> distributed.shared.ConnectionOrientedTemplate
         note bottom of SocketNetworking
-            JavaScript socket-based implementation
+            Node.js socket-based implementation
         end note
     }
 
