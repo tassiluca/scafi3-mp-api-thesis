@@ -6,7 +6,7 @@ skinparam interface<<trait>> {
   StereotypeFontColor blue
 }
 
-package "core" {
+package "scafi3-core" as core {
     interface NetworkManager << (T,#b2a7e0) trait >> {
         + type DeviceId
         + send(message: Export[DeviceId])
@@ -14,7 +14,7 @@ package "core" {
     }
 }
 
-package "distributed" {
+package "scafi3-distributed" as distributed {
     package "shared" {
         ' object InetTypes << object >> {
         '     + type IPv4
@@ -34,7 +34,7 @@ package "distributed" {
             + in(port: Port)(\n    onReceive: MessageIn => Unit\n): Future[ListenerRef]
         }
         ConnectionOrientedNetworking +-- Connection
-        ConnectionOrientedNetworking +-right-- ListenerRef
+        ConnectionOrientedNetworking +-- ListenerRef
 
         interface ConnectionState << (T,#b2a7e0) trait >> {
             + isOpen: Boolean
@@ -49,7 +49,7 @@ package "distributed" {
             + listener: Listener
             + accept: Future[Unit]
         }
-        ListenerRef *- Listener
+        ListenerRef *-up- Listener
 
         interface Listener << (T,#b2a7e0) trait >> extends ConnectionState {
             + boundPort: Port
@@ -60,15 +60,19 @@ package "distributed" {
             + type MessageIn : BinaryDecodable
             + type MessageOut : BinaryEncodable
         }
-        note bottom of ConnectionOrientedTemplate
+        note right of ConnectionOrientedTemplate
             Template class 
-            implementing common 
-            platform-agnostic logic
+            implementing 
+            common 
+            platform-agnostic 
+            logic
         end note
 
         interface NeighborhoodResolver << (T,#b2a7e0) trait >> {
-            + type Neighborhood[DeviceId] = Set[DeviceId]
-            + neighborhood: Neighborhood[DeviceId]
+            + neighborhood: Set[DeviceId]
+        }
+        interface InetAwareNeighborhoodResolver extends NeighborhoodResolver {
+            + endpoint(id: DeviceId): Option[Endpoint]
         }
 
         interface ConnectionOrientedNetworkManager<ID> << (T,#b2a7e0) trait >> {
@@ -77,9 +81,9 @@ package "distributed" {
             + override type MessageIn = Envelope
             + override type MessageOut = Envelope
         }
-        ConnectionOrientedNetworkManager *-right-> ConnectionOrientedNetworking : mixed in
-        ConnectionOrientedNetworkManager *-left-> NeighborhoodResolver : mixed in
-        core.NetworkManager <|--- ConnectionOrientedNetworkManager
+        ConnectionOrientedNetworkManager *--> ConnectionOrientedNetworking : mixed in
+        ConnectionOrientedNetworkManager *--> InetAwareNeighborhoodResolver : mixed in
+        core.NetworkManager <|-- ConnectionOrientedNetworkManager
 
         object SocketNetworkManager <<object>> {
             + withFixedNeighborhood[DeviceId](\n    deviceId: DeviceId,\n    port: Port,\n    neighbors: Map[DeviceId, Endpoint]\n)
@@ -88,22 +92,24 @@ package "distributed" {
             Socket-based network
             manager factories
         end note
-        SocketNetworkManager .up.> ConnectionOrientedNetworkManager
+        SocketNetworkManager .up.> ConnectionOrientedNetworkManager : <<create>>
     }
 
     package "jvm-native" {
         interface SocketNetworking << (T,#b2a7e0) trait >>
-        SocketNetworking --up-|> distributed.shared.ConnectionOrientedTemplate
+        SocketNetworking -up-|> distributed.shared.ConnectionOrientedTemplate
         note bottom of SocketNetworking
-            JVM-native socket-based implementation
+            JVM & Native socket networking 
+            operations implementation
         end note
     }
 
     package "js" {
         interface SocketNetworking << (T,#b2a7e0) trait >> 
-        SocketNetworking --up-|> distributed.shared.ConnectionOrientedTemplate
+        SocketNetworking -up-|> distributed.shared.ConnectionOrientedTemplate
         note bottom of SocketNetworking
-            Node.js socket-based implementation
+            Node.js socket networking 
+            operations implementation
         end note
     }
 
