@@ -77,16 +77,56 @@ Since the absence of a cross-platform socket library supporting both client and 
     language=Scala, 
     label={lst:js-sockets-facade},
     caption={Portion of the Scala.js facade for the Node.js \texttt{net} module.},
-    linerange={71-87},
-    basicstyle=\ttfamily\scriptsize,
-    nolol=true,
+    linerange={46-54},
 ]{resources/code/JSSocketsFacade.scala}
 
 Despite targeting all three platforms, the design differs only in platform-specific networking logic, isolated within respective \texttt{SocketNetworking} traits. 
 %
-This separation leverages Scala's mixin composition and the template method pattern, defining common logic in abstract trait (\texttt{ConnectionOrientedTemplate}) while deferring platform-specific details to specialized mixins.
+This separation leverages Scala's mixin composition and the template method pattern, defining common logic in abstract trait (\texttt{ConnectionOrientedTemplate}) while deferring platform-specific details to specialized implementations.
 
-% \subsection{Protobuf serialization binding}
+\subsection{Serialization binding}
+
+The second crucial responsibility of the infrastructure module is to provide serialization and deserialization capabilities to exchange messages between devices.
+
+As already discusses, in ScaFi3 devices exchange pairs of the Device Identifier and its corresponding Value Tree.
+%
+Therefore, the infrastructure module must provide mechanisms to serialize and deserialize both the Device Identifier and the Value Tree structures.
+%
+The main challenge in this regard is that Value Trees are structures that can contain arbitrary user-defined data types as values that need to be serialized but whose type cannot be known in advance.
+%
+Therefore, it is not possible to provide a ready-to-use fit-for-all serialization mechanism for Value Trees since the serialization of user-defined data types depends on the specific data type used by the library users.
+
+To overcome this challenge, the following protocol is adopted (exemplified in \Cref{fig:serde-value-trees}):
+%
+\begin{enumerate}
+    \item during the execution of the aggregate program, when the Value Tree is built, each value is inserted as encoded using a specific serialization format (e.g., JSON, Byte Array, etc.) provided by the library user. This is possible since, during the evaluation of the Aggregate constructs, the type information of the exchanged values is known at compile time;
+    \item at the end of each round of computation, when the Value Tree is ready to be sent to neighbors, the Value Tree is serialized as a whole structure, leveraging the fact that all values are already encoded in a specific-serialization format;
+    \item upon receiving a Value Tree from a neighbor device, the Value Tree is deserialized as a whole structure, obtaining a Value Tree where the values are still encoded in the specific serialization format;
+    \item finally, assuming the neighbor device is aligned, when evaluating the same Aggregate construct that produced the value, the value is decoded from the specific serialization format back to the original data type, leveraging the type information known at compile time.
+\end{enumerate}
+%
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{resources/img/serde-value-trees.pdf}
+    \caption{Exemplification of the serialization/deserialization protocol for Value Trees.}
+    \label{fig:serde-value-trees}
+\end{figure}
+
+This process requires the library user to provide encoding and decoding functions for each data type that is intended to be exchanged between devices.
+%
+Moreover, all the API needs to be type safe, ensuring that the encoding and decoding functions are present and correctly matched with the data types being exchanged.
+
+Technically, this is achieved via a combination of Scala 3 \textit{type classes} and \textit{type lambdas} that allow to cleanly express values encoding and decoding requirements as type bounds in the signature of the Aggregate constructs.
+
+\begin{minipage}{\textwidth}
+\lstinputlisting[
+    language=Scala, 
+    label={lst:encodable-decodable},
+    caption={},
+    linerange={3-21},
+]{resources/code/Codable.scala}
+\end{minipage}
+
 
 % \subsection{Platform-specific library abstraction layers}
 

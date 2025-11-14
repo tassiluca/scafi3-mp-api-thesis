@@ -47,25 +47,11 @@ end EventEmitter
 @JSImport("net", JSImport.Namespace)
 object Net extends js.Object:
 
-  /**
-   * A factory function which creates a new Socket connection.
-   * @param port
-   *   the port to which the socket should connect.
-   * @param host
-   *   the host to which the socket should connect.
-   * @return
-   *   the newly created [[Socket]] instance.
-   */
   def connect(port: Int, host: String): Socket = js.native
 
-  /**
-   * A factory function which creates a new TPC or IPC server.
-   * @param connectionListener
-   *   the function to be called when a new connection is established.
-   * @return
-   *   the newly created [[Server]] instance.
-   */
-  def createServer(connectionListener: js.Function1[Socket, Unit]): Server = js.native
+  def createServer(
+    connectionListener: js.Function1[Socket, Unit]
+  ): Server = js.native
 end Net
 
 @js.native
