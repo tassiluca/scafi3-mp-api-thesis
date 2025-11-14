@@ -2,19 +2,15 @@
 \chapter{Implementation}
 \label{chapter:scafi3-arch-reification}
 
-This chapter discusses the instantiation of the proposed abstract architecture described in \Cref{chapter:contribution} to ScaFi3.
+This chapter discusses the incarnation of the proposed abstract architecture described in \Cref{chapter:contribution} to ScaFi3.
 %
-\todo{link to de luigi thesis for pure core module, that is not part of this work}
-
 \todo{description of the flow}
-
-\todo{high level architecture modules view}
 
 \todo{project structure - shared, jvm-native, js-native, js, native, jvm and expect/actual Scala mechanism}
 
 \section{High level architecture}
 
-The overview of the ScaFi3 architecture is shown in \Cref{fig:scafi3-architecture}, highlighting the main modules and their relationships.
+Building upon the ScaFi3 library architecture presented in \Cref{sec:scafi3-overview}, this work extends it to support distributed aggregate computing and polyglot capabilities as per the abstract architecture presented in \Cref{chapter:contribution}.
 %
 \begin{figure}
     \centering
@@ -22,6 +18,14 @@ The overview of the ScaFi3 architecture is shown in \Cref{fig:scafi3-architectur
     \caption{UML component diagram of the ScaFi3 architecture.}
     \label{fig:scafi3-architecture}
 \end{figure}
+%
+The overall components and their dependencies are illustrated in \Cref{fig:scafi3-architecture} and comprise the following modules:
+%
+\begin{itemize}
+    \item \textbf{Distribution module}: responsible for enabling distributed communication and messages exchange between devices, including the serialization and deserialization concerns;
+    \item \textbf{Polyglot API module}: responsible for providing polyglot capabilities to the library;
+    \item \textbf{Integration module}: where integration tests are performed to ensure the correct functioning of the polyglot and distributed capabilities of the library.
+\end{itemize}
 
 \section{Infrastructure module}
 
@@ -39,7 +43,7 @@ Indeed, despite the low-level nature of sockets, they provide a foundational abs
 %
 Consequently, as shown in \Cref{fig:socket-network-manager-architecture}, each device is bound to a specific endpoint (IP address and port) and communicates point-to-point with its neighbors.
 %
-\begin{figure}
+\begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{resources/img/socket-network-manager.pdf}
     \caption{Socket-based network manager high level architecture.}
@@ -57,7 +61,7 @@ It adopts an asynchronous design leveraging Scala's Future-based API and compris
 %
 This dual component design ensure that both incoming and outgoing communications proceed without blocking, a pre-condition for targeting JavaScript environments and at the same time maintain system responsiveness.
 %
-\begin{figure}
+\begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{resources/schemas/socket-distribution.eps}
     \caption{UML diagram of the socket-based network manager design.}
@@ -126,22 +130,22 @@ These have been further expresses as type lambdas to express encoding and decodi
 %
 This ensures, thanks to the \textit{ad-hoc polymorphism}, all distribution-related primitives can only be used with values which have the required encoding and decoding capabilities in scope.
 
-\begin{minipage}{\textwidth}
+%\begin{minipage}{\textwidth}
 \lstinputlisting[
     language=Scala, 
     label={lst:encodable-decodable},
     caption={Encodable and Decodable type classes.},
     linerange={3-21},
 ]{resources/code/Codable.scala}
-\end{minipage}
+%\end{minipage}
 
-\begin{minipage}{\textwidth}
+%\begin{minipage}{\textwidth}
 \lstinputlisting[
     language=Scala, 
     label={lst:xc-at-work},
     caption={Example of encoding and decoding capabilities at work in the \texttt{exchange} construct.},
 ]{resources/code/ExchangeAggregateContext.scala}
-\end{minipage}
+%\end{minipage}
 
 User-side, to provide encoding and decoding capabilities for a specific data type and serialization format, it is sufficient to provide implicit instances of the \texttt{Encodable} and \texttt{Decodable} type classes in scope.
 %

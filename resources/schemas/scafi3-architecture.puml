@@ -3,7 +3,7 @@
 skinparam component {
     BackgroundColor<<jvm-only>> #fadce8ff
     BackgroundColor<<pure>> #c0e5e7ff
-    BackgroundColor<<full>> #e1f89aff-ffe993ff
+    BackgroundColor<<full>> #e8f4d4ff
 }
 
 component ":scafi3-core" as core <<pure>>
