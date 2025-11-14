@@ -117,15 +117,60 @@ This process requires the library user to provide encoding and decoding function
 Moreover, all the API needs to be type safe, ensuring that the encoding and decoding functions are present and correctly matched with the data types being exchanged.
 
 Technically, this is achieved via a combination of Scala 3 \textit{type classes} and \textit{type lambdas} that allow to cleanly express values encoding and decoding requirements as type bounds in the signature of the Aggregate constructs.
+%
+The core type classes used to express encoding and decoding capabilities are \texttt{Encodable} and \texttt{Decodable}, shown in \Cref{lst:encodable-decodable}.
+%
+They abstract over both the source and target types of the encoding and decoding operations, allowing to express encoding and decoding capabilities for arbitrary types and serialization formats.
+%
+These have been further expresses as type lambdas to express encoding and decoding capabilities as type bounds on values of functions dealing with distribution, like presented in \Cref{lst:xc-at-work} for the \texttt{exchange} construct.
+%
+This ensures, thanks to the \textit{ad-hoc polymorphism}, all distribution-related primitives can only be used with values which have the required encoding and decoding capabilities in scope.
 
 \begin{minipage}{\textwidth}
 \lstinputlisting[
     language=Scala, 
     label={lst:encodable-decodable},
-    caption={},
+    caption={Encodable and Decodable type classes.},
     linerange={3-21},
 ]{resources/code/Codable.scala}
 \end{minipage}
+
+\begin{minipage}{\textwidth}
+\lstinputlisting[
+    language=Scala, 
+    label={lst:xc-at-work},
+    caption={Example of encoding and decoding capabilities at work in the \texttt{exchange} construct.},
+]{resources/code/ExchangeAggregateContext.scala}
+\end{minipage}
+
+User-side, to provide encoding and decoding capabilities for a specific data type and serialization format, it is sufficient to provide implicit instances of the \texttt{Encodable} and \texttt{Decodable} type classes in scope.
+%
+The Scala compiler will automatically summon the correct instance based on the type information available at compile time, ensuring users to call the distribution-related primitives without having to manually pass encoding and decoding functions around or explicitly specify format types.
+%
+Examples of user-defined instances of the \texttt{Encodable} and \texttt{Decodable} type classes for different serialization formats are shown in \Cref{lst:user-encodable-decodable}.
+
+\begin{minipage}{\textwidth}
+\lstinputlisting[
+    language=Scala,
+    label={lst:user-encodable-decodable},
+    caption={User-defined Encodable and Decodable instances for a custom data type.},
+    linerange={39-60},
+]{resources/code/Codable.scala}
+\end{minipage}
+
+The general implementation of the type classes with respect to the serialization format allows to:
+%
+\begin{itemize}
+    \item leave the choice of the serialization format to the library user, who can choose the most appropriate format for their specific use case. For example, in \Cref{lst:user-encodable-decodable} a production-ready Protobuf-based binary format is provided using ScalaPB\footnote{\url{https://scalapb.github.io}}, a popular Scala library for working with Protocol Buffers;
+    \item in non-distributed scenarios, like simulation or local testing, or where the distributed primitives are used only to make the state evolve over rounds without actual neighbor communication, like in the \texttt{evolve}, use in-memory Codable instances that do not perform any transformation on the messages, leaving them as-is. Moreover, leveraging Scala 3 inline givens, the compile is able to completely eliminate encoding and decoding operations at compile time in such scenarios avoiding any runtime overhead.
+\end{itemize}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{resources/img/protobuf-programming-workflow.pdf}
+    \caption{}
+    \label{fig:protobuf-programming-workflow}
+\end{figure}
 
 
 % \subsection{Platform-specific library abstraction layers}

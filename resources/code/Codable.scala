@@ -37,23 +37,26 @@ type BinaryEncodable[Message] = Encodable[Message, Array[Byte]]
 type BinaryDecodable[Message] = Decodable[Array[Byte], Message]
 
 object Codables:
-  import java.nio.charset.StandardCharsets
+  import java.nio.charset.StandardCharsets.UTF_8
+  import scalapb.{ GeneratedMessage, GeneratedMessageCompanion }
 
-  /**
-   * A [[Codable]] that does not perform any transformation on the messages, leaving them as-is. This is useful in
-   * non-distributed environments, like simulations or local testing, where messages are simply passed around without
-   * any form of (de)serialization.
-   * @tparam Message
-   *   the type of the message.
-   * @return
-   *   a [[Codable]] instance that encodes and decodes messages leaving them unchanged.
-   */
+  // A codable that does not perform any transformation on the messages, leaving them as-is
   given forInMemoryCommunications[Message]: Codable[Message, Message] with
     inline def encode(msg: Message): Message = msg
     inline def decode(msg: Message): Message = msg
 
-  /** @return a [[BinaryCodable]] for encoding and decoding stringified messages in binary format. */
+  // A codable for encoding and decoding stringified messages in binary format
   given forStringsInBinaryFormat: Codable[String, Array[Byte]] with
-    def encode(msg: String): Array[Byte] = msg.getBytes(StandardCharsets.UTF_8)
-    def decode(bytes: Array[Byte]): String = new String(bytes, StandardCharsets.UTF_8)
+    def encode(msg: String): Array[Byte] = msg.getBytes(UTF_8)
+    def decode(bytes: Array[Byte]): String = 
+      new String(bytes, UTF_8)
+
+  // A Codable for encoding and decoding Protobuf messages in binary format
+  given forProtobufInBinaryFormat[T <: GeneratedMessage](
+    using companion: GeneratedMessageCompanion[T]
+  ): BinaryCodable[T] = new BinaryCodable[T]:
+    override def encode(value: T): Array[Byte] = value.toByteArray
+    override def decode(data: Array[Byte]): T = 
+      companion.parseFrom(data)
+
 end Codables
