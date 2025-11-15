@@ -194,6 +194,68 @@
 			 {\ -\ }{{\mdseries\ -\ }}3,
 }
 
+\lstdefinelanguage{scala}{
+  morekeywords={%
+    abstract,case,catch,class,def,do,else,extends,%
+    false,final,finally,for,forSome,if,implicit,given,using,import,lazy,%
+    match,new,null,object,override,package,private,protected,%
+    return,sealed,super,this,throw,trait,true,try,type,%
+    val,var,while,with,yield,inline},
+  otherkeywords={=>,<-,<\%,<:,>:,\#,@,=>>,end},
+  sensitive=true,
+  morecomment=[l]{//},
+  morecomment=[n]{/*}{*/},
+  morestring=[b]",
+  morestring=[b]',
+  morestring=[b]"""
+}[keywords,comments,strings]
+% activate the language and predefine settings
+\lstset{language=Scala}
+
+\lstdefinelanguage[2]{protobuf}{%
+  sensitive=true,%
+  morecomment=[l]{//},%
+  morecomment=[s]{/*}{*/},%
+  morestring=[b]{"},%
+  morekeywords={enum,oneof,map,syntax,public,import,option,package,message,%
+    group,optional,required,repeated,default,reserved,extend,extensions,%
+    to,max,service,rpc,returns,true,false},%
+  morekeywords=[2]{%
+    double,float,int32,int64,uint32,uint64,sint32,sint64,%
+    fixed32,fixed64,sfixed32,sfixed64,bool,string,bytes},%
+  morekeywords=[3]{%
+    % Generic Options
+    deprecated, uninterpreted_option,%
+    % File Options
+    java_package,java_outer_classname,java_multiple_files,%
+    java_generate_equals_and_hash,java_string_check_utf8,optimize_for,%
+    go_package,cc_generic_services,java_generic_services,%
+    py_generic_services,cc_enable_arenas,obj_class_prefix,%
+    csharp_namespace,%
+    % Message Options
+    message_set_wire_format,no_standard_descriptor_accessor,map_entry,%
+    % Field Options
+    ctype, packed,jstype,lazy,weak,%
+    % Enum Options
+    allow_alias}%
+}
+\lstalias[]{protobuf2}[2]{protobuf}
+
+\lstdefinelanguage[3]{protobuf}[2]{protobuf}{%
+  deletekeywords={
+    % 'group' was marked as deprecated in protobuf2; now it's disallowed
+    group,%
+    % in protobuf3 the Any type replaces extensions (from protobuf2)
+    extensions, to, extend, max,%
+    % 'required' is no longer allowed
+    required,%
+    % 'optional' is default; stating it explicitly is disallowed
+    optional,%
+    % explicit default values are no longer allowed
+    default}%
+}
+\lstalias[]{protobuf3}[3]{protobuf}
+
 % ---------------------------------------------------------------------------------------------------
 % CHAPTER STYLE
 % ---------------------------------------------------------------------------------------------------

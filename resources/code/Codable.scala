@@ -55,8 +55,7 @@ object Codables:
   given forProtobufInBinaryFormat[T <: GeneratedMessage](
     using companion: GeneratedMessageCompanion[T]
   ): BinaryCodable[T] = new BinaryCodable[T]:
-    override def encode(value: T): Array[Byte] = value.toByteArray
-    override def decode(data: Array[Byte]): T = 
-      companion.parseFrom(data)
+    def encode(value: T): Array[Byte] = value.toByteArray
+    def decode(data: Array[Byte]): T = companion.parseFrom(data)
 
 end Codables

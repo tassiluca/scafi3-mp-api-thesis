@@ -90,15 +90,13 @@ This separation leverages Scala's mixin composition and the template method patt
 
 \subsection{Serialization binding}
 
-The second crucial responsibility of the infrastructure module is to provide serialization and deserialization capabilities to exchange messages between devices.
+Another essential requirement is the provision of serialization and deserialization capabilities for message exchange between devices.
 
-As already discusses, in ScaFi3 devices exchange pairs of the Device Identifier and its corresponding Value Tree.
+Since ScaFi3 devices exchange pairs of Device Identifiers and their corresponding Value Trees, serialization and deserialization mechanisms must be provided for both data types.
 %
-Therefore, the infrastructure module must provide mechanisms to serialize and deserialize both the Device Identifier and the Value Tree structures.
+The main challenge is that Value Trees can contain arbitrary user-defined data types whose types are unknown at compile time. 
 %
-The main challenge in this regard is that Value Trees are structures that can contain arbitrary user-defined data types as values that need to be serialized but whose type cannot be known in advance.
-%
-Therefore, it is not possible to provide a ready-to-use fit-for-all serialization mechanism for Value Trees since the serialization of user-defined data types depends on the specific data type used by the library users.
+Consequently, a universal serialization mechanism cannot be provided, as each data type requires its own serialization implementation.
 
 To overcome this challenge, the following protocol is adopted (exemplified in \Cref{fig:serde-value-trees}):
 %
@@ -118,7 +116,7 @@ To overcome this challenge, the following protocol is adopted (exemplified in \C
 
 This process requires the library user to provide encoding and decoding functions for each data type that is intended to be exchanged between devices.
 %
-Moreover, all the API needs to be type safe, ensuring that the encoding and decoding functions are present and correctly matched with the data types being exchanged.
+Moreover, all the Scala API needs to be type safe, ensuring that the encoding and decoding functions are present and correctly matched with the data types being exchanged.
 
 Technically, this is achieved via a combination of Scala 3 \textit{type classes} and \textit{type lambdas} that allow to cleanly express values encoding and decoding requirements as type bounds in the signature of the Aggregate constructs.
 %
@@ -126,9 +124,9 @@ The core type classes used to express encoding and decoding capabilities are \te
 %
 They abstract over both the source and target types of the encoding and decoding operations, allowing to express encoding and decoding capabilities for arbitrary types and serialization formats.
 %
-These have been further expresses as type lambdas to express encoding and decoding capabilities as type bounds on values of functions dealing with distribution, like presented in \Cref{lst:xc-at-work} for the \texttt{exchange} construct.
+These have been further expresses as type lambdas to express encoding and decoding capabilities as type bounds on values of functions dealing with distribution, like presented in \Cref{lst:xc-at-work} for the \texttt{exchange} construct. \todo{cite?}
 %
-This ensures, thanks to the \textit{ad-hoc polymorphism}, all distribution-related primitives can only be used with values which have the required encoding and decoding capabilities in scope.
+This ensures, thanks to the \textit{ad-hoc polymorphism} \todo{cite?}, all distribution-related primitives can only be used with values which have the required encoding and decoding capabilities in scope.
 
 %\begin{minipage}{\textwidth}
 \lstinputlisting[
@@ -162,12 +160,43 @@ Examples of user-defined instances of the \texttt{Encodable} and \texttt{Decodab
 ]{resources/code/Codable.scala}
 \end{minipage}
 
-The general implementation of the type classes with respect to the serialization format allows to:
+The general implementation of the type classes with respect to the serialization allows:
 %
 \begin{itemize}
-    \item leave the choice of the serialization format to the library user, who can choose the most appropriate format for their specific use case. For example, in \Cref{lst:user-encodable-decodable} a production-ready Protobuf-based binary format is provided using ScalaPB\footnote{\url{https://scalapb.github.io}}, a popular Scala library for working with Protocol Buffers;
-    \item in non-distributed scenarios, like simulation or local testing, or where the distributed primitives are used only to make the state evolve over rounds without actual neighbor communication, like in the \texttt{evolve}, use in-memory Codable instances that do not perform any transformation on the messages, leaving them as-is. Moreover, leveraging Scala 3 inline givens, the compile is able to completely eliminate encoding and decoding operations at compile time in such scenarios avoiding any runtime overhead.
+    \item to leave the choice of the serialization format to the library user, who can choose the most appropriate format for their specific use case. For example, in \Cref{lst:user-encodable-decodable} a production-ready Protobuf-based binary format is provided using ScalaPB\footnote{\url{https://scalapb.github.io}}, a popular Scala library to work with Protocol Buffers;
+    \item in non-distributed scenarios, like simulation and local testing, or where the distributed primitives are used only to make the state evolve over rounds without actual neighbor communication, like in the \texttt{evolve}, to use in-memory Codable instances that do not perform any transformation on the messages, leaving them as-is. Moreover, leveraging Scala 3 inline givens, the compile is able to completely eliminate encoding and decoding operations at compile time in such scenarios avoiding any runtime overhead.
 \end{itemize}
+
+While ScaFi3 remains unopinionated about the serialization format to be used, with format selection impacting exclusively library user code rather than library internals, the only requirement for enabling polyglotism is that the serialization format supports cross-language interoperability. 
+%
+Meeting this requirement, Protocol Buffers has been adopted for all practical implementations and examples in this work.
+
+Protocol Buffers (Protobuf)\footnote{\url{https://protobuf.dev}} is a schema-driven binary serialization framework developed by Google for efficient encoding of structured data, widely adopted in distributed systems.
+%
+Its use is justified by several factors:
+%
+\begin{itemize}
+    \item \textbf{Multi-language support}. Protobuf is schema-driven, meaning it uses schemas (\texttt{.proto} files) to define the structure of the data being serialized, employing a language-agnostic Interface Definition Language (IDL) that serves as contract between parties. Starting from a schema definition, Protobuf compiler (\texttt{protoc}) can generate the corresponding classes ready to be used for serialization and deserialization in multiple programming languages, including but not limited to C, C++, Scala, Java, Python, JavaScript, TypeScript and C\#. An example of Protobuf schema definition is shown in \Cref{lst:example-protobuf-schema}, showcasing the syntax and major features of Protobuf IDL.
+    \item \textbf{Efficiency and performance}. Serializing data into a binary format, Protobuf achieves compact message sizes. This results in smaller payload sizes, making it more efficient both in terms of network bandwidth and storage requirements compared to text-based formats like JSON or XML. Moreover, Protobuf is designed for high performance, enabling fast serialization and deserialization operations, which is crucial in distributed systems where low latency is often a requirement.
+    \item \textbf{Backward and forward compatibility}. Protobuf supports schema evolution, allowing developers to add or remove fields from message definitions without breaking existing implementations: unknown fields are ignored, and missing fields are treated as having default values. This is particularly important in distributed systems where different components may be updated independently over time.
+\end{itemize}
+
+\lstinputlisting[
+    language=protobuf3,
+    label={lst:example-protobuf-schema},
+    caption={Example of Protobuf schema definition for a sensor data message.},
+%    basicstyle=\scriptsize\ttfamily,
+]{resources/code/example.proto}
+
+The designed workflow for Protobuf-based serialization and deserialization in ScaFi3 is illustrated in \Cref{fig:protobuf-programming-workflow}.
+%
+First the programmer defines the Protobuf schema for the data types to be exchanged between devices.
+%
+Then the Protocol Buffers compiler generates language-specific artifacts for all target languages with ready-to-use serialization and deserialization logic.
+%
+Depending on the target language, \texttt{protoc} generates different artifacts: for example, for Scala it generates case classes, while for C it generates header files with struct definitions and \texttt{.c} files with serialization and deserialization functions.
+%
+Finally, the programmer implements the aggregate program in their language of choice, using the generated record-like data types to exchange data between devices.
 
 \begin{figure}
     \centering

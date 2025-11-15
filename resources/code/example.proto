@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+// Imports Google's Timestamp type from the Protocol Buffers standard library
+import "google/protobuf/timestamp.proto";
+
+// Main message representing a temperature sensor reading
+message TemperatureMeasurement {
+    // Unique identifier for the sensor (required field)
+    string sensor_id = 1;
+    // Temperature value in Celsius using double precision
+    double temperature_celsius = 2;
+    // Timestamp from Google's library ensuring consistent time format across different programming languages
+    google.protobuf.Timestamp recorded_at = 3;
+    // Optional field: location may be omitted
+    optional string location = 4;
+    // Repeated field: allows multiple tag values per measurement
+    repeated string tags = 5;
+    // Optional nested message
+    optional Metadata metadata = 6;
+}
+
+// Contains technical metadata about the sensor device
+message Metadata {
+    // Firmware version identifier
+    string firmware_version = 1;
+    // Optional battery level
+    optional double battery_level = 2;
+    // Signal strength indicator
+    int32 signal_strength = 3;
+}
