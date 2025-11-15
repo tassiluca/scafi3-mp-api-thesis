@@ -197,15 +197,79 @@ Then the Protocol Buffers compiler generates language-specific artifacts for all
 Depending on the target language, \texttt{protoc} generates different artifacts: for example, for Scala it generates case classes, while for C it generates header files with struct definitions and \texttt{.c} files with serialization and deserialization functions.
 %
 Finally, the programmer implements the aggregate program in their language of choice, using the generated record-like data types to exchange data between devices.
-
+%
 \begin{figure}
     \centering
     \includegraphics[width=0.7\textwidth]{resources/img/protobuf-programming-workflow.pdf}
-    \caption{}
+    \caption{Protobuf-based serialization/deserialization aggregate programming workflow.}
     \label{fig:protobuf-programming-workflow}
 \end{figure}
 
+\todo{Add other language Codable discussion?}
 
-% \subsection{Platform-specific library abstraction layers}
+\section{Polyglot API module}
+
+The goal of this module is to implement the polyglot abstraction layer presented in \Cref{sec:polyglot-abstraction-layer}.
+
+The discussion of the implementation of this module is composed of a library-agnostic and an AC ScaFi3 specific part.
+%
+The former discusses the general implementation strategy to provide polyglot capabilities to a generic library, while the latter focuses on the specific implementation details for ScaFi3.
+
+\subsubsection{Portable Types and Isomorphisms}
+
+The core of the polyglot abstraction layer is the definition of Portable Types, their isomorphisms with Scala types and how they are mangled together to provide a polyglot API.
+%
+The general design is illustrated in \Cref{fig:portable-types-and-libraries-design} and discussed hereafter.
+%
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{resources/schemas/portable-types-use.eps}
+    \caption{Portable Types and libraries general design.}
+    \label{fig:portable-types-and-libraries-design}
+\end{figure}
+
+Portable Types are implemented as abstract type members in a Scala trait with deferred abstract given isomorphisms between them and their Scala counterparts (see \Cref{lst:portable-types}).
+%
+\lstinputlisting[
+    language=Scala,
+    label={lst:portable-types},
+    caption={Portable Types trait with deferred isomorphisms.},
+    linerange={5-33},
+]{resources/code/PortableTypes.scala}
+%
+An isomorphism is a bidirectional conversion, represented as a type class, between two types that preserves the structure and semantics of the data being converted (see \Cref{lst:iso-type-class}).
+%
+Where only one-way conversions are sufficient, e.g., for function types, simple Scala Conversions are used instead.
+%
+Indeed, while isomorphisms provide a more general and powerful abstraction for bidirectional conversions, not always both directions are needed.
+%
+For example, in the case of function types, they are usually only used to express callbacks from portable types to Scala types, making the reverse conversion unnecessary.
+%
+\lstinputlisting[
+    language=Scala,
+    label={lst:iso-type-class},
+    caption={Iso type class representing an isomorphism between two types.},
+    linerange={3-20},
+]{resources/code/Iso.scala}
+%
+Thanks to Scala 3 abstract types and deferred givens, the actual implementations of the isomorphisms are deferred to platform-specific modules, allowing to provide different implementations for each target language.
+%
+For example, in the Scala.js module, the isomorphisms are implemented using JavaScript native types and data structures, as shown in \Cref{lst:js-iso-implementations}.
+%
+Equivalently, JVM types implement the isomorphisms with the standard Java types and data structures, while Native types use the Scala Native provided types and data structures.
+%
+When no specific platform type is available, like for Maps in Native, custom Native implementations can be implemented to provide the required functionalities.
+%
+\todo{add example sequences?}
+%
+\lstinputlisting[
+    language=Scala,
+    label={lst:js-iso-implementations},
+    caption={JavaScript-specific implementations of Portable Types and their isomorphisms.},
+    linerange={8-19},
+]{resources/code/JSTypes.scala}
+
+
+
 
 % \section{Implementation challenges and solutions}
